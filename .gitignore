@@ -44,3 +44,6 @@ next-env.d.ts
 
 # Local notes
 prompt.txt
+
+# Private deliverables in local development (S3/R2 in production)
+/storage

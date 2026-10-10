@@ -280,20 +280,26 @@ model CartItem {
 // ─── Commerce ────────────────────────────────────────────────────────────────
 
 model Order {
-  id            String      @id @default(cuid())
-  user          User        @relation(fields: [userId], references: [id])
-  userId        String
-  status        OrderStatus @default(PENDING)
-  subtotalCents Int
-  discountCents Int         @default(0)
-  totalCents    Int
-  currency      String
-  paymentRef    String?     @unique // Stripe Checkout session id
-  couponCode    String?
-  paidAt        DateTime?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  items         OrderItem[]
+  id                 String      @id @default(cuid())
+  user               User        @relation(fields: [userId], references: [id])
+  userId             String
+  status             OrderStatus @default(PENDING)
+  subtotalCents      Int
+  discountCents      Int         @default(0)
+  totalCents         Int
+  currency           String
+  paymentRef         String?     @unique // Stripe Checkout session id
+  couponCode         String?
+  paidAt             DateTime?
+  /// Stripe-hosted receipt for the charge
+  receiptUrl         String?
+  /// Billing details as they were at checkout
+  billing            Json?
+  /// Set once the confirmation email has gone out (webhook retries are idempotent)
+  confirmationSentAt DateTime?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  items              OrderItem[]
 
   @@index([userId, createdAt])
   @@index([status])

@@ -5,6 +5,8 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { CompareTray } from "@/components/compare/compare-tray";
+import { CartProvider } from "@/components/cart/cart-provider";
+import { CartDrawer } from "@/components/cart/cart-drawer";
 import { Suspense } from "react";
 import "./globals.css";
 
@@ -53,14 +55,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <MotionProvider>
-          <SiteHeader />
-          <main id="main" className="flex-1">
-            {children}
-          </main>
-          <SiteFooter />
-          <Suspense fallback={null}>
-            <CompareTray />
-          </Suspense>
+          <CartProvider>
+            <SiteHeader />
+            <main id="main" className="flex-1">
+              {children}
+            </main>
+            <SiteFooter />
+            <Suspense fallback={null}>
+              <CompareTray />
+              <CartDrawer />
+            </Suspense>
+          </CartProvider>
         </MotionProvider>
         <Toaster position="bottom-right" />
       </body>

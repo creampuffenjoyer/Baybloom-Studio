@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useId, useState } from "react";
 import { motion, useAnimationControls } from "motion/react";
-import { CheckIcon, LockIcon, ShoppingBagIcon, ZapIcon } from "lucide-react";
+import { CheckIcon, Loader2Icon, LockIcon, ShoppingBagIcon, ZapIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useCart } from "@/components/cart/cart-provider";
 import type { DesignPricing } from "@/lib/catalog";
 import { formatPrice, TIER_LABEL } from "@/lib/format";
 import { loginHref } from "@/lib/urls";
@@ -15,12 +17,16 @@ import type { CompareItem } from "@/components/compare/compare-store";
 
 /** Signed-in view: choose a tier and add-ons. Fades in from a blur (spec §7.1). */
 export function PricePicker({
+  designId,
   pricing,
   compareItem,
 }: {
+  designId: string;
   pricing: DesignPricing;
   compareItem: CompareItem;
 }) {
+  const router = useRouter();
+  const { add, setOpen, busy } = useCart();
   const [tierId, setTierId] = useState(
     pricing.tiers.find((t) => t.level === "STANDARD")?.id ?? pricing.tiers[0]?.id,
   );
@@ -116,17 +122,27 @@ export function PricePicker({
 
       <div className="grid gap-2">
         <Button
-          disabled
+          disabled={busy || !tierId}
+          onClick={async () => {
+            if (tierId && (await add({ designId, tierId, addonIds }))) router.push("/checkout");
+          }}
           className="h-12 rounded-full bg-hibiscus-strong text-base text-white hover:bg-hibiscus-strong/90"
         >
           <ZapIcon /> Buy now
         </Button>
-        <Button disabled variant="outline" className="h-12 rounded-full bg-white text-base">
-          <ShoppingBagIcon /> Add to cart
+        <Button
+          disabled={busy || !tierId}
+          variant="outline"
+          onClick={async () => {
+            if (tierId && (await add({ designId, tierId, addonIds }))) setOpen(true);
+          }}
+          className="h-12 rounded-full bg-white text-base"
+        >
+          {busy ? <Loader2Icon className="animate-spin" /> : <ShoppingBagIcon />} Add to cart
         </Button>
         <CompareToggle item={compareItem} signedIn variant="button" className="mt-1" />
         <p className="text-center text-xs text-muted-foreground">
-          Online checkout is opening soon. Prices include all files listed for the tier.
+          Secure payment by Stripe. Files are available to download right after payment.
         </p>
       </div>
     </motion.div>

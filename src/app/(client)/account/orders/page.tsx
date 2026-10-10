@@ -55,9 +55,9 @@ async function Orders() {
           <li key={order.id} className="rounded-3xl bg-white p-5 ring-1 ring-border/70 sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/70 pb-4">
               <div>
-                <p className="text-sm font-medium text-ink">
+                <Link href={`/account/orders/${order.id}`} className="text-sm font-medium text-bay hover:underline">
                   Order #{order.id.slice(-8).toUpperCase()}
-                </p>
+                </Link>
                 <p className="text-xs text-muted-foreground">
                   {order.createdAt.toLocaleDateString("en-PH", { dateStyle: "medium" })}
                 </p>
@@ -89,13 +89,12 @@ async function Orders() {
               })}
             </ul>
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/70 pt-4">
-              <p className="text-xs text-muted-foreground">
-                {order.status === "PAID"
-                  ? "Download links are sent by email and will appear here."
-                  : order.couponCode
-                    ? `Coupon ${order.couponCode} applied`
-                    : " "}
-              </p>
+              <Link
+                href={`/account/orders/${order.id}`}
+                className="text-sm font-medium text-bay underline-offset-4 hover:underline"
+              >
+                {order.status === "PAID" ? "Receipt & downloads →" : "View order →"}
+              </Link>
               <p className="text-sm">
                 Total <span className="ml-2 font-serif text-xl text-bay">{formatPrice(order.totalCents, order.currency)}</span>
               </p>

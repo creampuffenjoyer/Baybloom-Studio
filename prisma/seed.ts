@@ -9,7 +9,7 @@
  * Optional: set SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD to create an admin.
  */
 import "dotenv/config";
-import { readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import bcrypt from "bcryptjs";
 import {
@@ -341,6 +341,80 @@ async function readCredits(slug: string): Promise<Credit[]> {
   }
 }
 
+// ─── Sample deliverables ─────────────────────────────────────────────────────
+
+/** A tiny one-page PDF with a few lines of text (sample deliverable). */
+function samplePdf(lines: string[]) {
+  const esc = (t: string) => t.replace(/[\\()]/g, (c) => `\\${c}`).replace(/[^\x20-\x7e]/g, "-");
+  const text = lines
+    .map((l, i) => {
+      const size = i === 0 ? 20 : 12;
+      const y = i === 0 ? 720 : 680 - (i - 1) * 22;
+      return `BT /F1 ${size} Tf 72 ${y} Td (${esc(l)}) Tj ET`;
+    })
+    .join("\n");
+  const objects = [
+    "<< /Type /Catalog /Pages 2 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>",
+    `<< /Length ${Buffer.byteLength(text)} >>\nstream\n${text}\nendstream`,
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+  ];
+  let out = "%PDF-1.4\n";
+  const offsets: number[] = [];
+  objects.forEach((o, i) => {
+    offsets.push(Buffer.byteLength(out));
+    out += `${i + 1} 0 obj\n${o}\nendobj\n`;
+  });
+  const xref = Buffer.byteLength(out);
+  out += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  out += offsets.map((o) => `${String(o).padStart(10, "0")} 00000 n \n`).join("");
+  out += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  return Buffer.from(out, "latin1");
+}
+
+const FILE_SETS: Record<TierLevel, (title: string, type: ProductType) => { name: string; lines: string[] }> = {
+  STARTER: (title, type) => ({
+    name: `${title} - ${type === "WEBSITE" ? "Starter template pack" : "Concept drawings"}.pdf`,
+    lines: [`${title}`, "Starter deliverables (sample file)", "This placeholder stands in for the real design files.", "Replace it from the admin dashboard."],
+  }),
+  STANDARD: (title, type) => ({
+    name: `${title} - ${type === "WEBSITE" ? "Full page set & CMS guide" : "Plans, sections & schedules"}.pdf`,
+    lines: [`${title}`, "Standard deliverables (sample file)", "Included with the Standard and Premium tiers."],
+  }),
+  PREMIUM: (title, type) => ({
+    name: `${title} - ${type === "WEBSITE" ? "Source files index" : "CAD & render package index"}.pdf`,
+    lines: [`${title}`, "Premium deliverables (sample file)", "Included with the Premium tier only."],
+  }),
+};
+
+async function seedDeliverables(designId: string, slug: string, title: string, type: ProductType) {
+  const tiers = await db.tier.findMany({ where: { designId }, select: { id: true, level: true } });
+  await db.deliverableFile.deleteMany({ where: { designId } });
+  const dir = path.join(process.cwd(), "storage", "deliverables", slug);
+  await mkdir(dir, { recursive: true });
+  for (const tier of tiers) {
+    const { name, lines } = FILE_SETS[tier.level](title, type);
+    const data = samplePdf(lines);
+    const fileName = name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
+    await writeFile(path.join(dir, fileName), data);
+    await db.deliverableFile.create({
+      data: {
+        designId,
+        minTierId: tier.id,
+        name,
+        storageKey: `deliverables/${slug}/${fileName}`,
+        sizeBytes: data.length,
+      },
+    });
+  }
+}
+
+const COUPONS = [
+  { code: "WELCOME10", percentOff: 10 },
+  { code: "BLOOM5000", amountOffCents: peso(5000), minSubtotalCents: peso(40000) },
+];
+
 async function main() {
   for (const [position, c] of CATEGORIES.entries()) {
     await db.category.upsert({
@@ -460,8 +534,14 @@ async function main() {
         })),
       }),
     ]);
+    await seedDeliverables(design.id, d.slug, d.title, d.type);
     console.log(`✓ ${d.title} (${credits.length} images, ${d.tiers.length} tiers)`);
   }
+
+  for (const c of COUPONS) {
+    await db.coupon.upsert({ where: { code: c.code }, create: c, update: { ...c, active: true } });
+  }
+  console.log(`✓ Coupons: ${COUPONS.map((c) => c.code).join(", ")}`);
 
   const { SEED_ADMIN_EMAIL, SEED_ADMIN_PASSWORD } = process.env;
   if (SEED_ADMIN_EMAIL && SEED_ADMIN_PASSWORD) {

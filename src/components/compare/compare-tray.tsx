@@ -22,7 +22,7 @@ export function CompareTray() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 120, opacity: 0 }}
           transition={{ type: "spring", stiffness: 320, damping: 30 }}
-          className="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-xl items-center gap-3 rounded-2xl bg-bay-deep p-3 text-white shadow-2xl sm:inset-x-0"
+          className="fixed inset-x-4 bottom-4 z-40 mx-auto flex max-w-xl items-center gap-3 rounded-2xl bg-bay-deep p-3 text-white shadow-2xl sm:inset-x-0"
         >
           <ul className="flex gap-2">
             {Array.from({ length: COMPARE_MAX }, (_, i) => {

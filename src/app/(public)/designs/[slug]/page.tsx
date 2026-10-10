@@ -259,7 +259,7 @@ async function PricePanel({
 }) {
   const pricing = await getDesignPricing(designId);
   if (!pricing) return <LockedPrice callbackUrl={`/designs/${compareItem.slug}`} />;
-  return <PricePicker pricing={pricing} compareItem={compareItem} />;
+  return <PricePicker designId={designId} pricing={pricing} compareItem={compareItem} />;
 }
 
 function PriceSkeleton() {

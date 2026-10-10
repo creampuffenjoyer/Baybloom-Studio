@@ -12,7 +12,11 @@ const ITEMS = [
 ];
 
 export function AccountNav() {
-  const pathname = usePathname();
+  return <AccountNavList pathname={usePathname()} />;
+}
+
+/** Also rendered as the static fallback before the pathname is known. */
+export function AccountNavList({ pathname }: { pathname: string | null }) {
   return (
     <nav aria-label="Account" className="lg:sticky lg:top-24 lg:self-start">
       <ul className="flex gap-1 overflow-x-auto pb-2 [scrollbar-width:none] lg:flex-col lg:overflow-visible lg:pb-0">
