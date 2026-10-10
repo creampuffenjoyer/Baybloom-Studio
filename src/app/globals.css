@@ -1,0 +1,161 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@theme inline {
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-display);
+
+  /* Brand palette (spec §7) */
+  --color-bay: var(--bay);
+  --color-bay-deep: var(--bay-deep);
+  --color-hibiscus: var(--hibiscus);
+  --color-hibiscus-strong: var(--hibiscus-strong);
+  --color-seaglass: var(--seaglass);
+  --color-sand: var(--sand);
+  --color-sand-deep: var(--sand-deep);
+  --color-ink: var(--ink);
+
+  /* shadcn semantic tokens */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  --radius: 0.75rem;
+
+  --bay: #0f4c5c;
+  --bay-deep: #0a3742;
+  --hibiscus: #e36a5d; /* hearts, highlights, decorative accents */
+  --hibiscus-strong: #c4493d; /* CTA fill: 4.7:1 with white text (WCAG AA) */
+  --seaglass: #9cc5b4;
+  --sand: #faf6f0;
+  --sand-deep: #f1e9dd;
+  --ink: #1b2a2f;
+
+  --background: var(--sand);
+  --foreground: var(--ink);
+  --card: #ffffff;
+  --card-foreground: var(--ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--ink);
+  --primary: var(--bay);
+  --primary-foreground: #ffffff;
+  --secondary: #e4efea;
+  --secondary-foreground: var(--bay-deep);
+  --muted: var(--sand-deep);
+  --muted-foreground: #55666b; /* 5.6:1 on sand */
+  --accent: #eef4f1;
+  --accent-foreground: var(--bay-deep);
+  --destructive: #b42318;
+  --border: #e4ddd2;
+  --input: #d9d1c5;
+  --ring: var(--bay);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "ss01", "cv11";
+  }
+  h1,
+  h2,
+  h3,
+  .font-display {
+    @apply font-serif text-bay tracking-tight;
+    font-optical-sizing: auto;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--seaglass) 55%, transparent);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  /* Shimmer skeletons (spec §7.1) */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+    background: var(--sand-deep);
+  }
+  .shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(255 255 255 / 0.55),
+      transparent
+    );
+    animation: shimmer 1.6s var(--ease-out-soft) infinite;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes ken-burns {
+  from {
+    transform: scale(1.02);
+  }
+  to {
+    transform: scale(1.12) translate3d(-1.5%, -1%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .shimmer::after {
+    display: none;
+  }
+}

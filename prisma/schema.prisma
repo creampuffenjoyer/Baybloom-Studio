@@ -1,0 +1,319 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  CLIENT
+  ADMIN
+}
+
+enum ProductType {
+  WEBSITE
+  ARCHITECTURE
+  INTERIOR
+}
+
+enum DesignStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum TierLevel {
+  STARTER
+  STANDARD
+  PREMIUM
+}
+
+enum ImageKind {
+  PHOTO // exterior, room, pool, dining, detail
+  RENDER // illustrative render-style sample
+  PLAN // floor / site plan preview
+  MOCKUP // shown inside a device frame for website designs
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum TokenType {
+  VERIFY_EMAIL
+  RESET_PASSWORD
+}
+
+// ─── Users & auth ────────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  passwordHash  String?
+  role          Role      @default(CLIENT)
+  emailVerified DateTime?
+  disabled      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts  Account[]
+  favorites Favorite[]
+  cartItems CartItem[]
+  orders    Order[]
+}
+
+/// OAuth identities (e.g. Google) linked to a user.
+model Account {
+  id                String @id @default(cuid())
+  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String
+  provider          String
+  providerAccountId String
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+/// Single-use tokens for email verification and password reset. Only a hash is stored.
+model VerificationToken {
+  id        String    @id @default(cuid())
+  email     String
+  tokenHash String    @unique
+  type      TokenType
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+
+  @@index([email, type])
+}
+
+// ─── Catalog ─────────────────────────────────────────────────────────────────
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  position    Int      @default(0)
+  designs     Design[]
+}
+
+model Style {
+  id       String   @id @default(cuid())
+  name     String   @unique
+  slug     String   @unique
+  position Int      @default(0)
+  designs  Design[]
+}
+
+model Design {
+  id           String       @id @default(cuid())
+  slug         String       @unique
+  title        String
+  summary      String
+  description  String
+  type         ProductType
+  status       DesignStatus @default(DRAFT)
+  featured     Boolean      @default(false)
+  category     Category     @relation(fields: [categoryId], references: [id])
+  categoryId   String
+  style        Style?       @relation(fields: [styleId], references: [id])
+  styleId      String?
+  heroImage    String
+  heroAlt      String       @default("")
+  demoUrl      String?
+  /// Included files / deliverables list shown on the detail page.
+  deliverables String[]
+  viewCount    Int          @default(0)
+  publishedAt  DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  images     DesignImage[]
+  tiers      Tier[]
+  features   DesignFeature[]
+  addons     Addon[]
+  favorites  Favorite[]
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+  files      DeliverableFile[]
+
+  @@index([status, type])
+  @@index([categoryId])
+}
+
+model DesignImage {
+  id         String    @id @default(cuid())
+  design     Design    @relation(fields: [designId], references: [id], onDelete: Cascade)
+  designId   String
+  url        String
+  thumbUrl   String?
+  alt        String    @default("")
+  kind       ImageKind @default(PHOTO)
+  width      Int?
+  height     Int?
+  position   Int       @default(0)
+  // Attribution for freely licensed images (required by CC BY / CC BY-SA)
+  creditName String?
+  creditUrl  String?
+  license    String?
+  licenseUrl String?
+
+  @@index([designId, position])
+}
+
+model Tier {
+  id         String    @id @default(cuid())
+  design     Design    @relation(fields: [designId], references: [id], onDelete: Cascade)
+  designId   String
+  level      TierLevel
+  name       String
+  priceCents Int
+  currency   String    @default("PHP")
+  inclusions String[]
+  revisions  Int       @default(1)
+
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+  files      DeliverableFile[]
+
+  @@unique([designId, level])
+}
+
+/// An add-on with no designId applies to every design (e.g. hosting setup).
+model Addon {
+  id           String        @id @default(cuid())
+  design       Design?       @relation(fields: [designId], references: [id], onDelete: Cascade)
+  designId     String?
+  name         String
+  description  String?
+  priceCents   Int
+  currency     String        @default("PHP")
+  active       Boolean       @default(true)
+  /// Only offered for these product types (empty = all).
+  productTypes ProductType[]
+
+  @@index([designId])
+}
+
+model Feature {
+  id        String          @id @default(cuid())
+  name      String          @unique
+  slug      String          @unique
+  group     String // e.g. "Booking", "Marketing", "Drawings"
+  /// Which product types this feature applies to.
+  appliesTo ProductType[]
+  designs   DesignFeature[]
+}
+
+model DesignFeature {
+  design    Design  @relation(fields: [designId], references: [id], onDelete: Cascade)
+  designId  String
+  feature   Feature @relation(fields: [featureId], references: [id], onDelete: Cascade)
+  featureId String
+
+  @@id([designId, featureId])
+  @@index([featureId])
+}
+
+/// Purchasable files kept in the private bucket. A file is included from its tier upward.
+model DeliverableFile {
+  id         String   @id @default(cuid())
+  design     Design   @relation(fields: [designId], references: [id], onDelete: Cascade)
+  designId   String
+  minTier    Tier?    @relation(fields: [minTierId], references: [id], onDelete: SetNull)
+  minTierId  String?
+  name       String
+  storageKey String
+  sizeBytes  Int?
+  createdAt  DateTime @default(now())
+
+  @@index([designId])
+}
+
+// ─── Client features ─────────────────────────────────────────────────────────
+
+model Favorite {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  design    Design   @relation(fields: [designId], references: [id], onDelete: Cascade)
+  designId  String
+  createdAt DateTime @default(now())
+
+  @@id([userId, designId])
+  @@index([designId])
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  design    Design   @relation(fields: [designId], references: [id], onDelete: Cascade)
+  designId  String
+  tier      Tier     @relation(fields: [tierId], references: [id], onDelete: Cascade)
+  tierId    String
+  addonIds  String[]
+  createdAt DateTime @default(now())
+
+  @@unique([userId, designId])
+}
+
+// ─── Commerce ────────────────────────────────────────────────────────────────
+
+model Order {
+  id            String      @id @default(cuid())
+  user          User        @relation(fields: [userId], references: [id])
+  userId        String
+  status        OrderStatus @default(PENDING)
+  subtotalCents Int
+  discountCents Int         @default(0)
+  totalCents    Int
+  currency      String
+  paymentRef    String?     @unique // Stripe Checkout session id
+  couponCode    String?
+  paidAt        DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  items         OrderItem[]
+
+  @@index([userId, createdAt])
+  @@index([status])
+}
+
+model OrderItem {
+  id          String @id @default(cuid())
+  order       Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     String
+  design      Design @relation(fields: [designId], references: [id], onDelete: Restrict)
+  designId    String
+  tier        Tier   @relation(fields: [tierId], references: [id], onDelete: Restrict)
+  tierId      String
+  // Snapshot at purchase time so later edits don't change past orders
+  designTitle String
+  tierName    String
+  priceCents  Int
+  /// [{ id, name, priceCents }]
+  addons      Json   @default("[]")
+
+  @@index([orderId])
+}
+
+model Coupon {
+  id               String    @id @default(cuid())
+  code             String    @unique
+  percentOff       Int?
+  amountOffCents   Int?
+  minSubtotalCents Int?
+  maxRedemptions   Int?
+  redemptions      Int       @default(0)
+  expiresAt        DateTime?
+  active           Boolean   @default(true)
+  createdAt        DateTime  @default(now())
+}
