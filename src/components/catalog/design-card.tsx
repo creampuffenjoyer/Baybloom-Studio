@@ -8,6 +8,7 @@ import { ArrowRightIcon, EyeIcon } from "lucide-react";
 import type { DesignCard as DesignCardData } from "@/lib/catalog";
 import { TIER_LABEL, TYPE_LABEL } from "@/lib/format";
 import { FavoriteButton } from "@/components/catalog/favorite-button";
+import { CompareToggle } from "@/components/compare/compare-toggle";
 import { PriceChip, type CardPrice } from "@/components/catalog/price-chip";
 import { TierBadge } from "@/components/catalog/tier-badge";
 import { Button } from "@/components/ui/button";
@@ -24,12 +25,14 @@ export function DesignCard({
   signedIn = false,
   favorited = false,
   priority = false,
+  onFavoriteChange,
 }: {
   design: DesignCardData;
   price?: CardPrice;
   signedIn?: boolean;
   favorited?: boolean;
   priority?: boolean;
+  onFavoriteChange?: (favorite: boolean) => void;
 }) {
   const [quickView, setQuickView] = useState(false);
   const href = `/designs/${design.slug}`;
@@ -54,13 +57,20 @@ export function DesignCard({
         <div className="absolute top-3 left-3 flex gap-2">
           {design.topTier && <TierBadge level={design.topTier} />}
         </div>
-        <FavoriteButton
-          designId={design.id}
-          title={design.title}
-          initial={favorited}
-          signedIn={signedIn}
-          className="absolute top-3 right-3 z-10"
-        />
+        <div className="absolute top-3 right-3 z-10 flex flex-col gap-2">
+          <FavoriteButton
+            designId={design.id}
+            title={design.title}
+            initial={favorited}
+            signedIn={signedIn}
+            onChange={onFavoriteChange}
+          />
+          <CompareToggle
+            item={{ slug: design.slug, title: design.title, heroImage: design.heroImage }}
+            signedIn={signedIn}
+            className="opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100 aria-pressed:opacity-100 max-md:opacity-100"
+          />
+        </div>
 
         {/* Quick view slides up on hover / keyboard focus */}
         <div className="absolute inset-x-3 bottom-3 z-10 translate-y-[calc(100%+12px)] transition-transform duration-300 ease-out group-focus-within:translate-y-0 group-hover:translate-y-0">

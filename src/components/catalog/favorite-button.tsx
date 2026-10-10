@@ -15,12 +15,14 @@ export function FavoriteButton({
   initial = false,
   signedIn,
   className,
+  onChange,
 }: {
   designId: string;
   title: string;
   initial?: boolean;
   signedIn: boolean;
   className?: string;
+  onChange?: (favorite: boolean) => void;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -50,6 +52,7 @@ export function FavoriteButton({
         return;
       }
       setSaved(res.favorite);
+      onChange?.(res.favorite);
     });
   }
 

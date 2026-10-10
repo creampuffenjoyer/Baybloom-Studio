@@ -47,7 +47,9 @@ export function AuthForm({
   mode: "login" | "register";
   googleEnabled: boolean;
 }) {
-  const callbackUrl = useSearchParams().get("callbackUrl") ?? "";
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") ?? "";
+  const justReset = mode === "login" && searchParams.get("reset") === "1";
   const [state, action, pending] = useActionState<AuthFormState, FormData>(
     mode === "login" ? loginAction : registerAction,
     {},
@@ -58,6 +60,11 @@ export function AuthForm({
 
   return (
     <div className="space-y-6">
+      {justReset && !state.error && (
+        <p role="status" className="rounded-lg bg-secondary px-3 py-2.5 text-sm text-bay-deep">
+          Your password has been changed. Log in with your new password.
+        </p>
+      )}
       <form action={action} className="space-y-4" noValidate>
         <input type="hidden" name="callbackUrl" value={callbackUrl} />
         {mode === "register" && (
@@ -88,6 +95,13 @@ export function AuthForm({
           minLength={mode === "register" ? 8 : undefined}
           required
         />
+        {mode === "login" && (
+          <p className="-mt-2 text-right text-sm">
+            <Link href="/forgot-password" className="text-bay underline-offset-4 hover:underline">
+              Forgot password?
+            </Link>
+          </p>
+        )}
         {mode === "register" && !state.fieldErrors?.password && (
           <p className="-mt-2 text-xs text-muted-foreground">At least 8 characters.</p>
         )}

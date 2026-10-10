@@ -4,6 +4,8 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { CompareTray } from "@/components/compare/compare-tray";
+import { Suspense } from "react";
 import "./globals.css";
 
 const display = Fraunces({
@@ -56,6 +58,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             {children}
           </main>
           <SiteFooter />
+          <Suspense fallback={null}>
+            <CompareTray />
+          </Suspense>
         </MotionProvider>
         <Toaster position="bottom-right" />
       </body>

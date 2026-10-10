@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOutIcon, UserRoundIcon } from "lucide-react";
+import {
+  GitCompareArrowsIcon,
+  HeartIcon,
+  LogOutIcon,
+  ReceiptTextIcon,
+  UserRoundIcon,
+} from "lucide-react";
 import { signOutAction } from "@/app/(auth)/actions";
 import { Button } from "@/components/ui/button";
 import {
@@ -64,11 +70,19 @@ export function UserMenu({ name, email }: { name: string | null; email: string |
           <span className="block truncate text-xs text-muted-foreground">{email}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/designs">
-            <UserRoundIcon /> Browse designs
-          </Link>
-        </DropdownMenuItem>
+        {[
+          { href: "/account", label: "My account", icon: UserRoundIcon },
+          { href: "/favorites", label: "Favorites", icon: HeartIcon },
+          { href: "/compare", label: "Compare", icon: GitCompareArrowsIcon },
+          { href: "/account/orders", label: "Orders & downloads", icon: ReceiptTextIcon },
+        ].map(({ href, label, icon: Icon }) => (
+          <DropdownMenuItem key={href} asChild>
+            <Link href={href}>
+              <Icon /> {label}
+            </Link>
+          </DropdownMenuItem>
+        ))}
+        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <form action={signOutAction} className="w-full">
             <button type="submit" className="flex w-full items-center gap-2">

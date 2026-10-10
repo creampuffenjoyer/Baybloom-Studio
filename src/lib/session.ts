@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { connection } from "next/server";
+import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 
 export type CurrentUser = {
@@ -26,3 +27,13 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
     role: session.user.role,
   };
 });
+
+/**
+ * For client-only pages: returns the user or redirects to login, coming back
+ * to `callbackUrl` afterwards. Call it inside the page's <Suspense> boundary.
+ */
+export async function requireUser(callbackUrl: string): Promise<CurrentUser> {
+  const user = await getCurrentUser();
+  if (!user) redirect(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+  return user;
+}

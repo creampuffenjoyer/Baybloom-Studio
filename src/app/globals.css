@@ -2,6 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* The site is light-only; dark: variants apply only under an explicit .dark class. */
+@custom-variant dark (&:is(.dark *));
+
 @theme inline {
   --font-sans: var(--font-body);
   --font-serif: var(--font-display);

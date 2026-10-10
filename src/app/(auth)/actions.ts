@@ -9,6 +9,7 @@ import { signIn, signOut } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { loginSchema, registerSchema } from "@/lib/validators";
 import { safeCallbackUrl } from "@/lib/urls";
+import { sendVerificationEmail } from "@/lib/account-emails";
 
 export type AuthFormState = {
   error?: string;
@@ -93,6 +94,10 @@ export async function registerAction(
   await db.user.create({
     data: { name, email, passwordHash: await bcrypt.hash(password, 12) },
   });
+  // Don't block sign-up if the email provider is down; they can resend later.
+  await sendVerificationEmail(email, name).catch((e) =>
+    console.error("[register] verification email failed", e),
+  );
 
   await signIn("credentials", {
     email,

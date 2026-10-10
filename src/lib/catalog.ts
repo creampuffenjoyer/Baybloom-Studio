@@ -424,3 +424,34 @@ export async function getFromPrices(designIds: string[]) {
   if (!user || designIds.length === 0) return null;
   return fromPricesCached([...designIds].sort());
 }
+
+// ─── Favorites & compare ─────────────────────────────────────────────────────
+
+/** Public card data for specific designs, in the order given. */
+export async function getDesignCards(ids: string[]) {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("catalog");
+
+  if (ids.length === 0) return [];
+  const rows = await db.design.findMany({
+    where: { id: { in: ids }, status: "PUBLISHED" },
+    select: cardSelect,
+  });
+  return rows
+    .sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id))
+    .map(toCard);
+}
+
+export type CompareColumn = DesignDetail & { pricing: DesignPricing | null };
+
+/** Up to 3 designs side by side, with prices only for signed-in clients. */
+export async function getCompareColumns(slugs: string[]): Promise<CompareColumn[]> {
+  const unique = [...new Set(slugs)].slice(0, 3);
+  const designs = (await Promise.all(unique.map((s) => getDesignBySlug(s)))).filter(
+    (d): d is DesignDetail => d !== null,
+  );
+  return Promise.all(
+    designs.map(async (d) => ({ ...d, pricing: await getDesignPricing(d.id) })),
+  );
+}

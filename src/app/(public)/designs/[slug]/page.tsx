@@ -140,7 +140,10 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
               {design.tiers.map((t) => TIER_LABEL[t.level]).join(", ")}
             </p>
             <Suspense fallback={<PriceSkeleton />}>
-              <PricePanel designId={design.id} slug={design.slug} />
+              <PricePanel
+                designId={design.id}
+                compareItem={{ slug: design.slug, title: design.title, heroImage: design.heroImage }}
+              />
             </Suspense>
             {design.demoUrl && (
               <a
@@ -247,10 +250,16 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
   );
 }
 
-async function PricePanel({ designId, slug }: { designId: string; slug: string }) {
+async function PricePanel({
+  designId,
+  compareItem,
+}: {
+  designId: string;
+  compareItem: { slug: string; title: string; heroImage: string };
+}) {
   const pricing = await getDesignPricing(designId);
-  if (!pricing) return <LockedPrice callbackUrl={`/designs/${slug}`} />;
-  return <PricePicker pricing={pricing} />;
+  if (!pricing) return <LockedPrice callbackUrl={`/designs/${compareItem.slug}`} />;
+  return <PricePicker pricing={pricing} compareItem={compareItem} />;
 }
 
 function PriceSkeleton() {

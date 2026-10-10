@@ -26,3 +26,13 @@ export async function getFavoriteIds(userId: string, designIds?: string[]) {
   });
   return rows.map((r) => r.designId);
 }
+
+/** The user's favorite design ids, most recently saved first. */
+export async function getFavoriteDesignIds(userId: string) {
+  const rows = await db.favorite.findMany({
+    where: { userId, design: { status: "PUBLISHED" } },
+    orderBy: { createdAt: "desc" },
+    select: { designId: true },
+  });
+  return rows.map((r) => r.designId);
+}

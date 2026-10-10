@@ -14,5 +14,7 @@ declare module "@auth/core/jwt" {
   interface JWT {
     uid: string;
     role: Role;
+    /** Epoch ms of the sign-in that created this session. */
+    authAt?: number;
   }
 }

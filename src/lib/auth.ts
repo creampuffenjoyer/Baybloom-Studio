@@ -106,15 +106,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!dbUser) return null;
         token.uid = dbUser.id;
         token.role = dbUser.role;
+        token.authAt = Date.now();
         return token;
       }
 
       if (!token.uid) return null;
       const current = await db.user.findUnique({
         where: { id: token.uid },
-        select: { role: true, disabled: true, name: true },
+        select: { role: true, disabled: true, name: true, email: true, sessionsValidAfter: true },
       });
       if (!current || current.disabled) return null;
+      // A password change or reset signs out sessions that started before it.
+      if (current.sessionsValidAfter && (token.authAt ?? 0) < current.sessionsValidAfter.getTime()) {
+        return null;
+      }
+      token.email = current.email;
       token.role = current.role;
       token.name = current.name;
       return token;

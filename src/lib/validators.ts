@@ -79,3 +79,8 @@ export function parseCatalogQuery(
   const parsed = catalogQuerySchema.safeParse(input);
   return parsed.success ? parsed.data : catalogQuerySchema.parse({});
 }
+
+/** Billing countries offered in the account form (ISO 3166-1 alpha-2). */
+export const COUNTRIES = [
+  "PH", "SG", "MY", "ID", "TH", "VN", "JP", "KR", "AU", "NZ", "AE", "US", "CA", "GB", "DE", "FR",
+] as const;

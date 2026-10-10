@@ -10,9 +10,17 @@ import { loginHref } from "@/lib/urls";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { CompareToggle } from "@/components/compare/compare-toggle";
+import type { CompareItem } from "@/components/compare/compare-store";
 
 /** Signed-in view: choose a tier and add-ons. Fades in from a blur (spec §7.1). */
-export function PricePicker({ pricing }: { pricing: DesignPricing }) {
+export function PricePicker({
+  pricing,
+  compareItem,
+}: {
+  pricing: DesignPricing;
+  compareItem: CompareItem;
+}) {
   const [tierId, setTierId] = useState(
     pricing.tiers.find((t) => t.level === "STANDARD")?.id ?? pricing.tiers[0]?.id,
   );
@@ -116,6 +124,7 @@ export function PricePicker({ pricing }: { pricing: DesignPricing }) {
         <Button disabled variant="outline" className="h-12 rounded-full bg-white text-base">
           <ShoppingBagIcon /> Add to cart
         </Button>
+        <CompareToggle item={compareItem} signedIn variant="button" className="mt-1" />
         <p className="text-center text-xs text-muted-foreground">
           Online checkout is opening soon. Prices include all files listed for the tier.
         </p>

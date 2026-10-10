@@ -53,16 +53,28 @@ enum TokenType {
 // ─── Users & auth ────────────────────────────────────────────────────────────
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  image         String?
-  passwordHash  String?
-  role          Role      @default(CLIENT)
-  emailVerified DateTime?
-  disabled      Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  name               String?
+  image              String?
+  passwordHash       String?
+  role               Role      @default(CLIENT)
+  emailVerified      DateTime?
+  disabled           Boolean   @default(false)
+  /// Sessions issued before this moment are rejected (set on password change/reset).
+  sessionsValidAfter DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  // Billing details, used to pre-fill checkout and on invoices
+  phone        String?
+  company      String?
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  region       String?
+  postalCode   String?
+  country      String  @default("PH")
 
   accounts  Account[]
   favorites Favorite[]
