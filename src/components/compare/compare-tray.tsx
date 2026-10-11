@@ -31,7 +31,7 @@ export function CompareTray() {
                 <li key={item?.slug ?? `empty-${i}`}>
                   {item ? (
                     <div className="group relative size-12 overflow-hidden rounded-lg ring-1 ring-white/20">
-                      <Image src={item.heroImage} alt={item.title} fill sizes="48px" className="object-cover" />
+                      <Image src={item.heroImage} alt={item.title} fill sizes="48px" className="object-cover object-top" />
                       <button
                         type="button"
                         onClick={() => remove(item.slug)}

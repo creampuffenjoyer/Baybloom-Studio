@@ -1,0 +1,192 @@
+{
+  "facade": {
+    "src": "/templates/isla-verde-boutique/facade.webp",
+    "alt": "Whitewashed colonial-style villa with timber eaves and tall green shutters",
+    "width": 1920,
+    "height": 1280,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Library_of_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "canopy-bed": {
+    "src": "/templates/isla-verde-boutique/canopy-bed.webp",
+    "alt": "Four-poster canopy bed in a bright room with tiled floors",
+    "width": 1400,
+    "height": 1050,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Canopy_bed_of_Amantaka_Suite_in_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "lounge": {
+    "src": "/templates/isla-verde-boutique/lounge.webp",
+    "alt": "Airy lounge with teak furniture, lanterns and tall shuttered doors",
+    "width": 1400,
+    "height": 933,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Reception_lounge_at_Amantaka_luxury_Resort_%26_Hotel_at_blue_hour_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "library": {
+    "src": "/templates/isla-verde-boutique/library.webp",
+    "alt": "Library lounge with wooden bookcases, a chandelier and garden doors",
+    "width": 1400,
+    "height": 933,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Interior_of_the_library_at_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "restaurant": {
+    "src": "/templates/isla-verde-boutique/restaurant.webp",
+    "alt": "Restaurant tables set with white cloths and rattan chairs",
+    "width": 1400,
+    "height": 933,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Restaurant_room_of_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "bougainvillea": {
+    "src": "/templates/isla-verde-boutique/bougainvillea.webp",
+    "alt": "Red bougainvillea spilling over a whitewashed terrace",
+    "width": 1400,
+    "height": 933,
+    "author": "Jean-Pierre Dalbéra from Paris, France",
+    "source": "https://commons.wikimedia.org/wiki/File:Complexe_touristique_de_la_Corne_dor_(Tipaza)_(2533632293).jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "bathtub": {
+    "src": "/templates/isla-verde-boutique/bathtub.webp",
+    "alt": "Freestanding bathtub beneath tall windows in a bright bathroom",
+    "width": 1400,
+    "height": 933,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Bathtub_of_Khan_Pool_Suite_in_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "vanity": {
+    "src": "/templates/isla-verde-boutique/vanity.webp",
+    "alt": "Double teak vanity with vessel basins and wall sconces",
+    "width": 1400,
+    "height": 936,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Hand-washing_sinks_of_Amantaka_Suite_Amantaka_luxury_Resort_%26_Hotel_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "pool-courtyard": {
+    "src": "/templates/isla-verde-boutique/pool-courtyard.webp",
+    "alt": "Private pool courtyard outside a whitewashed villa",
+    "width": 1400,
+    "height": 933,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Swimming_pool_of_Khan_Pool_Suite_in_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "suite": {
+    "src": "/templates/isla-verde-boutique/suite.webp",
+    "alt": "View between two teak wardrobes into a canopy-bed suite",
+    "width": 1400,
+    "height": 933,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Canopy_bed_and_wardrobes_in_Khan_Pool_Suite_at_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "courtyard": {
+    "src": "/templates/isla-verde-boutique/courtyard.webp",
+    "alt": "Inner courtyard with green shutters, iron balconies and a chequered floor",
+    "width": 1920,
+    "height": 1440,
+    "author": "Mx. Granger",
+    "source": "https://commons.wikimedia.org/wiki/File:Fray_Bentos_Hotel_Colonial_courtyard.jpg",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  },
+  "garden-night": {
+    "src": "/templates/isla-verde-boutique/garden-night.webp",
+    "alt": "Hotel garden at night with lights strung through a great old tree",
+    "width": 1920,
+    "height": 1440,
+    "author": "w_lemay",
+    "source": "https://commons.wikimedia.org/wiki/File:Courtyard,_Royal_Hawaiian_Hotel,_Kalakaua_Avenue,_Waikiki,_Honolulu,_HI.jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "salon": {
+    "src": "/templates/isla-verde-boutique/salon.webp",
+    "alt": "Sitting room with teak armchairs, lamps and tall shuttered windows",
+    "width": 1920,
+    "height": 1371,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Lounge_at_Amantaka_luxury_Resort_%26_Hotel_at_blue_hour_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "entrance": {
+    "src": "/templates/isla-verde-boutique/entrance.webp",
+    "alt": "Hotel entrance at blue hour, lanterns lining the path to a lit pavilion",
+    "width": 1920,
+    "height": 1280,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Entrance_of_Amantaka_luxury_Resort_%26_Hotel_at_blue_hour_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "dining-table": {
+    "src": "/templates/isla-verde-boutique/dining-table.webp",
+    "alt": "Round dining table laid with white linen beneath an arched window",
+    "width": 1920,
+    "height": 1280,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Restaurant_table_at_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "balcony": {
+    "src": "/templates/isla-verde-boutique/balcony.webp",
+    "alt": "Long timber balcony with capiz-shell windows on a heritage house",
+    "width": 1920,
+    "height": 1275,
+    "author": "Markadan",
+    "source": "https://commons.wikimedia.org/wiki/File:Side_of_Syquia_Mansion.jpg",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
+  },
+  "heritage-room": {
+    "src": "/templates/isla-verde-boutique/heritage-room.webp",
+    "alt": "Heritage room with carved wardrobes, mirrors and polished wood floors",
+    "width": 1920,
+    "height": 1275,
+    "author": "Markadan",
+    "source": "https://commons.wikimedia.org/wiki/File:Inside_Syquia_Mansion.jpg",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
+  },
+  "street": {
+    "src": "/templates/isla-verde-boutique/street.webp",
+    "alt": "Cobbled heritage street at dusk with a horse-drawn kalesa",
+    "width": 1920,
+    "height": 1280,
+    "author": "Ranieljosecastaneda",
+    "source": "https://commons.wikimedia.org/wiki/File:Spanish_Cultural_Heritage_in_Vigan_City.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "carved-bed": {
+    "src": "/templates/isla-verde-boutique/carved-bed.webp",
+    "alt": "Carved four-poster bed in a white-walled heritage bedroom",
+    "width": 1920,
+    "height": 1275,
+    "author": "Markadan",
+    "source": "https://commons.wikimedia.org/wiki/File:Bedroom_inside_Syquia_Mansion.jpg",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
+  }
+}

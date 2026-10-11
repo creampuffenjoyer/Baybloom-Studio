@@ -1,0 +1,62 @@
+[
+  {
+    "file": "/images/designs/still-water-spa/00-home-page.webp",
+    "thumb": "/images/designs/still-water-spa/thumbs/00-home-page.webp",
+    "alt": "Still Water template: home page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/still-water-spa",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/still-water-spa/01-treatments-page.webp",
+    "thumb": "/images/designs/still-water-spa/thumbs/01-treatments-page.webp",
+    "alt": "Still Water template: treatments page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/still-water-spa/treatments",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/still-water-spa/02-booking-flow.webp",
+    "thumb": "/images/designs/still-water-spa/thumbs/02-booking-flow.webp",
+    "alt": "Still Water template: booking flow on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/still-water-spa/book?treatment=hot-stone",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/still-water-spa/03-packages-and-memberships.webp",
+    "thumb": "/images/designs/still-water-spa/thumbs/03-packages-and-memberships.webp",
+    "alt": "Still Water template: packages and memberships on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/still-water-spa/packages",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/still-water-spa/90-mobile-home.webp",
+    "thumb": "/images/designs/still-water-spa/thumbs/90-mobile-home.webp",
+    "alt": "Still Water template: home page on a phone",
+    "kind": "MOCKUP",
+    "width": 780,
+    "height": 1688,
+    "author": "",
+    "source": "/demo/still-water-spa",
+    "license": "",
+    "licenseUrl": null
+  }
+]

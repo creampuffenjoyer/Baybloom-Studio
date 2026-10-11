@@ -54,7 +54,7 @@ export function DesignGallery({ images, title }: { images: GalleryImage[]; title
     <div className="space-y-3">
       {/* Main stage */}
       <div
-        className="group relative aspect-[3/2] overflow-hidden rounded-2xl bg-sand-deep"
+        className="group relative aspect-[16/10] overflow-hidden rounded-2xl bg-sand-deep"
         onKeyDown={(e) => {
           if (e.key === "ArrowRight") go(1);
           if (e.key === "ArrowLeft") go(-1);
@@ -77,7 +77,7 @@ export function DesignGallery({ images, title }: { images: GalleryImage[]; title
               fill
               priority={index === 0}
               sizes="(min-width: 1024px) 760px, 100vw"
-              className={cn(current.kind === "PLAN" ? "object-contain bg-white p-4" : "object-cover")}
+              className="object-cover object-top"
             />
           </motion.div>
         </AnimatePresence>
@@ -122,8 +122,7 @@ export function DesignGallery({ images, title }: { images: GalleryImage[]; title
                   fill
                   sizes="112px"
                   className={cn(
-                    "transition duration-300",
-                    img.kind === "PLAN" ? "bg-white object-contain" : "object-cover",
+                    "object-cover transition duration-300",
                     i === index ? "opacity-100" : "opacity-60 hover:opacity-90",
                   )}
                 />
@@ -190,7 +189,7 @@ export function DesignGallery({ images, title }: { images: GalleryImage[]; title
                           alt={current.alt}
                           fill
                           sizes="100vw"
-                          className={cn("object-contain", current.kind === "PLAN" && "bg-white")}
+                          className="object-contain"
                         />
                       </motion.div>
                     </AnimatePresence>

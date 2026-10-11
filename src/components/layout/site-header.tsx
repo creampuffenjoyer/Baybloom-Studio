@@ -6,10 +6,12 @@ import { MobileNav } from "@/components/layout/mobile-nav";
 import { NavLink, NavLinkStatic } from "@/components/layout/nav-link";
 
 export const NAV_ITEMS = [
-  { href: "/designs", label: "All designs" },
-  { href: "/designs?type=website", label: "Websites" },
-  { href: "/designs?type=architecture", label: "Architecture" },
-  { href: "/designs?type=interior", label: "Interiors" },
+  { href: "/designs", label: "All templates" },
+  { href: "/designs?category=resort", label: "Resorts" },
+  { href: "/designs?category=hotel", label: "Hotels" },
+  { href: "/designs?category=restaurant", label: "Restaurants" },
+  { href: "/designs?category=spa", label: "Spas" },
+  { href: "/designs?category=venue", label: "Venues" },
 ] as const;
 
 export function SiteHeader() {

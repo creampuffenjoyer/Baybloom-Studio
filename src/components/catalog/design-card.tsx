@@ -6,7 +6,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { ArrowRightIcon, EyeIcon } from "lucide-react";
 import type { DesignCard as DesignCardData } from "@/lib/catalog";
-import { TIER_LABEL, TYPE_LABEL } from "@/lib/format";
+import { TIER_LABEL } from "@/lib/format";
 import { FavoriteButton } from "@/components/catalog/favorite-button";
 import { CompareToggle } from "@/components/compare/compare-toggle";
 import { PriceChip, type CardPrice } from "@/components/catalog/price-chip";
@@ -50,7 +50,7 @@ export function DesignCard({
           fill
           sizes="(min-width: 1280px) 400px, (min-width: 768px) 50vw, 100vw"
           priority={priority}
-          className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
+          className="object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/35 via-transparent to-transparent" />
 
@@ -86,7 +86,8 @@ export function DesignCard({
 
       <div className="flex flex-1 flex-col gap-2 p-5">
         <p className="text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">
-          {TYPE_LABEL[design.type]} · {design.category.name}
+          {design.category.name}
+          {design.style && ` · ${design.style.name}`}
         </p>
         <h3 className="text-xl leading-snug font-medium">
           <Link
@@ -116,12 +117,12 @@ export function DesignCard({
               alt={design.heroAlt}
               fill
               sizes="(min-width: 640px) 672px, 100vw"
-              className="object-cover"
+              className="object-cover object-top"
             />
           </div>
           <div className="space-y-3 p-6 pt-4">
             <p className="text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">
-              {TYPE_LABEL[design.type]} · {design.category.name}
+              {design.category.name}
               {design.style && ` · ${design.style.name}`}
             </p>
             <DialogTitle className="font-serif text-2xl font-medium text-bay">
