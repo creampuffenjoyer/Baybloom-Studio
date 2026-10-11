@@ -26,7 +26,7 @@ export function BookFlow() {
       <div className="mx-auto max-w-xl text-center">
         <p className="font-[family-name:var(--hh-hand)] text-6xl text-t-accent">See you soon!</p>
         <p className="mt-5 text-lg">
-          The {b.room?.name} is yours from {d(b.checkIn)} to {d(b.checkOut)}. Booking {b.reference}.
+          {b.room?.name} is yours from {d(b.checkIn)} to {d(b.checkOut)}. Booking {b.reference}.
         </p>
         <p className="mt-3 text-t-muted">
           {site.hosts} will message you a few days before to sort out your airport pick-up. Pay when you arrive, cash or
