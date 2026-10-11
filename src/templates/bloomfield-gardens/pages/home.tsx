@@ -14,19 +14,19 @@ export function HomePage() {
     <>
       {/* Hero */}
       <section className="px-5 pt-14 text-center sm:px-8">
-        <Sprig className="mx-auto w-32 text-t-alt" />
-        <h1 className="mx-auto mt-6 max-w-4xl font-t-display text-6xl leading-[0.95] font-medium italic text-balance sm:text-8xl">
+        <Sprig className="mx-auto w-32 text-tpl-alt" />
+        <h1 className="mx-auto mt-6 max-w-4xl font-tpl-display text-6xl leading-[0.95] font-medium italic text-balance sm:text-8xl">
           Say yes in the garden.
         </h1>
-        <p className="mx-auto mt-6 max-w-[52ch] text-lg leading-relaxed text-t-muted">
+        <p className="mx-auto mt-6 max-w-[52ch] text-lg leading-relaxed text-tpl-muted">
           Twelve acres of lawns, roses and a Victorian glasshouse above Taal Lake, for weddings of twenty
           to two hundred.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link href={href("/inquire")} className="rounded-full bg-t-accent px-7 py-3.5 text-t-on-accent">
+          <Link href={href("/inquire")} className="rounded-full bg-tpl-accent px-7 py-3.5 text-tpl-on-accent">
             Check your date
           </Link>
-          <Link href={href("/spaces")} className="rounded-full px-7 py-3.5 ring-1 ring-t-ink/25 hover:ring-t-ink/60">
+          <Link href={href("/spaces")} className="rounded-full px-7 py-3.5 ring-1 ring-tpl-ink/25 hover:ring-tpl-ink/60">
             Explore the estate
           </Link>
         </div>
@@ -49,14 +49,14 @@ export function HomePage() {
       {/* Spaces */}
       <section aria-labelledby="spaces" className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
         <div className="grid gap-6 md:grid-cols-[1fr_1.4fr] md:items-end">
-          <h2 id="spaces" className="font-t-display text-5xl font-medium italic sm:text-6xl">
+          <h2 id="spaces" className="font-tpl-display text-5xl font-medium italic sm:text-6xl">
             Five places to marry
           </h2>
-          <p className="max-w-[52ch] text-lg text-t-muted md:justify-self-end">
+          <p className="max-w-[52ch] text-lg text-tpl-muted md:justify-self-end">
             Every space has its own character and its own rainy-day twin, so the plan always works.
           </p>
         </div>
-        <ul className="mt-12 divide-y divide-t-line border-y border-t-line">
+        <ul className="mt-12 divide-y divide-tpl-line border-y border-tpl-line">
           {spaces.map((s) => {
             const p = photo(s.photos[0]);
             return (
@@ -66,12 +66,12 @@ export function HomePage() {
                     <Image src={p.src} alt="" fill sizes="120px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
                   </span>
                   <span>
-                    <span className="block font-t-display text-3xl font-medium group-hover:text-t-alt">{s.name}</span>
-                    <span className="mt-1 block text-t-muted">{s.short}</span>
+                    <span className="block font-tpl-display text-3xl font-medium group-hover:text-tpl-alt">{s.name}</span>
+                    <span className="mt-1 block text-tpl-muted">{s.short}</span>
                   </span>
-                  <span className="text-[15px] text-t-muted sm:text-right">
+                  <span className="text-[15px] text-tpl-muted sm:text-right">
                     {s.kind}
-                    <span className="block text-t-ink">
+                    <span className="block text-tpl-ink">
                       {s.ceremony ? `${s.ceremony} for a ceremony` : `${s.dinner} for dinner`}
                     </span>
                   </span>
@@ -83,7 +83,7 @@ export function HomePage() {
       </section>
 
       {/* Date check */}
-      <section aria-label="Check your date" className="bg-t-deep">
+      <section aria-label="Check your date" className="bg-tpl-deep">
         <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
           <Suspense fallback={<div className="h-[380px]" />}>
             <DateCheck dark />
@@ -93,24 +93,24 @@ export function HomePage() {
 
       {/* Packages */}
       <section aria-labelledby="pk" className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
-        <h2 id="pk" className="text-center font-t-display text-5xl font-medium italic sm:text-6xl">
+        <h2 id="pk" className="text-center font-tpl-display text-5xl font-medium italic sm:text-6xl">
           Ways to celebrate
         </h2>
         <ul className="mt-12 grid gap-6 md:grid-cols-3">
           {packages.map((p) => (
             <li
               key={p.name}
-              className={`rounded-[2rem] px-8 pt-12 pb-8 text-center ${p.featured ? "bg-t-soft" : "ring-1 ring-t-line"}`}
+              className={`rounded-[2rem] px-8 pt-12 pb-8 text-center ${p.featured ? "bg-tpl-soft" : "ring-1 ring-tpl-line"}`}
             >
-              <h3 className="font-t-display text-4xl italic">{p.name}</h3>
-              <p className="mt-2 text-t-muted">{p.guests}</p>
+              <h3 className="font-tpl-display text-4xl italic">{p.name}</h3>
+              <p className="mt-2 text-tpl-muted">{p.guests}</p>
               <p className="mt-5 text-lg">{p.blurb}</p>
-              <p className="mt-6 font-t-display text-3xl">from {formatMoney(p.price)}</p>
+              <p className="mt-6 font-tpl-display text-3xl">from {formatMoney(p.price)}</p>
             </li>
           ))}
         </ul>
         <p className="mt-10 text-center">
-          <Link href={href("/weddings")} className="underline underline-offset-4 hover:text-t-alt">
+          <Link href={href("/weddings")} className="underline underline-offset-4 hover:text-tpl-alt">
             Compare packages
           </Link>
         </p>
@@ -120,8 +120,8 @@ export function HomePage() {
       <section aria-label="Couples" className="mx-auto grid max-w-6xl gap-12 px-5 sm:px-8 md:grid-cols-2">
         {reviews.map((r) => (
           <figure key={r.name} className="text-center">
-            <blockquote className="font-t-display text-3xl leading-snug italic">“{r.quote}”</blockquote>
-            <figcaption className="mt-4 text-t-muted">
+            <blockquote className="font-tpl-display text-3xl leading-snug italic">“{r.quote}”</blockquote>
+            <figcaption className="mt-4 text-tpl-muted">
               {r.name}, married in {r.when}
             </figcaption>
           </figure>

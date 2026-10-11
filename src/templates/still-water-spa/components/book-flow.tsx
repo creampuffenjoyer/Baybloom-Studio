@@ -16,9 +16,9 @@ const THERAPIST = [
 ] as const;
 
 const input =
-  "mt-2 w-full rounded-2xl bg-t-surface px-4 py-3 text-base ring-1 ring-t-line focus:ring-2 focus:ring-t-accent focus:outline-none";
+  "mt-2 w-full rounded-2xl bg-tpl-surface px-4 py-3 text-base ring-1 ring-tpl-line focus:ring-2 focus:ring-tpl-accent focus:outline-none";
 const primary =
-  "rounded-full bg-t-accent px-7 py-3.5 font-semibold text-t-on-accent disabled:cursor-not-allowed disabled:opacity-40";
+  "rounded-full bg-tpl-accent px-7 py-3.5 font-semibold text-tpl-on-accent disabled:cursor-not-allowed disabled:opacity-40";
 
 function slotsFor(day: Day) {
   const weekend = [0, 6].includes(fromDay(day).getDay());
@@ -49,14 +49,14 @@ export function BookFlow() {
   if (step === 3) {
     return (
       <div className="mx-auto max-w-xl py-8 text-center">
-        <p className="font-t-display text-5xl sm:text-6xl">We’ll see you soon, {name.split(" ")[0] || "friend"}.</p>
-        <p className="mt-6 text-lg text-t-muted">
+        <p className="font-tpl-display text-5xl sm:text-6xl">We’ll see you soon, {name.split(" ")[0] || "friend"}.</p>
+        <p className="mt-6 text-lg text-tpl-muted">
           {treatment?.name}, {option?.minutes} minutes, on {day && formatLong(day)} at {time && formatTime(time)}.
         </p>
-        <p className="mt-2 text-t-muted">Reference {ref}</p>
-        <div className="mt-10 rounded-[2rem] bg-t-surface p-7 text-left">
-          <h2 className="font-t-display text-2xl">Before you come</h2>
-          <ul className="mt-4 space-y-2 text-t-muted">
+        <p className="mt-2 text-tpl-muted">Reference {ref}</p>
+        <div className="mt-10 rounded-[2rem] bg-tpl-surface p-7 text-left">
+          <h2 className="font-tpl-display text-2xl">Before you come</h2>
+          <ul className="mt-4 space-y-2 text-tpl-muted">
             <li>Arrive 20 minutes early to change and settle in.</li>
             <li>Robes, slippers and towels are waiting for you.</li>
             <li>Need to move it? Call {site.phone} at least 24 hours ahead.</li>
@@ -72,32 +72,32 @@ export function BookFlow() {
   return (
     <div className="grid gap-12 lg:grid-cols-[1fr_340px]">
       <div>
-        <div className="flex items-center gap-4 text-[15px] text-t-muted">
+        <div className="flex items-center gap-4 text-[15px] text-tpl-muted">
           <span>Step {step + 1} of 3</span>
-          <span aria-hidden className="h-1 flex-1 overflow-hidden rounded-full bg-t-soft">
-            <span className="block h-full rounded-full bg-t-accent transition-all duration-500" style={{ width: `${((step + 1) / 3) * 100}%` }} />
+          <span aria-hidden className="h-1 flex-1 overflow-hidden rounded-full bg-tpl-soft">
+            <span className="block h-full rounded-full bg-tpl-accent transition-all duration-500" style={{ width: `${((step + 1) / 3) * 100}%` }} />
           </span>
         </div>
 
         {step === 0 && (
           <section aria-labelledby="choose" className="mt-8">
-            <h2 id="choose" className="font-t-display text-4xl">
+            <h2 id="choose" className="font-tpl-display text-4xl">
               What would you like?
             </h2>
             <div className="mt-8 space-y-10">
               {RITUALS.map((r) => (
                 <fieldset key={r.id}>
-                  <legend className="font-t-display text-xl text-t-muted">{r.label}</legend>
+                  <legend className="font-tpl-display text-xl text-tpl-muted">{r.label}</legend>
                   <div className="mt-3 space-y-2">
                     {treatments
                       .filter((t) => t.ritual === r.id)
                       .map((t) => (
                         <div
                           key={t.slug}
-                          className={`rounded-2xl p-4 ring-1 transition-colors ${slug === t.slug ? "bg-t-surface ring-2 ring-t-accent" : "ring-t-line"}`}
+                          className={`rounded-2xl p-4 ring-1 transition-colors ${slug === t.slug ? "bg-tpl-surface ring-2 ring-tpl-accent" : "ring-tpl-line"}`}
                         >
                           <p className="font-semibold">{t.name}</p>
-                          <p className="text-sm text-t-muted">{t.summary}</p>
+                          <p className="text-sm text-tpl-muted">{t.summary}</p>
                           <div className="mt-3 flex flex-wrap gap-2">
                             {t.options.map((o) => {
                               const on = slug === t.slug && minutes === o.minutes;
@@ -112,7 +112,7 @@ export function BookFlow() {
                                     setTime(null);
                                   }}
                                   className={`rounded-full px-4 py-2 text-[15px] ring-1 ${
-                                    on ? "bg-t-accent text-t-on-accent ring-t-accent" : "ring-t-line hover:ring-t-ink/40"
+                                    on ? "bg-tpl-accent text-tpl-on-accent ring-tpl-accent" : "ring-tpl-line hover:ring-tpl-ink/40"
                                   }`}
                                 >
                                   {o.minutes} min · {formatMoney(o.price)}
@@ -134,7 +134,7 @@ export function BookFlow() {
 
         {step === 1 && (
           <section aria-labelledby="when" className="mt-8">
-            <h2 id="when" className="font-t-display text-4xl">
+            <h2 id="when" className="font-tpl-display text-4xl">
               When suits you?
             </h2>
             <div className="mt-8 grid gap-8 md:grid-cols-[minmax(0,340px)_1fr]">
@@ -145,11 +145,11 @@ export function BookFlow() {
                   setDay(d);
                   setTime(null);
                 }}
-                className="rounded-[2rem] bg-t-surface p-5"
-                headerClassName="mb-3 flex items-center gap-2 font-t-display text-lg"
-                navClassName="grid size-9 place-items-center rounded-full text-xl hover:bg-t-soft disabled:opacity-25"
-                weekdayClassName="pb-2 text-center text-xs text-t-muted"
-                dayClassName="mx-auto grid aspect-square w-full max-w-10 place-items-center rounded-full text-[15px] hover:bg-t-soft disabled:cursor-not-allowed disabled:text-t-line disabled:hover:bg-transparent data-[selected=true]:bg-t-accent data-[selected=true]:text-t-on-accent data-[today=true]:font-bold"
+                className="rounded-[2rem] bg-tpl-surface p-5"
+                headerClassName="mb-3 flex items-center gap-2 font-tpl-display text-lg"
+                navClassName="grid size-9 place-items-center rounded-full text-xl hover:bg-tpl-soft disabled:opacity-25"
+                weekdayClassName="pb-2 text-center text-xs text-tpl-muted"
+                dayClassName="mx-auto grid aspect-square w-full max-w-10 place-items-center rounded-full text-[15px] hover:bg-tpl-soft disabled:cursor-not-allowed disabled:text-tpl-line disabled:hover:bg-transparent data-[selected=true]:bg-tpl-accent data-[selected=true]:text-tpl-on-accent data-[today=true]:font-bold"
               />
               <div>
                 <fieldset>
@@ -165,7 +165,7 @@ export function BookFlow() {
                           setTime(null);
                         }}
                         className={`rounded-full px-4 py-2 text-[15px] ring-1 ${
-                          therapist === x.id ? "bg-t-deep text-t-on-deep ring-t-deep" : "ring-t-line"
+                          therapist === x.id ? "bg-tpl-deep text-tpl-on-deep ring-tpl-deep" : "ring-tpl-line"
                         }`}
                       >
                         {x.label}
@@ -176,9 +176,9 @@ export function BookFlow() {
                 <fieldset className="mt-6">
                   <legend className="font-semibold">Start time</legend>
                   {!day ? (
-                    <p className="mt-2 text-t-muted">Pick a day to see free times.</p>
+                    <p className="mt-2 text-tpl-muted">Pick a day to see free times.</p>
                   ) : free.length === 0 ? (
-                    <p className="mt-2 text-t-muted">Fully booked. Try another day or any therapist.</p>
+                    <p className="mt-2 text-tpl-muted">Fully booked. Try another day or any therapist.</p>
                   ) : (
                     <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4">
                       {free.map((s) => (
@@ -188,7 +188,7 @@ export function BookFlow() {
                           aria-pressed={time === s}
                           onClick={() => setTime(s)}
                           className={`rounded-full py-2.5 text-[15px] ring-1 ${
-                            time === s ? "bg-t-accent text-t-on-accent ring-t-accent" : "ring-t-line hover:ring-t-ink/40"
+                            time === s ? "bg-tpl-accent text-tpl-on-accent ring-tpl-accent" : "ring-tpl-line hover:ring-tpl-ink/40"
                           }`}
                         >
                           {formatTime(s)}
@@ -221,7 +221,7 @@ export function BookFlow() {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
           >
-            <h2 id="details" className="font-t-display text-4xl">
+            <h2 id="details" className="font-tpl-display text-4xl">
               A little about you
             </h2>
             <div className="mt-8 grid gap-5 sm:grid-cols-2">
@@ -253,7 +253,7 @@ export function BookFlow() {
                 <textarea rows={3} className={input} placeholder="Areas to focus on or avoid, pressure preference…" />
               </label>
             </fieldset>
-            <p className="mt-6 text-sm text-t-muted">
+            <p className="mt-6 text-sm text-tpl-muted">
               Demo: connect your spa booking software here. Payment is taken at the spa; nothing is booked.
             </p>
             <div className="mt-8 flex items-center gap-6">
@@ -269,32 +269,32 @@ export function BookFlow() {
       </div>
 
       <aside aria-label="Your booking" className="lg:sticky lg:top-28 lg:self-start">
-        <div className="rounded-[2rem] bg-t-deep p-7 text-t-on-deep">
-          <h2 className="font-t-display text-2xl">Your booking</h2>
+        <div className="rounded-[2rem] bg-tpl-deep p-7 text-tpl-on-deep">
+          <h2 className="font-tpl-display text-2xl">Your booking</h2>
           {treatment && option ? (
             <dl className="mt-5 space-y-3 text-[15px]">
               <div>
-                <dt className="text-t-on-deep/60">Treatment</dt>
+                <dt className="text-tpl-on-deep/60">Treatment</dt>
                 <dd>
                   {treatment.name}, {option.minutes} min
                 </dd>
               </div>
               <div>
-                <dt className="text-t-on-deep/60">When</dt>
+                <dt className="text-tpl-on-deep/60">When</dt>
                 <dd>{day ? `${formatLong(day)}${time ? `, ${formatTime(time)}` : ""}` : "Not chosen yet"}</dd>
               </div>
               <div>
-                <dt className="text-t-on-deep/60">Therapist</dt>
+                <dt className="text-tpl-on-deep/60">Therapist</dt>
                 <dd>{THERAPIST.find((x) => x.id === therapist)!.label}</dd>
               </div>
               <div className="flex justify-between border-t border-white/15 pt-3 text-lg">
                 <dt>Total</dt>
                 <dd>{formatMoney(option.price)}</dd>
               </div>
-              {option.minutes >= 90 && <p className="text-sm text-t-on-deep/70">Includes the thermal circuit.</p>}
+              {option.minutes >= 90 && <p className="text-sm text-tpl-on-deep/70">Includes the thermal circuit.</p>}
             </dl>
           ) : (
-            <p className="mt-4 text-t-on-deep/70">Choose a treatment to begin.</p>
+            <p className="mt-4 text-tpl-on-deep/70">Choose a treatment to begin.</p>
           )}
         </div>
       </aside>

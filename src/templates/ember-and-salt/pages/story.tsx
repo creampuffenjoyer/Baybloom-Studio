@@ -13,8 +13,8 @@ export function StoryPage() {
     <>
       <section className="mx-auto grid max-w-7xl gap-12 px-5 pt-16 pb-20 sm:px-8 lg:grid-cols-2 lg:items-center">
         <div>
-          <h1 className="font-t-display text-6xl leading-[0.92] sm:text-8xl">Fire first.</h1>
-          <div className="mt-8 max-w-[54ch] space-y-5 text-lg leading-relaxed text-t-muted">
+          <h1 className="font-tpl-display text-6xl leading-[0.92] sm:text-8xl">Fire first.</h1>
+          <div className="mt-8 max-w-[54ch] space-y-5 text-lg leading-relaxed text-tpl-muted">
             <p>
               Our kitchen has no gas burners. Everything is cooked over native hardwood, coconut husk and
               charcoal, which means every service starts at two in the afternoon, when the first fire is lit.
@@ -31,15 +31,15 @@ export function StoryPage() {
         </div>
       </section>
 
-      <section aria-labelledby="timeline" className="border-t border-t-line">
+      <section aria-labelledby="timeline" className="border-t border-tpl-line">
         <div className="mx-auto max-w-4xl px-5 py-20 sm:px-8">
-          <h2 id="timeline" className="font-t-display text-4xl">
+          <h2 id="timeline" className="font-tpl-display text-4xl">
             How we got here
           </h2>
           <ol className="mt-10 space-y-8">
             {timeline.map((t) => (
               <li key={t.year} className="grid gap-2 sm:grid-cols-[140px_1fr]">
-                <span className="font-t-display text-4xl text-t-accent">{t.year}</span>
+                <span className="font-tpl-display text-4xl text-tpl-accent">{t.year}</span>
                 <p className="text-lg leading-relaxed">{t.text}</p>
               </li>
             ))}

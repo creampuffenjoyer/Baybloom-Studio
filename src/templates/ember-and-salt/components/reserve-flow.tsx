@@ -14,7 +14,7 @@ const SEATING = [
 ] as const;
 
 const input =
-  "mt-2 w-full border border-t-line bg-t-surface px-4 py-3 text-base text-t-ink placeholder:text-t-muted/70 focus:border-t-accent focus:outline-none";
+  "mt-2 w-full border border-tpl-line bg-tpl-surface px-4 py-3 text-base text-tpl-ink placeholder:text-tpl-muted/70 focus:border-tpl-accent focus:outline-none";
 
 /** Slots by weekday: Sunday also serves lunch; Monday is closed. */
 function slotsFor(day: Day) {
@@ -40,21 +40,21 @@ export function ReserveFlow() {
   if (stage === "done") {
     return (
       <div className="mx-auto max-w-xl py-6 text-center">
-        <p className="font-t-display text-6xl leading-none sm:text-7xl">See you soon.</p>
-        <p className="mt-6 text-lg text-t-muted">
+        <p className="font-tpl-display text-6xl leading-none sm:text-7xl">See you soon.</p>
+        <p className="mt-6 text-lg text-tpl-muted">
           A table for {party} on {day && formatLong(day)} at {time && formatTime(time)}, {seatingNote.label.toLowerCase()}.
         </p>
-        <p className="mt-2 text-t-muted">
-          Reference <span className="font-semibold text-t-ink">{ref}</span>. Confirmation sent to {guest.email}.
+        <p className="mt-2 text-tpl-muted">
+          Reference <span className="font-semibold text-tpl-ink">{ref}</span>. Confirmation sent to {guest.email}.
         </p>
-        <p className="mt-8 border-y border-t-line py-5 text-[15px] text-t-muted">
+        <p className="mt-8 border-y border-tpl-line py-5 text-[15px] text-tpl-muted">
           We hold tables for 15 minutes. Running late or need to change? Call us on{" "}
-          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="text-t-accent">
+          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="text-tpl-accent">
             {site.phone}
           </a>
           .
         </p>
-        <Link href={href("/menu")} className="mt-8 inline-block bg-t-accent px-6 py-3.5 font-semibold text-t-on-accent">
+        <Link href={href("/menu")} className="mt-8 inline-block bg-tpl-accent px-6 py-3.5 font-semibold text-tpl-on-accent">
           Look at the menu
         </Link>
       </div>
@@ -66,7 +66,7 @@ export function ReserveFlow() {
       {stage === "choose" ? (
         <div className="space-y-14">
           <fieldset>
-            <legend className="font-t-display text-3xl">How many of you?</legend>
+            <legend className="font-tpl-display text-3xl">How many of you?</legend>
             <div className="mt-5 flex flex-wrap gap-2">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
                 <button
@@ -78,16 +78,16 @@ export function ReserveFlow() {
                     setTime(null);
                   }}
                   className={`size-14 border text-lg transition-colors ${
-                    party === n ? "border-t-accent bg-t-accent text-t-on-accent" : "border-t-line hover:border-t-ink"
+                    party === n ? "border-tpl-accent bg-tpl-accent text-tpl-on-accent" : "border-tpl-line hover:border-tpl-ink"
                   }`}
                 >
                   {n}
                 </button>
               ))}
             </div>
-            <p className="mt-3 text-[15px] text-t-muted">
+            <p className="mt-3 text-[15px] text-tpl-muted">
               Nine or more?{" "}
-              <Link href={href("/private-dining")} className="text-t-accent underline underline-offset-4">
+              <Link href={href("/private-dining")} className="text-tpl-accent underline underline-offset-4">
                 Book a private room
               </Link>
               .
@@ -95,7 +95,7 @@ export function ReserveFlow() {
           </fieldset>
 
           <fieldset>
-            <legend className="font-t-display text-3xl">Which day?</legend>
+            <legend className="font-tpl-display text-3xl">Which day?</legend>
             <Calendar
               mode="single"
               start={day}
@@ -104,19 +104,19 @@ export function ReserveFlow() {
                 setTime(null);
               }}
               isDisabled={(d) => slotsFor(d).length === 0 || !isAvailable(d, "full-house", 0.08)}
-              className="mt-5 max-w-md border border-t-line p-5"
-              headerClassName="mb-4 flex items-center gap-2 font-t-display text-xl"
-              navClassName="grid size-10 place-items-center text-2xl hover:text-t-accent disabled:opacity-25"
-              weekdayClassName="pb-2 text-center text-xs text-t-muted"
-              dayClassName="mx-auto grid aspect-square w-full max-w-11 place-items-center text-[15px] hover:bg-t-soft disabled:cursor-not-allowed disabled:text-t-line disabled:line-through disabled:hover:bg-transparent data-[selected=true]:bg-t-accent data-[selected=true]:text-t-on-accent data-[today=true]:underline"
+              className="mt-5 max-w-md border border-tpl-line p-5"
+              headerClassName="mb-4 flex items-center gap-2 font-tpl-display text-xl"
+              navClassName="grid size-10 place-items-center text-2xl hover:text-tpl-accent disabled:opacity-25"
+              weekdayClassName="pb-2 text-center text-xs text-tpl-muted"
+              dayClassName="mx-auto grid aspect-square w-full max-w-11 place-items-center text-[15px] hover:bg-tpl-soft disabled:cursor-not-allowed disabled:text-tpl-line disabled:line-through disabled:hover:bg-transparent data-[selected=true]:bg-tpl-accent data-[selected=true]:text-tpl-on-accent data-[today=true]:underline"
             />
-            <p className="mt-3 text-[15px] text-t-muted">Closed on Mondays. Struck-through days are fully booked.</p>
+            <p className="mt-3 text-[15px] text-tpl-muted">Closed on Mondays. Struck-through days are fully booked.</p>
           </fieldset>
 
           <fieldset disabled={!day}>
-            <legend className="font-t-display text-3xl">What time?</legend>
+            <legend className="font-tpl-display text-3xl">What time?</legend>
             {!day ? (
-              <p className="mt-4 text-t-muted">Choose a day to see open tables.</p>
+              <p className="mt-4 text-tpl-muted">Choose a day to see open tables.</p>
             ) : (
               <>
                 <div className="mt-5 grid grid-cols-3 gap-2 sm:grid-cols-5">
@@ -131,10 +131,10 @@ export function ReserveFlow() {
                         onClick={() => setTime(t)}
                         className={`border py-3 tabular-nums transition-colors ${
                           time === t
-                            ? "border-t-accent bg-t-accent text-t-on-accent"
+                            ? "border-tpl-accent bg-tpl-accent text-tpl-on-accent"
                             : open
-                              ? "border-t-line hover:border-t-ink"
-                              : "cursor-not-allowed border-transparent text-t-line line-through"
+                              ? "border-tpl-line hover:border-tpl-ink"
+                              : "cursor-not-allowed border-transparent text-tpl-line line-through"
                         }`}
                       >
                         {formatTime(t)}
@@ -143,21 +143,21 @@ export function ReserveFlow() {
                   })}
                 </div>
                 {free.length === 0 && (
-                  <p className="mt-4 text-t-muted">That day is full for {party}. Try another day, or sit at the bar.</p>
+                  <p className="mt-4 text-tpl-muted">That day is full for {party}. Try another day, or sit at the bar.</p>
                 )}
               </>
             )}
           </fieldset>
 
           <fieldset>
-            <legend className="font-t-display text-3xl">Where would you like to sit?</legend>
+            <legend className="font-tpl-display text-3xl">Where would you like to sit?</legend>
             <div className="mt-5 grid gap-2 sm:grid-cols-3">
               {SEATING.map((s) => {
                 const tooBig = s.id !== "room" && party > 4;
                 return (
                   <label
                     key={s.id}
-                    className={`cursor-pointer border p-4 has-checked:border-t-accent ${tooBig ? "cursor-not-allowed opacity-40" : "border-t-line"}`}
+                    className={`cursor-pointer border p-4 has-checked:border-tpl-accent ${tooBig ? "cursor-not-allowed opacity-40" : "border-tpl-line"}`}
                   >
                     <input
                       type="radio"
@@ -171,7 +171,7 @@ export function ReserveFlow() {
                       }}
                     />
                     <span className="block font-semibold">{s.label}</span>
-                    <span className="text-sm text-t-muted">{s.note}</span>
+                    <span className="text-sm text-tpl-muted">{s.note}</span>
                   </label>
                 );
               })}
@@ -182,7 +182,7 @@ export function ReserveFlow() {
             type="button"
             disabled={!day || !time}
             onClick={() => setStage("details")}
-            className="bg-t-accent px-7 py-4 text-lg font-semibold text-t-on-accent disabled:cursor-not-allowed disabled:opacity-35"
+            className="bg-tpl-accent px-7 py-4 text-lg font-semibold text-tpl-on-accent disabled:cursor-not-allowed disabled:opacity-35"
           >
             Continue to your details
           </button>
@@ -198,7 +198,7 @@ export function ReserveFlow() {
           }}
           className="space-y-6"
         >
-          <h2 className="font-t-display text-3xl">Who’s the booking for?</h2>
+          <h2 className="font-tpl-display text-3xl">Who’s the booking for?</h2>
           <div className="grid gap-5 sm:grid-cols-2">
             <label className="block">
               Name
@@ -227,27 +227,27 @@ export function ReserveFlow() {
               <input name="diet" placeholder="e.g. one vegetarian, nut allergy" className={input} />
             </label>
           </div>
-          <label className="flex items-start gap-3 text-[15px] text-t-muted">
+          <label className="flex items-start gap-3 text-[15px] text-tpl-muted">
             <input type="checkbox" name="news" className="mt-1 size-4 accent-[var(--t-accent)]" />
             Send me news about guest chefs and wine dinners (about once a month).
           </label>
           <div className="flex flex-wrap items-center gap-6 pt-2">
-            <button type="submit" className="bg-t-accent px-7 py-4 text-lg font-semibold text-t-on-accent hover:bg-t-alt">
+            <button type="submit" className="bg-tpl-accent px-7 py-4 text-lg font-semibold text-tpl-on-accent hover:bg-tpl-alt">
               Confirm reservation
             </button>
-            <button type="button" onClick={() => setStage("choose")} className="text-t-muted underline underline-offset-4">
+            <button type="button" onClick={() => setStage("choose")} className="text-tpl-muted underline underline-offset-4">
               Change table
             </button>
           </div>
-          <p className="text-sm text-t-muted">
+          <p className="text-sm text-tpl-muted">
             Demo: connect your reservation system (SevenRooms, OpenTable or your own) here. Nothing is booked.
           </p>
         </form>
       )}
 
       <aside aria-label="Your table" className="lg:sticky lg:top-36 lg:self-start">
-        <div className="border border-t-line bg-t-surface p-6">
-          <h2 className="font-t-display text-2xl">Your table</h2>
+        <div className="border border-tpl-line bg-tpl-surface p-6">
+          <h2 className="font-tpl-display text-2xl">Your table</h2>
           <dl className="mt-5 space-y-3 text-[15px]">
             {[
               ["Guests", String(party)],
@@ -255,13 +255,13 @@ export function ReserveFlow() {
               ["Time", time ? formatTime(time) : "Not chosen"],
               ["Seating", seatingNote.label],
             ].map(([k, v]) => (
-              <div key={k} className="flex justify-between gap-4 border-b border-dotted border-t-line pb-2">
-                <dt className="text-t-muted">{k}</dt>
+              <div key={k} className="flex justify-between gap-4 border-b border-dotted border-tpl-line pb-2">
+                <dt className="text-tpl-muted">{k}</dt>
                 <dd className="text-right">{v}</dd>
               </div>
             ))}
           </dl>
-          <p className="mt-5 text-sm text-t-muted">Tables are held for two hours. No deposit for parties under nine.</p>
+          <p className="mt-5 text-sm text-tpl-muted">Tables are held for two hours. No deposit for parties under nine.</p>
         </div>
       </aside>
     </div>

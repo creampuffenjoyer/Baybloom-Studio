@@ -10,11 +10,11 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-t-line bg-t-bg/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-tpl-line bg-tpl-bg/95 backdrop-blur">
       <div className="mx-auto flex h-20 max-w-7xl items-center gap-8 px-5 sm:px-8">
         <Link href={href("/")} onClick={() => setOpen(false)} className="leading-none">
-          <span className="block font-t-display text-3xl italic">Isla Verde</span>
-          <span className="mt-0.5 block text-xs text-t-muted">Vigan, since 1887</span>
+          <span className="block font-tpl-display text-3xl italic">Isla Verde</span>
+          <span className="mt-0.5 block text-xs text-tpl-muted">Vigan, since 1887</span>
         </Link>
         <nav aria-label="Main" className="mx-auto hidden items-center gap-8 lg:flex">
           {nav.map((item) => {
@@ -24,14 +24,14 @@ export function Header() {
                 key={item.href}
                 href={href(item.href)}
                 aria-current={active ? "page" : undefined}
-                className={`border-b py-1 text-[15px] transition-colors ${active ? "border-t-alt text-t-ink" : "border-transparent text-t-muted hover:text-t-ink"}`}
+                className={`border-b py-1 text-[15px] transition-colors ${active ? "border-tpl-alt text-tpl-ink" : "border-transparent text-tpl-muted hover:text-tpl-ink"}`}
               >
                 {item.label}
               </Link>
             );
           })}
         </nav>
-        <Link href={href("/book")} className="ml-auto bg-t-accent px-5 py-3 text-[15px] text-t-on-accent hover:bg-t-alt lg:ml-0">
+        <Link href={href("/book")} className="ml-auto bg-tpl-accent px-5 py-3 text-[15px] text-tpl-on-accent hover:bg-tpl-alt lg:ml-0">
           Book your stay
         </Link>
         <button
@@ -45,11 +45,11 @@ export function Header() {
         </button>
       </div>
       {open && (
-        <nav id="iv-menu" aria-label="Mobile" className="border-t border-t-line px-5 py-6 lg:hidden">
+        <nav id="iv-menu" aria-label="Mobile" className="border-t border-tpl-line px-5 py-6 lg:hidden">
           <ul className="space-y-1">
             {[{ href: "/", label: "Home" }, ...nav, { href: "/contact", label: "Contact" }].map((i) => (
               <li key={i.href}>
-                <Link href={href(i.href)} onClick={() => setOpen(false)} className="block py-2 font-t-display text-3xl italic">
+                <Link href={href(i.href)} onClick={() => setOpen(false)} className="block py-2 font-tpl-display text-3xl italic">
                   {i.label}
                 </Link>
               </li>

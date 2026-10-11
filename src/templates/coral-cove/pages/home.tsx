@@ -12,7 +12,7 @@ export function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative isolate flex min-h-[640px] flex-col justify-end overflow-hidden bg-t-deep text-white md:h-[100svh] md:max-h-[980px] md:overflow-visible">
+      <section className="relative isolate flex min-h-[640px] flex-col justify-end overflow-hidden bg-tpl-deep text-white md:h-[100svh] md:max-h-[980px] md:overflow-visible">
         <Image
           src={hero.src}
           alt={hero.alt}
@@ -26,7 +26,7 @@ export function HomePage() {
           <p className="max-w-xs text-lg leading-snug text-white/90 animate-in fade-in duration-700">
             {site.tagline}.
           </p>
-          <h1 className="mt-3 font-t-display leading-[0.78] font-extrabold tracking-[-0.055em] [font-size:clamp(4.5rem,17vw,15.5rem)] [font-stretch:82%] animate-in fade-in slide-in-from-bottom-10 duration-1000 ease-out">
+          <h1 className="mt-3 font-tpl-display leading-[0.78] font-extrabold tracking-[-0.055em] [font-size:clamp(4.5rem,17vw,15.5rem)] [font-stretch:82%] animate-in fade-in slide-in-from-bottom-10 duration-1000 ease-out">
             Coral Cove
           </h1>
         </div>
@@ -38,23 +38,23 @@ export function HomePage() {
       {/* Intro + getting here */}
       <section className="mx-auto grid max-w-7xl gap-14 px-5 pt-20 pb-24 sm:px-8 md:pt-36 lg:grid-cols-[1.4fr_1fr] lg:gap-24">
         <div>
-          <h2 className="font-t-display text-4xl leading-[1.02] font-bold tracking-[-0.035em] text-balance sm:text-6xl">
+          <h2 className="font-tpl-display text-4xl leading-[1.02] font-bold tracking-[-0.035em] text-balance sm:text-6xl">
             Forty minutes by boat from El Nido, and a long way from anywhere.
           </h2>
-          <p className="mt-6 max-w-[60ch] text-lg leading-relaxed text-t-muted">
+          <p className="mt-6 max-w-[60ch] text-lg leading-relaxed text-tpl-muted">
             Twenty-two villas share a white-sand cove on Isla Calma, with a house reef thirty metres
             offshore and nothing on the horizon but limestone islands. Days run on the tide: snorkel at
             high water, walk to the sandbar at low, and eat whatever came in on the boats.
           </p>
           <Link
             href={href("/villas")}
-            className="mt-8 inline-block rounded-full border-2 border-t-ink px-6 py-3 font-semibold transition-colors hover:bg-t-ink hover:text-white"
+            className="mt-8 inline-block rounded-full border-2 border-tpl-ink px-6 py-3 font-semibold transition-colors hover:bg-tpl-ink hover:text-white"
           >
             Meet the villas
           </Link>
         </div>
-        <div className="self-end rounded-3xl bg-t-soft p-7 sm:p-9">
-          <h3 className="font-t-display text-2xl font-bold tracking-tight">Getting here</h3>
+        <div className="self-end rounded-3xl bg-tpl-soft p-7 sm:p-9">
+          <h3 className="font-tpl-display text-2xl font-bold tracking-tight">Getting here</h3>
           <ol className="mt-5 space-y-5">
             {[
               ["Fly to El Nido", "Daily flights from Manila take 1 hour 15 minutes."],
@@ -62,12 +62,12 @@ export function HomePage() {
               ["Cross to Isla Calma", "Our speedboat has you on the beach 40 minutes later."],
             ].map(([title, text], i) => (
               <li key={title} className="flex gap-4">
-                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-t-deep font-t-display font-bold text-white">
+                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-tpl-deep font-tpl-display font-bold text-white">
                   {i + 1}
                 </span>
                 <span>
                   <span className="block font-semibold">{title}</span>
-                  <span className="text-t-muted">{text}</span>
+                  <span className="text-tpl-muted">{text}</span>
                 </span>
               </li>
             ))}
@@ -78,7 +78,7 @@ export function HomePage() {
       {/* Villas */}
       <section aria-labelledby="villas" className="pb-24">
         <div className="mx-auto flex max-w-7xl items-end justify-between gap-6 px-5 sm:px-8">
-          <h2 id="villas" className="font-t-display text-4xl font-bold tracking-[-0.035em] sm:text-5xl">
+          <h2 id="villas" className="font-tpl-display text-4xl font-bold tracking-[-0.035em] sm:text-5xl">
             Four ways to stay
           </h2>
           <Link href={href("/villas")} className="shrink-0 font-semibold underline underline-offset-4">
@@ -103,10 +103,10 @@ export function HomePage() {
                       from {formatMoney(v.price)}
                     </span>
                   </div>
-                  <h3 className="mt-4 font-t-display text-2xl font-bold tracking-tight group-hover:underline">
+                  <h3 className="mt-4 font-tpl-display text-2xl font-bold tracking-tight group-hover:underline">
                     {v.name}
                   </h3>
-                  <p className="mt-1 text-t-muted">
+                  <p className="mt-1 text-tpl-muted">
                     {v.size} m², up to {v.maxGuests} guests
                   </p>
                 </Link>
@@ -117,12 +117,12 @@ export function HomePage() {
       </section>
 
       {/* Reef */}
-      <section className="grid bg-t-deep text-white lg:grid-cols-[1.25fr_1fr]">
+      <section className="grid bg-tpl-deep text-white lg:grid-cols-[1.25fr_1fr]">
         <div className="relative min-h-[420px]">
           <Image src={photo("snorkeler").src} alt={photo("snorkeler").alt} fill sizes="(min-width: 1024px) 55vw, 100vw" className="object-cover" />
         </div>
         <div className="px-5 py-16 sm:px-12 lg:py-24">
-          <h2 className="font-t-display text-4xl leading-[1.02] font-bold tracking-[-0.035em] sm:text-5xl">
+          <h2 className="font-tpl-display text-4xl leading-[1.02] font-bold tracking-[-0.035em] sm:text-5xl">
             The reef starts where the sand ends.
           </h2>
           <p className="mt-5 max-w-[48ch] text-lg leading-relaxed text-white/80">
@@ -134,7 +134,7 @@ export function HomePage() {
               <li key={x.slug}>
                 <Link
                   href={`${href("/experiences")}#${x.slug}`}
-                  className="flex items-baseline justify-between gap-6 py-4 hover:text-t-alt"
+                  className="flex items-baseline justify-between gap-6 py-4 hover:text-tpl-alt"
                 >
                   <span className="text-lg font-semibold">{x.name}</span>
                   <span className="shrink-0 text-sm text-white/65">{x.duration}</span>
@@ -142,7 +142,7 @@ export function HomePage() {
               </li>
             ))}
           </ul>
-          <Link href={href("/experiences")} className="mt-8 inline-block font-semibold text-t-alt underline underline-offset-4">
+          <Link href={href("/experiences")} className="mt-8 inline-block font-semibold text-tpl-alt underline underline-offset-4">
             All experiences
           </Link>
         </div>
@@ -150,17 +150,17 @@ export function HomePage() {
 
       {/* Offer */}
       <section className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
-        <div className="grid overflow-hidden rounded-[2rem] bg-t-soft md:grid-cols-2">
+        <div className="grid overflow-hidden rounded-[2rem] bg-tpl-soft md:grid-cols-2">
           <div className="p-8 sm:p-12 lg:p-16">
-            <p className="font-semibold text-t-accent">{offer.name}</p>
-            <h2 className="mt-3 font-t-display text-4xl leading-[1.02] font-bold tracking-[-0.035em] sm:text-5xl">
+            <p className="font-semibold text-tpl-accent">{offer.name}</p>
+            <h2 className="mt-3 font-tpl-display text-4xl leading-[1.02] font-bold tracking-[-0.035em] sm:text-5xl">
               {offer.headline}
             </h2>
-            <p className="mt-5 max-w-[46ch] text-lg leading-relaxed text-t-muted">{offer.body}</p>
+            <p className="mt-5 max-w-[46ch] text-lg leading-relaxed text-tpl-muted">{offer.body}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href={href("/book")}
-                className="rounded-full bg-t-accent px-6 py-3 font-semibold text-t-on-accent"
+                className="rounded-full bg-tpl-accent px-6 py-3 font-semibold text-tpl-on-accent"
               >
                 Book this offer
               </Link>
@@ -183,11 +183,11 @@ export function HomePage() {
         <div className="grid gap-12 md:grid-cols-3">
           {reviews.map((r, i) => (
             <figure key={r.name} className={i === 1 ? "md:mt-16" : undefined}>
-              <blockquote className="font-t-display text-2xl leading-snug font-semibold tracking-tight">
+              <blockquote className="font-tpl-display text-2xl leading-snug font-semibold tracking-tight">
                 “{r.quote}”
               </blockquote>
-              <figcaption className="mt-5 text-t-muted">
-                <span className="font-semibold text-t-ink">{r.name}</span>, {r.from}
+              <figcaption className="mt-5 text-tpl-muted">
+                <span className="font-semibold text-tpl-ink">{r.name}</span>, {r.from}
                 <span className="block text-sm">{r.stay}</span>
               </figcaption>
             </figure>

@@ -14,12 +14,12 @@ export function TreatmentPage({ slug }: { slug: string }) {
 
   return (
     <div className="mx-auto max-w-7xl px-5 pt-10 pb-16 sm:px-8">
-      <nav aria-label="Breadcrumb" className="text-[15px] text-t-muted">
-        <Link href={href("/treatments")} className="hover:text-t-ink">
+      <nav aria-label="Breadcrumb" className="text-[15px] text-tpl-muted">
+        <Link href={href("/treatments")} className="hover:text-tpl-ink">
           Treatments
         </Link>
         {" / "}
-        <Link href={`${href("/treatments")}#${ritual.id}`} className="hover:text-t-ink">
+        <Link href={`${href("/treatments")}#${ritual.id}`} className="hover:text-tpl-ink">
           {ritual.label}
         </Link>
       </nav>
@@ -28,8 +28,8 @@ export function TreatmentPage({ slug }: { slug: string }) {
           <Image src={p.src} alt={p.alt} fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
         </div>
         <div>
-          <h1 className="font-t-display text-5xl leading-tight sm:text-6xl">{t.name}</h1>
-          <div className="mt-6 space-y-4 text-lg leading-relaxed text-t-muted">
+          <h1 className="font-tpl-display text-5xl leading-tight sm:text-6xl">{t.name}</h1>
+          <div className="mt-6 space-y-4 text-lg leading-relaxed text-tpl-muted">
             {t.description.map((d) => (
               <p key={d.slice(0, 16)}>{d}</p>
             ))}
@@ -39,11 +39,11 @@ export function TreatmentPage({ slug }: { slug: string }) {
               <li key={o.minutes}>
                 <Link
                   href={`${href("/book")}?treatment=${t.slug}&minutes=${o.minutes}`}
-                  className="flex items-center justify-between rounded-2xl bg-t-surface px-5 py-4 ring-1 ring-t-line hover:ring-t-accent"
+                  className="flex items-center justify-between rounded-2xl bg-tpl-surface px-5 py-4 ring-1 ring-tpl-line hover:ring-tpl-accent"
                 >
                   <span>
-                    <span className="block font-t-display text-xl">{o.minutes} minutes</span>
-                    <span className="text-sm text-t-muted">Book this length</span>
+                    <span className="block font-tpl-display text-xl">{o.minutes} minutes</span>
+                    <span className="text-sm text-tpl-muted">Book this length</span>
                   </span>
                   <span className="font-semibold">{formatMoney(o.price)}</span>
                 </Link>
@@ -52,34 +52,34 @@ export function TreatmentPage({ slug }: { slug: string }) {
           </ul>
           <div className="mt-10 grid gap-8 sm:grid-cols-2">
             <div>
-              <h2 className="font-t-display text-xl">Included</h2>
+              <h2 className="font-tpl-display text-xl">Included</h2>
               <ul className="mt-3 space-y-2">
                 {t.includes.map((i) => (
                   <li key={i} className="flex gap-3">
-                    <span aria-hidden className="mt-2.5 size-1.5 shrink-0 rounded-full bg-t-accent" />
+                    <span aria-hidden className="mt-2.5 size-1.5 shrink-0 rounded-full bg-tpl-accent" />
                     {i}
                   </li>
                 ))}
               </ul>
             </div>
             <div>
-              <h2 className="font-t-display text-xl">Good for</h2>
-              <p className="mt-3 text-t-muted">{t.goodFor}</p>
+              <h2 className="font-tpl-display text-xl">Good for</h2>
+              <p className="mt-3 text-tpl-muted">{t.goodFor}</p>
             </div>
           </div>
         </div>
       </div>
       {more.length > 0 && (
         <section aria-labelledby="also" className="mt-24">
-          <h2 id="also" className="font-t-display text-3xl">
+          <h2 id="also" className="font-tpl-display text-3xl">
             Also in {ritual.label.toLowerCase()}
           </h2>
           <ul className="mt-6 grid gap-6 sm:grid-cols-2">
             {more.map((m) => (
               <li key={m.slug}>
-                <Link href={href(`/treatments/${m.slug}`)} className="block rounded-[2rem] bg-t-surface p-7 hover:bg-t-soft">
-                  <span className="block font-t-display text-2xl">{m.name}</span>
-                  <span className="mt-2 block text-t-muted">{m.summary}</span>
+                <Link href={href(`/treatments/${m.slug}`)} className="block rounded-[2rem] bg-tpl-surface p-7 hover:bg-tpl-soft">
+                  <span className="block font-tpl-display text-2xl">{m.name}</span>
+                  <span className="mt-2 block text-tpl-muted">{m.summary}</span>
                 </Link>
               </li>
             ))}

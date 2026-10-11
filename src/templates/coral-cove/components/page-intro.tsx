@@ -16,10 +16,10 @@ export function PageIntro({
   return (
     <section className="pt-32 sm:pt-40">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <h1 className="max-w-4xl font-t-display text-5xl leading-[0.95] font-extrabold tracking-[-0.045em] text-balance [font-stretch:88%] sm:text-7xl">
+        <h1 className="max-w-4xl font-tpl-display text-5xl leading-[0.95] font-extrabold tracking-[-0.045em] text-balance [font-stretch:88%] sm:text-7xl">
           {title}
         </h1>
-        {lede && <p className="mt-6 max-w-[58ch] text-lg leading-relaxed text-t-muted sm:text-xl">{lede}</p>}
+        {lede && <p className="mt-6 max-w-[58ch] text-lg leading-relaxed text-tpl-muted sm:text-xl">{lede}</p>}
         {children}
       </div>
       {image && (

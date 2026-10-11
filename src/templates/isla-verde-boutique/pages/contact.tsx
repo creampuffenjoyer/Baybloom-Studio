@@ -5,8 +5,8 @@ export function ContactPage() {
   return (
     <div className="mx-auto grid max-w-7xl gap-16 px-5 pt-16 sm:px-8 lg:grid-cols-[1fr_1.4fr]">
       <div>
-        <h1 className="font-t-display text-6xl italic sm:text-7xl">Write to us</h1>
-        <address className="mt-8 font-t-display text-2xl leading-snug not-italic">
+        <h1 className="font-tpl-display text-6xl italic sm:text-7xl">Write to us</h1>
+        <address className="mt-8 font-tpl-display text-2xl leading-snug not-italic">
           {site.address.map((l) => (
             <span key={l} className="block">
               {l}
@@ -14,21 +14,21 @@ export function ContactPage() {
           ))}
         </address>
         <p className="mt-6 text-lg">
-          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="border-b border-t-ink">
+          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="border-b border-tpl-ink">
             {site.phone}
           </a>
           <br />
-          <a href={`mailto:${site.email}`} className="text-t-muted">
+          <a href={`mailto:${site.email}`} className="text-tpl-muted">
             {site.email}
           </a>
         </p>
-        <div className="mt-10 space-y-4 text-t-muted">
+        <div className="mt-10 space-y-4 text-tpl-muted">
           <p>
-            <span className="text-t-ink">Getting here.</span> Laoag International Airport is 80 minutes by car; we can
+            <span className="text-tpl-ink">Getting here.</span> Laoag International Airport is 80 minutes by car; we can
             collect you. Buses from Manila arrive at the Vigan terminal, five minutes away.
           </p>
           <p>
-            <span className="text-t-ink">Check-in</span> from {site.checkIn}, <span className="text-t-ink">check-out</span> by{" "}
+            <span className="text-tpl-ink">Check-in</span> from {site.checkIn}, <span className="text-tpl-ink">check-out</span> by{" "}
             {site.checkOut}.
           </p>
         </div>

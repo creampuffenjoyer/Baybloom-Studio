@@ -9,13 +9,13 @@ export function MenuPage() {
     <>
       <section className="mx-auto grid max-w-7xl gap-10 px-5 pt-16 pb-12 sm:px-8 md:grid-cols-[1fr_auto] md:items-end">
         <div>
-          <h1 className="font-t-display text-7xl leading-none sm:text-8xl">Menu</h1>
-          <p className="mt-5 max-w-[50ch] text-lg text-t-muted">
+          <h1 className="font-tpl-display text-7xl leading-none sm:text-8xl">Menu</h1>
+          <p className="mt-5 max-w-[50ch] text-lg text-tpl-muted">
             Plates are made to share. Two or three per person is about right, and the kitchen sends them
             out as they come off the fire.
           </p>
         </div>
-        <Link href={href("/reserve")} className="self-start bg-t-accent px-6 py-3.5 font-semibold text-t-on-accent hover:bg-t-alt md:self-end">
+        <Link href={href("/reserve")} className="self-start bg-tpl-accent px-6 py-3.5 font-semibold text-tpl-on-accent hover:bg-tpl-alt md:self-end">
           Reserve a table
         </Link>
       </section>

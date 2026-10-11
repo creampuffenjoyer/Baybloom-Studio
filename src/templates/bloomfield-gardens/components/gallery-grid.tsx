@@ -14,7 +14,7 @@ export function GalleryGrid({ photos }: { photos: Photo[] }) {
               <button
                 type="button"
                 onClick={() => open(i)}
-                className="group relative block aspect-square w-full overflow-hidden rounded-[1.25rem] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-t-alt"
+                className="group relative block aspect-square w-full overflow-hidden rounded-[1.25rem] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-tpl-alt"
               >
                 <Image
                   src={p.src}

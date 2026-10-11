@@ -6,7 +6,7 @@ import { formHandler, useDemoSubmit } from "../../_kit/demo-form";
 import { packages, treatments } from "../content";
 
 const input =
-  "mt-2 w-full rounded-2xl bg-t-surface px-4 py-3 text-base ring-1 ring-t-line focus:ring-2 focus:ring-t-accent focus:outline-none";
+  "mt-2 w-full rounded-2xl bg-tpl-surface px-4 py-3 text-base ring-1 ring-tpl-line focus:ring-2 focus:ring-tpl-accent focus:outline-none";
 
 const choices = [
   ...[2500, 5000].map((v) => ({ id: `amount-${v}`, label: `${formatMoney(v)} to spend`, price: v })),
@@ -21,9 +21,9 @@ export function GiftForm() {
 
   if (status === "sent") {
     return (
-      <div role="status" className="rounded-[2rem] bg-t-surface p-10 text-center">
-        <p className="font-t-display text-4xl">A gift of quiet, on its way.</p>
-        <p className="mt-4 text-t-muted">We’ve emailed the gift card. It’s valid for twelve months.</p>
+      <div role="status" className="rounded-[2rem] bg-tpl-surface p-10 text-center">
+        <p className="font-tpl-display text-4xl">A gift of quiet, on its way.</p>
+        <p className="mt-4 text-tpl-muted">We’ve emailed the gift card. It’s valid for twelve months.</p>
       </div>
     );
   }
@@ -31,13 +31,13 @@ export function GiftForm() {
   return (
     <form onSubmit={formHandler(submit)} className="space-y-8">
       <fieldset>
-        <legend className="font-t-display text-2xl">Choose a gift</legend>
+        <legend className="font-tpl-display text-2xl">Choose a gift</legend>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {choices.map((c) => (
-            <label key={c.id} className="cursor-pointer rounded-2xl bg-t-surface p-5 ring-1 ring-t-line has-checked:ring-2 has-checked:ring-t-accent">
+            <label key={c.id} className="cursor-pointer rounded-2xl bg-tpl-surface p-5 ring-1 ring-tpl-line has-checked:ring-2 has-checked:ring-tpl-accent">
               <input type="radio" name="gift" value={c.id} checked={choice === c.id} onChange={() => setChoice(c.id)} className="sr-only" />
               <span className="block font-semibold">{c.label}</span>
-              <span className="text-t-muted">{formatMoney(c.price)}</span>
+              <span className="text-tpl-muted">{formatMoney(c.price)}</span>
             </label>
           ))}
         </div>
@@ -67,11 +67,11 @@ export function GiftForm() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="rounded-full bg-t-accent px-7 py-3.5 font-semibold text-t-on-accent disabled:opacity-60"
+        className="rounded-full bg-tpl-accent px-7 py-3.5 font-semibold text-tpl-on-accent disabled:opacity-60"
       >
         {status === "sending" ? "Sending…" : `Send gift card · ${formatMoney(picked.price)}`}
       </button>
-      <p className="text-sm text-t-muted">Demo: connect your payment provider here. No payment is taken.</p>
+      <p className="text-sm text-tpl-muted">Demo: connect your payment provider here. No payment is taken.</p>
     </form>
   );
 }

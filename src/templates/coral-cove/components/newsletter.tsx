@@ -23,7 +23,7 @@ export function Newsletter() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="h-12 rounded-full bg-white px-6 font-semibold text-t-deep disabled:opacity-70"
+        className="h-12 rounded-full bg-white px-6 font-semibold text-tpl-deep disabled:opacity-70"
       >
         {status === "sending" ? "Subscribing…" : "Subscribe"}
       </button>

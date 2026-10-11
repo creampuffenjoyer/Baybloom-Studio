@@ -31,8 +31,8 @@ export function ContactPage() {
       <div className="mx-auto grid max-w-7xl gap-16 px-5 py-16 sm:px-8 lg:grid-cols-[1.4fr_1fr]">
         <ContactForm />
         <aside className="space-y-8">
-          <div className="rounded-3xl bg-t-soft p-7">
-            <h2 className="font-t-display text-2xl font-bold tracking-tight">Reservations</h2>
+          <div className="rounded-3xl bg-tpl-soft p-7">
+            <h2 className="font-tpl-display text-2xl font-bold tracking-tight">Reservations</h2>
             <p className="mt-3 leading-relaxed">
               <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-semibold underline underline-offset-4">
                 {site.phone}
@@ -42,10 +42,10 @@ export function ContactPage() {
                 {site.email}
               </a>
             </p>
-            <p className="mt-3 text-sm text-t-muted">Every day, 7 am – 10 pm (GMT+8)</p>
+            <p className="mt-3 text-sm text-tpl-muted">Every day, 7 am – 10 pm (GMT+8)</p>
           </div>
-          <div className="rounded-3xl border border-t-line p-7">
-            <h2 className="font-t-display text-2xl font-bold tracking-tight">Address</h2>
+          <div className="rounded-3xl border border-tpl-line p-7">
+            <h2 className="font-tpl-display text-2xl font-bold tracking-tight">Address</h2>
             <address className="mt-3 leading-relaxed not-italic">
               {site.address.map((l) => (
                 <span key={l} className="block">
@@ -53,17 +53,17 @@ export function ContactPage() {
                 </span>
               ))}
             </address>
-            <p className="mt-3 text-sm text-t-muted">
+            <p className="mt-3 text-sm text-tpl-muted">
               Check-in from {site.checkIn}, check-out until {site.checkOut}.
             </p>
           </div>
         </aside>
       </div>
       <section aria-labelledby="faq" className="mx-auto max-w-3xl px-5 pb-24 sm:px-8">
-        <h2 id="faq" className="font-t-display text-4xl font-bold tracking-[-0.035em]">
+        <h2 id="faq" className="font-tpl-display text-4xl font-bold tracking-[-0.035em]">
           Good questions
         </h2>
-        <div className="mt-8 divide-y divide-t-line border-y border-t-line">
+        <div className="mt-8 divide-y divide-tpl-line border-y border-tpl-line">
           {faqs.map((f) => (
             <details key={f.q} className="group py-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-semibold">
@@ -72,7 +72,7 @@ export function ContactPage() {
                   +
                 </span>
               </summary>
-              <p className="mt-3 leading-relaxed text-t-muted">{f.a}</p>
+              <p className="mt-3 leading-relaxed text-tpl-muted">{f.a}</p>
             </details>
           ))}
         </div>

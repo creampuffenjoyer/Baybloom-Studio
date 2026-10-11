@@ -4,10 +4,10 @@ import { Newsletter } from "./newsletter";
 
 export function Footer() {
   return (
-    <footer className="bg-t-deep text-white">
+    <footer className="bg-tpl-deep text-white">
       <div className="mx-auto grid max-w-7xl gap-14 px-5 pt-20 pb-10 sm:px-8 lg:grid-cols-[1.3fr_1fr_1fr]">
         <div>
-          <p className="font-t-display text-5xl leading-[0.95] font-bold tracking-[-0.04em] sm:text-6xl">
+          <p className="font-tpl-display text-5xl leading-[0.95] font-bold tracking-[-0.04em] sm:text-6xl">
             See you on
             <br />
             the sand.
@@ -58,7 +58,7 @@ export function Footer() {
       </div>
       <div
         aria-hidden
-        className="overflow-hidden px-5 font-t-display leading-[0.72] font-extrabold tracking-[-0.06em] text-white/10 select-none [font-size:clamp(5rem,22vw,20rem)] [font-stretch:80%] sm:px-8"
+        className="overflow-hidden px-5 font-tpl-display leading-[0.72] font-extrabold tracking-[-0.06em] text-white/10 select-none [font-size:clamp(5rem,22vw,20rem)] [font-stretch:80%] sm:px-8"
       >
         coral cove
       </div>

@@ -14,26 +14,26 @@ export function RoomPage({ slug }: { slug: string }) {
     <>
       <section className="mx-auto grid max-w-7xl gap-12 px-5 pt-14 sm:px-8 lg:grid-cols-[1fr_1fr]">
         <div className="lg:pt-10">
-          <nav aria-label="Breadcrumb" className="text-[15px] text-t-muted">
-            <Link href={href("/rooms")} className="hover:text-t-ink">
+          <nav aria-label="Breadcrumb" className="text-[15px] text-tpl-muted">
+            <Link href={href("/rooms")} className="hover:text-tpl-ink">
               Rooms
             </Link>
             {" / "}
             {r.name}
           </nav>
-          <h1 className="mt-4 font-t-display text-6xl leading-none italic sm:text-7xl">{r.name}</h1>
-          <div className="mt-8 max-w-[52ch] space-y-5 text-lg leading-relaxed text-t-muted">
+          <h1 className="mt-4 font-tpl-display text-6xl leading-none italic sm:text-7xl">{r.name}</h1>
+          <div className="mt-8 max-w-[52ch] space-y-5 text-lg leading-relaxed text-tpl-muted">
             {r.description.map((d) => (
               <p key={d.slice(0, 16)}>{d}</p>
             ))}
           </div>
-          <div className="mt-10 flex flex-wrap items-end gap-8 border-t border-t-line pt-8">
+          <div className="mt-10 flex flex-wrap items-end gap-8 border-t border-tpl-line pt-8">
             <p>
-              <span className="block text-sm text-t-muted">From</span>
-              <span className="font-t-display text-4xl">{formatMoney(r.price)}</span>
-              <span className="text-t-muted"> a night</span>
+              <span className="block text-sm text-tpl-muted">From</span>
+              <span className="font-tpl-display text-4xl">{formatMoney(r.price)}</span>
+              <span className="text-tpl-muted"> a night</span>
             </p>
-            <Link href={`${href("/book")}?room=${r.slug}`} className="bg-t-accent px-6 py-3.5 text-t-on-accent hover:bg-t-alt">
+            <Link href={`${href("/book")}?room=${r.slug}`} className="bg-tpl-accent px-6 py-3.5 text-tpl-on-accent hover:bg-tpl-alt">
               Check availability
             </Link>
           </div>
@@ -44,15 +44,15 @@ export function RoomPage({ slug }: { slug: string }) {
       </section>
       <section className="mx-auto mt-20 grid max-w-7xl gap-12 px-5 sm:px-8 md:grid-cols-[1fr_1.5fr]">
         <div>
-          <h2 className="font-t-display text-3xl italic">In the room</h2>
+          <h2 className="font-tpl-display text-3xl italic">In the room</h2>
           <ul className="mt-5 space-y-3">
             {r.details.map((d) => (
-              <li key={d} className="border-b border-t-line pb-3">
+              <li key={d} className="border-b border-tpl-line pb-3">
                 {d}
               </li>
             ))}
           </ul>
-          <p className="mt-6 text-[15px] text-t-muted">
+          <p className="mt-6 text-[15px] text-tpl-muted">
             Check-in from {site.checkIn}, check-out by {site.checkOut}. Sleeps up to {r.maxGuests}.
           </p>
         </div>

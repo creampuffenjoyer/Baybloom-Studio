@@ -4,9 +4,9 @@ import photos from "../photos.json";
 export function CreditsPage() {
   return (
     <div className="mx-auto max-w-3xl px-5 pt-16 pb-24 sm:px-8">
-      <h1 className="font-t-display text-6xl leading-none">Photo credits</h1>
-      <p className="mt-5 text-lg text-t-muted">The photographs on this site are used under the licences below.</p>
-      <CreditsList photos={Object.values(photos)} className="mt-10 divide-y divide-t-line [&_a]:text-t-accent" />
+      <h1 className="font-tpl-display text-6xl leading-none">Photo credits</h1>
+      <p className="mt-5 text-lg text-tpl-muted">The photographs on this site are used under the licences below.</p>
+      <CreditsList photos={Object.values(photos)} className="mt-10 divide-y divide-tpl-line [&_a]:text-tpl-accent" />
     </div>
   );
 }

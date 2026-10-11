@@ -7,7 +7,7 @@ import { useToday } from "./use-today";
 /*
  * Unstyled month calendar (render inside <Suspense>; it reads today's date). Each day button exposes its state as data
  * attributes so templates style it with Tailwind variants, e.g.
- * `data-[selected=true]:bg-t-accent data-[in-range=true]:bg-t-soft`.
+ * `data-[selected=true]:bg-tpl-accent data-[in-range=true]:bg-tpl-soft`.
  *   data-selected   start or end of the range (or the single picked day)
  *   data-in-range   strictly between start and end
  *   data-disabled   not selectable (past or unavailable)

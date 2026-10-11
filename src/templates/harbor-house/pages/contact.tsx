@@ -7,12 +7,12 @@ export function ContactPage() {
   return (
     <div className="mx-auto grid max-w-6xl gap-12 px-5 pt-10 sm:px-8 md:grid-cols-2">
       <div>
-        <h1 className="font-t-display text-5xl sm:text-6xl">Say hello</h1>
-        <p className="mt-4 text-lg text-t-muted">
+        <h1 className="font-tpl-display text-5xl sm:text-6xl">Say hello</h1>
+        <p className="mt-4 text-lg text-tpl-muted">
           The quickest way to reach us is a message on WhatsApp or a call. We’re usually in the kitchen.
         </p>
         <p className="mt-8 text-2xl">
-          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-t-display text-t-accent underline underline-offset-4">
+          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-tpl-display text-tpl-accent underline underline-offset-4">
             {site.phone}
           </a>
         </p>
@@ -28,11 +28,11 @@ export function ContactPage() {
             </span>
           ))}
         </address>
-        <p className="mt-4 text-t-muted">
+        <p className="mt-4 text-tpl-muted">
           Five minutes from Basco airport. Tell us your flight and we’ll meet you with a sign.
         </p>
-        <div className="mt-10 rounded-3xl bg-t-soft p-7">
-          <h2 className="font-t-display text-2xl">Or send a message</h2>
+        <div className="mt-10 rounded-3xl bg-tpl-soft p-7">
+          <h2 className="font-tpl-display text-2xl">Or send a message</h2>
           <div className="mt-5">
             <ContactForm />
           </div>

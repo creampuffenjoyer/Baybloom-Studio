@@ -49,19 +49,19 @@
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Template demos: each template sets these --t-* values on its root. */
-  --font-t-display: var(--t-font-display);
-  --font-t-body: var(--t-font-body);
-  --color-t-bg: var(--t-bg);
-  --color-t-surface: var(--t-surface);
-  --color-t-soft: var(--t-soft);
-  --color-t-ink: var(--t-ink);
-  --color-t-muted: var(--t-muted);
-  --color-t-line: var(--t-line);
-  --color-t-accent: var(--t-accent);
-  --color-t-on-accent: var(--t-on-accent);
-  --color-t-deep: var(--t-deep);
-  --color-t-on-deep: var(--t-on-deep);
-  --color-t-alt: var(--t-alt);
+  --font-tpl-display: var(--t-font-display);
+  --font-tpl-body: var(--t-font-body);
+  --color-tpl-bg: var(--t-bg);
+  --color-tpl-surface: var(--t-surface);
+  --color-tpl-soft: var(--t-soft);
+  --color-tpl-ink: var(--t-ink);
+  --color-tpl-muted: var(--t-muted);
+  --color-tpl-line: var(--t-line);
+  --color-tpl-accent: var(--t-accent);
+  --color-tpl-on-accent: var(--t-on-accent);
+  --color-tpl-deep: var(--t-deep);
+  --color-tpl-on-deep: var(--t-on-deep);
+  --color-tpl-alt: var(--t-alt);
 }
 
 :root {

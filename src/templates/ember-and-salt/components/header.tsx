@@ -16,7 +16,7 @@ function Tonight() {
   const hours = TONIGHT[fromDay(today).getDay()];
   return hours ? (
     <span>
-      Open today <span className="text-t-ink">{hours}</span>. Walk-ins welcome at the bar.
+      Open today <span className="text-tpl-ink">{hours}</span>. Walk-ins welcome at the bar.
     </span>
   ) : (
     <span>Closed today. We’re back tomorrow from 5:30 pm.</span>
@@ -35,8 +35,8 @@ export function Header() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-t-line bg-t-bg/95 backdrop-blur">
-      <p className="border-b border-t-line px-5 py-2 text-center text-[13px] text-t-muted">
+    <header className="sticky top-0 z-50 border-b border-tpl-line bg-tpl-bg/95 backdrop-blur">
+      <p className="border-b border-tpl-line px-5 py-2 text-center text-[13px] text-tpl-muted">
         <Tonight />
       </p>
       <div className="mx-auto grid h-18 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-6 px-5 sm:px-8">
@@ -54,8 +54,8 @@ export function Header() {
         >
           {open ? "Close" : "Menu"}
         </button>
-        <Link href={href("/")} onClick={() => setOpen(false)} className="font-t-display text-2xl whitespace-nowrap sm:text-3xl">
-          Ember <span className="text-t-accent">&amp;</span> Salt
+        <Link href={href("/")} onClick={() => setOpen(false)} className="font-tpl-display text-2xl whitespace-nowrap sm:text-3xl">
+          Ember <span className="text-tpl-accent">&amp;</span> Salt
         </Link>
         <div className="flex items-center justify-end gap-7 text-[15px]">
           <nav aria-label="More" className="hidden items-center gap-7 lg:flex">
@@ -65,19 +65,19 @@ export function Header() {
           </nav>
           <Link
             href={href("/reserve")}
-            className="border border-t-accent px-4 py-2 text-t-accent transition-colors hover:bg-t-accent hover:text-t-on-accent"
+            className="border border-tpl-accent px-4 py-2 text-tpl-accent transition-colors hover:bg-tpl-accent hover:text-tpl-on-accent"
           >
             Reserve
           </Link>
         </div>
       </div>
       {open && (
-        <div id="es-menu" className="fixed inset-x-0 top-[calc(4.5rem+2.1rem)] bottom-0 overflow-y-auto bg-t-deep px-5 py-10 lg:hidden">
+        <div id="es-menu" className="fixed inset-x-0 top-[calc(4.5rem+2.1rem)] bottom-0 overflow-y-auto bg-tpl-deep px-5 py-10 lg:hidden">
           <nav aria-label="Mobile">
             <ul className="space-y-2">
               {[{ href: "/", label: "Home" }, ...nav, { href: "/reserve", label: "Reserve a table" }].map((item) => (
                 <li key={item.href}>
-                  <Link href={href(item.href)} onClick={() => setOpen(false)} className="block py-1 font-t-display text-4xl">
+                  <Link href={href(item.href)} onClick={() => setOpen(false)} className="block py-1 font-tpl-display text-4xl">
                     {item.label}
                   </Link>
                 </li>
@@ -95,7 +95,7 @@ function NavItem({ href: path, label, active }: { href: string; label: string; a
     <Link
       href={href(path)}
       aria-current={active ? "page" : undefined}
-      className={`transition-colors hover:text-t-accent ${active ? "text-t-accent" : "text-t-ink/85"}`}
+      className={`transition-colors hover:text-tpl-accent ${active ? "text-tpl-accent" : "text-tpl-ink/85"}`}
     >
       {label}
     </Link>

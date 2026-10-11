@@ -14,7 +14,7 @@ export function PhotoGrid({ photos }: { photos: Photo[] }) {
               key={p.src}
               type="button"
               onClick={() => open(i)}
-              className={`group relative overflow-hidden rounded-2xl focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-t-accent ${
+              className={`group relative overflow-hidden rounded-2xl focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-tpl-accent ${
                 i === 0 ? "aspect-[4/3] sm:col-span-3 sm:row-span-2 sm:aspect-auto sm:min-h-[460px]" : "hidden aspect-[4/3] sm:block"
               }`}
             >
@@ -26,7 +26,7 @@ export function PhotoGrid({ photos }: { photos: Photo[] }) {
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
               {i === 0 && (
-                <span className="absolute right-4 bottom-4 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-t-ink">
+                <span className="absolute right-4 bottom-4 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-tpl-ink">
                   View {photos.length} photos
                 </span>
               )}

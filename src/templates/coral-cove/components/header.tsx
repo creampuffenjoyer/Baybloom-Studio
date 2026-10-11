@@ -30,14 +30,14 @@ export function Header() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
-        clear ? "text-white" : "bg-white/95 text-t-ink shadow-[0_1px_0_var(--t-line)] backdrop-blur"
+        clear ? "text-white" : "bg-white/95 text-tpl-ink shadow-[0_1px_0_var(--t-line)] backdrop-blur"
       }`}
     >
       <div className="mx-auto flex h-18 max-w-7xl items-center gap-8 px-5 sm:px-8">
         <Link
           href={href("/")}
           onClick={() => setOpen(false)}
-          className="font-t-display text-2xl font-extrabold tracking-[-0.04em] [font-stretch:85%]"
+          className="font-tpl-display text-2xl font-extrabold tracking-[-0.04em] [font-stretch:85%]"
         >
           coral cove
         </Link>
@@ -50,7 +50,7 @@ export function Header() {
                 href={href(item.href)}
                 aria-current={active ? "page" : undefined}
                 className={`rounded-full px-4 py-2 text-[15px] font-medium transition-colors ${
-                  clear ? "hover:bg-white/15" : "hover:bg-t-soft"
+                  clear ? "hover:bg-white/15" : "hover:bg-tpl-soft"
                 } ${active ? "underline decoration-2 underline-offset-[6px]" : ""}`}
               >
                 {item.label}
@@ -60,7 +60,7 @@ export function Header() {
         </nav>
         <Link
           href={href("/book")}
-          className="ml-auto rounded-full bg-t-accent px-4 py-2 text-sm font-semibold sm:px-5 sm:py-2.5 sm:text-[15px] text-t-on-accent transition-transform hover:-translate-y-0.5 lg:ml-2"
+          className="ml-auto rounded-full bg-tpl-accent px-4 py-2 text-sm font-semibold sm:px-5 sm:py-2.5 sm:text-[15px] text-tpl-on-accent transition-transform hover:-translate-y-0.5 lg:ml-2"
         >
           Book a villa
         </Link>
@@ -80,7 +80,7 @@ export function Header() {
       </div>
 
       {open && (
-        <div id="cc-menu" className="fixed inset-x-0 top-18 bottom-0 overflow-y-auto bg-t-deep px-5 pt-8 pb-16 text-white lg:hidden">
+        <div id="cc-menu" className="fixed inset-x-0 top-18 bottom-0 overflow-y-auto bg-tpl-deep px-5 pt-8 pb-16 text-white lg:hidden">
           <nav aria-label="Mobile">
             <ul className="space-y-1">
               {nav.map((item) => (
@@ -88,7 +88,7 @@ export function Header() {
                   <Link
                     href={href(item.href)}
                     onClick={() => setOpen(false)}
-                    className="block py-2 font-t-display text-5xl font-bold tracking-[-0.03em]"
+                    className="block py-2 font-tpl-display text-5xl font-bold tracking-[-0.03em]"
                   >
                     {item.label}
                   </Link>

@@ -22,7 +22,7 @@ const ticketCss = `
 }`;
 
 const field =
-  "mt-1 w-full bg-transparent text-base font-semibold sm:text-lg text-t-ink outline-none [color-scheme:light] placeholder:text-t-muted";
+  "mt-1 w-full bg-transparent text-base font-semibold sm:text-lg text-tpl-ink outline-none [color-scheme:light] placeholder:text-tpl-muted";
 
 /** The home-page booking bar, drawn as a boarding pass: dates and guests on the ticket, search on the stub. */
 export function BookingTicket() {
@@ -55,10 +55,10 @@ export function BookingTicket() {
     >
       <style>{ticketCss}</style>
       <div
-        className="cc-ticket-body grid flex-1 grid-cols-2 gap-px overflow-hidden rounded-t-3xl bg-t-line sm:grid-cols-3 md:rounded-l-3xl md:rounded-tr-none"
+        className="cc-ticket-body grid flex-1 grid-cols-2 gap-px overflow-hidden rounded-t-3xl bg-tpl-line sm:grid-cols-3 md:rounded-l-3xl md:rounded-tr-none"
       >
         <label className="block bg-white px-4 py-3 sm:px-6 sm:py-4">
-          <span className="text-sm text-t-muted">Arrive</span>
+          <span className="text-sm text-tpl-muted">Arrive</span>
           <input
             type="date"
             min={today ?? undefined}
@@ -74,7 +74,7 @@ export function BookingTicket() {
           />
         </label>
         <label className="block bg-white px-4 py-3 sm:px-6 sm:py-4">
-          <span className="text-sm text-t-muted">Leave</span>
+          <span className="text-sm text-tpl-muted">Leave</span>
           <input
             type="date"
             min={checkIn ? addDays(checkIn, 1) : (today ?? undefined)}
@@ -87,7 +87,7 @@ export function BookingTicket() {
           />
         </label>
         <label className="col-span-2 block bg-white px-4 py-3 sm:col-span-1 sm:px-6 sm:py-4">
-          <span className="text-sm text-t-muted">Guests</span>
+          <span className="text-sm text-tpl-muted">Guests</span>
           <select value={guests} onChange={(e) => setGuests(e.target.value)} className={field}>
             {[1, 2, 3, 4, 5].map((n) => (
               <option key={n} value={n}>
@@ -98,11 +98,11 @@ export function BookingTicket() {
         </label>
       </div>
       <div
-        className="cc-ticket-stub flex items-center rounded-b-3xl border-t-2 border-dashed border-white/50 bg-t-accent px-3 py-3 md:rounded-r-3xl md:rounded-bl-none md:border-t-0 md:border-l-2 md:py-0"
+        className="cc-ticket-stub flex items-center rounded-b-3xl border-t-2 border-dashed border-white/50 bg-tpl-accent px-3 py-3 md:rounded-r-3xl md:rounded-bl-none md:border-t-0 md:border-l-2 md:py-0"
       >
         <button
           type="submit"
-          className="w-full rounded-full px-6 py-2 text-lg font-bold sm:py-3 whitespace-nowrap text-t-on-accent focus-visible:outline-2 focus-visible:outline-white md:w-auto"
+          className="w-full rounded-full px-6 py-2 text-lg font-bold sm:py-3 whitespace-nowrap text-tpl-on-accent focus-visible:outline-2 focus-visible:outline-white md:w-auto"
         >
           See available villas
         </button>

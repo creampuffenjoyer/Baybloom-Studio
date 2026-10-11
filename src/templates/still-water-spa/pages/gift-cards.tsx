@@ -7,8 +7,8 @@ export function GiftCardsPage() {
   return (
     <div className="mx-auto grid max-w-7xl gap-14 px-5 pt-12 pb-16 sm:px-8 lg:grid-cols-[1.2fr_1fr]">
       <div>
-        <h1 className="font-t-display text-6xl sm:text-7xl">Give an afternoon off</h1>
-        <p className="mt-5 max-w-[50ch] text-lg text-t-muted">
+        <h1 className="font-tpl-display text-6xl sm:text-7xl">Give an afternoon off</h1>
+        <p className="mt-5 max-w-[50ch] text-lg text-tpl-muted">
           Digital gift cards, sent straight away or on the day you choose. Valid for twelve months on any
           treatment, package or membership.
         </p>

@@ -13,7 +13,7 @@ export function MasonryGallery({ photos }: { photos: (Photo & { width: number; h
               <button
                 type="button"
                 onClick={() => open(i)}
-                className="group block w-full overflow-hidden rounded-2xl focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-t-accent"
+                className="group block w-full overflow-hidden rounded-2xl focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-tpl-accent"
               >
                 <Image
                   src={p.src}

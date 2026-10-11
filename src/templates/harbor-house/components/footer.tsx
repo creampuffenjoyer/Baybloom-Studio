@@ -3,15 +3,15 @@ import { href, nav, site } from "../site";
 
 export function Footer() {
   return (
-    <footer className="mt-24 bg-t-accent text-t-on-accent">
-      <svg viewBox="0 0 1440 40" preserveAspectRatio="none" aria-hidden className="block h-8 w-full -translate-y-px fill-t-bg">
+    <footer className="mt-24 bg-tpl-accent text-tpl-on-accent">
+      <svg viewBox="0 0 1440 40" preserveAspectRatio="none" aria-hidden className="block h-8 w-full -translate-y-px fill-tpl-bg">
         <path d="M0 0 H1440 V18 Q1380 40 1320 18 T1200 18 T1080 18 T960 18 T840 18 T720 18 T600 18 T480 18 T360 18 T240 18 T120 18 T0 18 Z" />
       </svg>
       <div className="mx-auto grid max-w-6xl gap-10 px-5 pt-10 pb-14 sm:px-8 md:grid-cols-3">
         <div>
-          <p className="font-t-display text-3xl">Harbor House</p>
+          <p className="font-tpl-display text-3xl">Harbor House</p>
           <p className="mt-2 text-white/80">{site.tagline}.</p>
-          <p className="mt-4 font-[family-name:var(--hh-hand)] text-3xl text-t-soft">Mila &amp; Joel</p>
+          <p className="mt-4 font-[family-name:var(--hh-hand)] text-3xl text-tpl-soft">Mila &amp; Joel</p>
         </div>
         <div className="text-[15px] text-white/85">
           <address className="not-italic">

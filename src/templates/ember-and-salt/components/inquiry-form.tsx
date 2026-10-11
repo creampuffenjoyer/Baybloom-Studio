@@ -4,19 +4,19 @@ import { formHandler, useDemoSubmit } from "../../_kit/demo-form";
 import { spaces } from "../content";
 
 const input =
-  "mt-2 w-full border border-t-line bg-t-surface px-4 py-3 text-base text-t-ink focus:border-t-accent focus:outline-none";
+  "mt-2 w-full border border-tpl-line bg-tpl-surface px-4 py-3 text-base text-tpl-ink focus:border-tpl-accent focus:outline-none";
 
 export function InquiryForm() {
   const { status, submit, reset } = useDemoSubmit();
 
   if (status === "sent") {
     return (
-      <div role="status" className="border border-t-accent p-8">
-        <p className="font-t-display text-4xl">Thank you.</p>
-        <p className="mt-3 text-t-muted">
+      <div role="status" className="border border-tpl-accent p-8">
+        <p className="font-tpl-display text-4xl">Thank you.</p>
+        <p className="mt-3 text-tpl-muted">
           Our events manager will reply within one working day with menus and a quote.
         </p>
-        <button type="button" onClick={reset} className="mt-6 text-t-accent underline underline-offset-4">
+        <button type="button" onClick={reset} className="mt-6 text-tpl-accent underline underline-offset-4">
           Send another inquiry
         </button>
       </div>
@@ -60,7 +60,7 @@ export function InquiryForm() {
         <button
           type="submit"
           disabled={status === "sending"}
-          className="bg-t-accent px-7 py-4 text-lg font-semibold text-t-on-accent hover:bg-t-alt disabled:opacity-60"
+          className="bg-tpl-accent px-7 py-4 text-lg font-semibold text-tpl-on-accent hover:bg-tpl-alt disabled:opacity-60"
         >
           {status === "sending" ? "Sending…" : "Send inquiry"}
         </button>

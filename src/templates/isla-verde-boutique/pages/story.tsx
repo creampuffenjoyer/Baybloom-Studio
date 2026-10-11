@@ -15,8 +15,8 @@ export function StoryPage() {
     <>
       <section className="mx-auto grid max-w-7xl gap-12 px-5 pt-16 sm:px-8 lg:grid-cols-[1.2fr_1fr] lg:items-end">
         <div className="lg:pb-12">
-          <h1 className="font-t-display text-6xl leading-[0.98] italic sm:text-8xl">The story of the house</h1>
-          <p className="mt-8 max-w-[52ch] text-lg leading-relaxed text-t-muted">
+          <h1 className="font-tpl-display text-6xl leading-[0.98] italic sm:text-8xl">The story of the house</h1>
+          <p className="mt-8 max-w-[52ch] text-lg leading-relaxed text-tpl-muted">
             Vigan’s old houses are built in two halves: stone below to stand up to earthquakes, wood above to
             breathe in the heat. Ours has stood for more than 130 years.
           </p>
@@ -29,8 +29,8 @@ export function StoryPage() {
         <ol className="space-y-14">
           {chapters.map((c) => (
             <li key={c.year} className="grid gap-4 sm:grid-cols-[180px_1fr]">
-              <span className="font-t-display text-6xl text-t-alt italic">{c.year}</span>
-              <p className="pt-2 font-t-display text-2xl leading-snug">{c.text}</p>
+              <span className="font-tpl-display text-6xl text-tpl-alt italic">{c.year}</span>
+              <p className="pt-2 font-tpl-display text-2xl leading-snug">{c.text}</p>
             </li>
           ))}
         </ol>

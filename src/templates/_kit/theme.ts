@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 
-/** Colours every template defines; Tailwind exposes them as bg-t-*, text-t-* etc. */
+/** Colours every template defines; Tailwind exposes them as bg-tpl-*, text-tpl-* etc. */
 export type Theme = {
   bg: string;
   surface: string;

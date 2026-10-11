@@ -15,7 +15,7 @@ export function VisitPage() {
     <>
       <section className="mx-auto grid max-w-7xl gap-12 px-5 pt-12 pb-16 sm:px-8 lg:grid-cols-[1fr_1fr]">
         <div>
-          <h1 className="font-t-display text-6xl sm:text-7xl">Visit</h1>
+          <h1 className="font-tpl-display text-6xl sm:text-7xl">Visit</h1>
           <address className="mt-8 text-xl leading-relaxed not-italic">
             {site.address.map((l) => (
               <span key={l} className="block">
@@ -24,18 +24,18 @@ export function VisitPage() {
             ))}
           </address>
           <p className="mt-5 text-lg">
-            <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="text-t-accent underline underline-offset-4">
+            <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="text-tpl-accent underline underline-offset-4">
               {site.phone}
             </a>
             <br />
-            <a href={`mailto:${site.email}`} className="text-t-muted">
+            <a href={`mailto:${site.email}`} className="text-tpl-muted">
               {site.email}
             </a>
           </p>
           <dl className="mt-8 space-y-1">
             {site.hours.map((h) => (
               <div key={h.days} className="flex gap-4">
-                <dt className="w-44 text-t-muted">{h.days}</dt>
+                <dt className="w-44 text-tpl-muted">{h.days}</dt>
                 <dd>{h.time}</dd>
               </div>
             ))}
@@ -46,19 +46,19 @@ export function VisitPage() {
         </div>
       </section>
       <section aria-labelledby="faq" className="mx-auto max-w-3xl px-5 py-12 sm:px-8">
-        <h2 id="faq" className="font-t-display text-4xl">
+        <h2 id="faq" className="font-tpl-display text-4xl">
           Good to know
         </h2>
         <div className="mt-8 space-y-3">
           {faqs.map(([q, a]) => (
-            <details key={q} className="group rounded-2xl bg-t-surface px-6 py-5">
+            <details key={q} className="group rounded-2xl bg-tpl-surface px-6 py-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-semibold">
                 {q}
                 <span aria-hidden className="text-xl transition-transform group-open:rotate-45">
                   +
                 </span>
               </summary>
-              <p className="mt-3 leading-relaxed text-t-muted">{a}</p>
+              <p className="mt-3 leading-relaxed text-tpl-muted">{a}</p>
             </details>
           ))}
         </div>

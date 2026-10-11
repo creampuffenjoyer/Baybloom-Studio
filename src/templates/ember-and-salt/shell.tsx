@@ -9,12 +9,12 @@ export function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div
       data-template="ember-and-salt"
-      className={`${display.variable} ${body.variable} flex min-h-dvh flex-col bg-t-bg font-t-body text-t-ink antialiased selection:bg-t-accent selection:text-t-on-accent`}
+      className={`${display.variable} ${body.variable} flex min-h-dvh flex-col bg-tpl-bg font-tpl-body text-tpl-ink antialiased selection:bg-tpl-accent selection:text-tpl-on-accent`}
       style={themeStyle(theme, { display: "var(--es-display)", body: "var(--es-body)" })}
     >
       <a
         href="#content"
-        className="sr-only z-[60] bg-t-accent px-4 py-2 text-t-on-accent focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+        className="sr-only z-[60] bg-tpl-accent px-4 py-2 text-tpl-on-accent focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
       >
         Skip to content
       </a>

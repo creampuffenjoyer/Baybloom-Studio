@@ -7,8 +7,8 @@ export function SpacesPage() {
   return (
     <>
       <section className="mx-auto max-w-7xl px-5 pt-14 pb-10 text-center sm:px-8">
-        <h1 className="font-t-display text-6xl font-medium italic sm:text-7xl">The estate</h1>
-        <p className="mx-auto mt-5 max-w-[56ch] text-lg text-t-muted">
+        <h1 className="font-tpl-display text-6xl font-medium italic sm:text-7xl">The estate</h1>
+        <p className="mx-auto mt-5 max-w-[56ch] text-lg text-tpl-muted">
           Five spaces across twelve acres. Most couples use two or three: one for vows, one for dinner and
           one for dancing.
         </p>
@@ -27,13 +27,13 @@ export function SpacesPage() {
                 </div>
               </div>
               <div>
-                <p className="text-t-alt">{s.kind}</p>
-                <h2 className="mt-1 font-t-display text-5xl font-medium italic">{s.name}</h2>
-                <p className="mt-4 max-w-[48ch] text-lg leading-relaxed text-t-muted">{s.short}</p>
+                <p className="text-tpl-alt">{s.kind}</p>
+                <h2 className="mt-1 font-tpl-display text-5xl font-medium italic">{s.name}</h2>
+                <p className="mt-4 max-w-[48ch] text-lg leading-relaxed text-tpl-muted">{s.short}</p>
                 <Capacities space={s} />
                 <Link
                   href={href(`/spaces/${s.slug}`)}
-                  className="mt-8 inline-block rounded-full px-6 py-3 ring-1 ring-t-ink/25 hover:ring-t-ink/60"
+                  className="mt-8 inline-block rounded-full px-6 py-3 ring-1 ring-tpl-ink/25 hover:ring-tpl-ink/60"
                 >
                   See {s.name}
                 </Link>
@@ -56,8 +56,8 @@ export function Capacities({ space }: { space: (typeof spaces)[number] }) {
     <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-4">
       {rows.map(([k, v]) => (
         <div key={k} className="flex flex-col-reverse">
-          <dt className="text-sm text-t-muted">{k}</dt>
-          <dd className="font-t-display text-4xl">{v}</dd>
+          <dt className="text-sm text-tpl-muted">{k}</dt>
+          <dd className="font-tpl-display text-4xl">{v}</dd>
         </div>
       ))}
     </dl>

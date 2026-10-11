@@ -7,8 +7,8 @@ export function AboutPage() {
     <>
       <section className="mx-auto grid max-w-7xl items-center gap-12 px-5 pt-12 pb-16 sm:px-8 lg:grid-cols-2">
         <div>
-          <h1 className="font-t-display text-6xl leading-[1.05] sm:text-7xl">Rest is a practice.</h1>
-          <div className="mt-8 max-w-[54ch] space-y-5 text-lg leading-relaxed text-t-muted">
+          <h1 className="font-tpl-display text-6xl leading-[1.05] sm:text-7xl">Rest is a practice.</h1>
+          <div className="mt-8 max-w-[54ch] space-y-5 text-lg leading-relaxed text-tpl-muted">
             <p>
               Still Water began in 2018 as two treatment rooms above a bakery on Session Road. Our founder,
               a hilot practitioner from Ilocos, wanted somewhere in Baguio where people could come to do
@@ -31,7 +31,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section aria-labelledby="promises" className="bg-t-surface">
+      <section aria-labelledby="promises" className="bg-tpl-surface">
         <h2 id="promises" className="sr-only">
           What we promise
         </h2>
@@ -42,25 +42,25 @@ export function AboutPage() {
             ["Quiet by design", "Soft voices, no music in the bathhouse, and lockers for your phone."],
           ].map(([t, d]) => (
             <div key={t}>
-              <dt className="font-t-display text-2xl">{t}</dt>
-              <dd className="mt-3 leading-relaxed text-t-muted">{d}</dd>
+              <dt className="font-tpl-display text-2xl">{t}</dt>
+              <dd className="mt-3 leading-relaxed text-tpl-muted">{d}</dd>
             </div>
           ))}
         </dl>
       </section>
 
       <section aria-labelledby="team" className="mx-auto max-w-7xl px-5 py-20 sm:px-8">
-        <h2 id="team" className="font-t-display text-4xl sm:text-5xl">
+        <h2 id="team" className="font-tpl-display text-4xl sm:text-5xl">
           Our therapists
         </h2>
         <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {therapists.map((t) => (
-            <li key={t.name} className="rounded-[2rem] bg-t-soft p-7">
-              <p aria-hidden className="grid size-14 place-items-center rounded-full bg-t-deep font-t-display text-2xl text-t-on-deep">
+            <li key={t.name} className="rounded-[2rem] bg-tpl-soft p-7">
+              <p aria-hidden className="grid size-14 place-items-center rounded-full bg-tpl-deep font-tpl-display text-2xl text-tpl-on-deep">
                 {t.name[0]}
               </p>
-              <h3 className="mt-5 font-t-display text-2xl">{t.name}</h3>
-              <p className="mt-1 text-t-muted">{t.craft}</p>
+              <h3 className="mt-5 font-tpl-display text-2xl">{t.name}</h3>
+              <p className="mt-1 text-tpl-muted">{t.craft}</p>
               <p className="mt-3 text-sm">{t.years} years with us</p>
             </li>
           ))}

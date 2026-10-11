@@ -12,7 +12,7 @@ export function RoomPage({ slug }: { slug: string }) {
   const [a, b, c] = r.photos.map(photo);
   return (
     <div className="mx-auto max-w-6xl px-5 pt-8 sm:px-8">
-      <Link href={href("/rooms")} className="text-[15px] font-semibold text-t-muted hover:text-t-ink">
+      <Link href={href("/rooms")} className="text-[15px] font-semibold text-tpl-muted hover:text-tpl-ink">
         ← All rooms
       </Link>
       <div className="mt-6 grid gap-12 lg:grid-cols-[1.2fr_1fr]">
@@ -29,8 +29,8 @@ export function RoomPage({ slug }: { slug: string }) {
           </div>
         </div>
         <div>
-          <h1 className="font-t-display text-5xl leading-tight">{r.name}</h1>
-          <p className="mt-2 font-[family-name:var(--hh-hand)] text-3xl text-t-muted">{r.postcard}</p>
+          <h1 className="font-tpl-display text-5xl leading-tight">{r.name}</h1>
+          <p className="mt-2 font-[family-name:var(--hh-hand)] text-3xl text-tpl-muted">{r.postcard}</p>
           <div className="mt-6 space-y-4 text-lg leading-relaxed">
             {r.description.map((d) => (
               <p key={d.slice(0, 16)}>{d}</p>
@@ -38,7 +38,7 @@ export function RoomPage({ slug }: { slug: string }) {
           </div>
           <ul className="mt-6 flex flex-wrap gap-2">
             {[r.bed, r.view, `Sleeps ${r.maxGuests}`, ...r.little].map((x) => (
-              <li key={x} className="rounded-full bg-t-surface px-3 py-1.5 text-sm ring-1 ring-t-line">
+              <li key={x} className="rounded-full bg-tpl-surface px-3 py-1.5 text-sm ring-1 ring-tpl-line">
                 {x}
               </li>
             ))}
@@ -46,9 +46,9 @@ export function RoomPage({ slug }: { slug: string }) {
           <div className="mt-10 flex items-center gap-6">
             <Stamp className="-rotate-3">
               <span className="block text-[11px] font-semibold">per night</span>
-              <span className="block font-t-display text-2xl">{formatMoney(r.price)}</span>
+              <span className="block font-tpl-display text-2xl">{formatMoney(r.price)}</span>
             </Stamp>
-            <Link href={`${href("/book")}?room=${r.slug}`} className="rounded-full bg-t-accent px-6 py-3 font-bold text-t-on-accent">
+            <Link href={`${href("/book")}?room=${r.slug}`} className="rounded-full bg-tpl-accent px-6 py-3 font-bold text-tpl-on-accent">
               Check dates for this room
             </Link>
           </div>

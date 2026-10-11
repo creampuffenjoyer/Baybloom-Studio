@@ -16,9 +16,9 @@ export function Newsletter() {
         type="email"
         required
         placeholder="Email address"
-        className="h-12 min-w-0 flex-1 rounded-full bg-white/10 px-5 text-t-on-deep placeholder:text-t-on-deep/50 focus:bg-white/15 focus:outline-none"
+        className="h-12 min-w-0 flex-1 rounded-full bg-white/10 px-5 text-tpl-on-deep placeholder:text-tpl-on-deep/50 focus:bg-white/15 focus:outline-none"
       />
-      <button type="submit" disabled={status === "sending"} className="h-12 rounded-full bg-t-on-deep px-5 font-semibold text-t-deep">
+      <button type="submit" disabled={status === "sending"} className="h-12 rounded-full bg-tpl-on-deep px-5 font-semibold text-tpl-deep">
         Join
       </button>
     </form>
