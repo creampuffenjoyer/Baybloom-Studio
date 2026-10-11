@@ -13,12 +13,6 @@ enum Role {
   ADMIN
 }
 
-enum ProductType {
-  WEBSITE
-  ARCHITECTURE
-  INTERIOR
-}
-
 enum DesignStatus {
   DRAFT
   PUBLISHED
@@ -32,10 +26,9 @@ enum TierLevel {
 }
 
 enum ImageKind {
-  PHOTO // exterior, room, pool, dining, detail
-  RENDER // illustrative render-style sample
-  PLAN // floor / site plan preview
-  MOCKUP // shown inside a device frame for website designs
+  PHOTO // photography used by the template
+  MOCKUP // shown inside a device frame
+  SCREENSHOT // captured from the live demo
 }
 
 enum OrderStatus {
@@ -131,7 +124,6 @@ model Design {
   title        String
   summary      String
   description  String
-  type         ProductType
   status       DesignStatus @default(DRAFT)
   featured     Boolean      @default(false)
   category     Category     @relation(fields: [categoryId], references: [id])
@@ -157,7 +149,7 @@ model Design {
   orderItems OrderItem[]
   files      DeliverableFile[]
 
-  @@index([status, type])
+  @@index([status])
   @@index([categoryId])
 }
 
@@ -201,28 +193,24 @@ model Tier {
 
 /// An add-on with no designId applies to every design (e.g. hosting setup).
 model Addon {
-  id           String        @id @default(cuid())
-  design       Design?       @relation(fields: [designId], references: [id], onDelete: Cascade)
-  designId     String?
-  name         String
-  description  String?
-  priceCents   Int
-  currency     String        @default("PHP")
-  active       Boolean       @default(true)
-  /// Only offered for these product types (empty = all).
-  productTypes ProductType[]
+  id          String  @id @default(cuid())
+  design      Design? @relation(fields: [designId], references: [id], onDelete: Cascade)
+  designId    String?
+  name        String
+  description String?
+  priceCents  Int
+  currency    String  @default("PHP")
+  active      Boolean @default(true)
 
   @@index([designId])
 }
 
 model Feature {
-  id        String          @id @default(cuid())
-  name      String          @unique
-  slug      String          @unique
-  group     String // e.g. "Booking", "Marketing", "Drawings"
-  /// Which product types this feature applies to.
-  appliesTo ProductType[]
-  designs   DesignFeature[]
+  id      String          @id @default(cuid())
+  name    String          @unique
+  slug    String          @unique
+  group   String // e.g. "Booking", "Content", "Marketing"
+  designs DesignFeature[]
 }
 
 model DesignFeature {

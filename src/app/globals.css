@@ -92,10 +92,8 @@
     @apply bg-background text-foreground font-sans;
     font-feature-settings: "ss01", "cv11";
   }
-  h1,
-  h2,
-  h3,
-  .font-display {
+  /* Storefront headings; template demos ([data-template]) bring their own type. */
+  :is(h1, h2, h3, .font-display):not([data-template] *) {
     @apply font-serif text-bay tracking-tight;
     font-optical-sizing: auto;
   }

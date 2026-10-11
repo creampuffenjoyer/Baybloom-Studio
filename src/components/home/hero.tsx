@@ -42,11 +42,11 @@ export function Hero({
           {...item(0.22)}
           className="mt-4 max-w-4xl text-5xl leading-[1.02] font-medium text-white sm:text-7xl"
         >
-          Designs for resorts that bloom.
+          Websites for hospitality brands that bloom.
         </motion.h1>
         <motion.p {...item(0.36)} className="mt-6 max-w-xl text-lg leading-relaxed text-white/85">
-          Ready-made resort websites, villa plans and interior concepts. Browse the
-          collection, compare tiers and make it yours.
+          Ready-made website templates for resorts, hotels, restaurants, spas and
+          venues. Try every live demo, compare tiers and launch in days.
         </motion.p>
         <motion.div {...item(0.5)} className="mt-9 flex flex-wrap items-center gap-3">
           <Button
@@ -55,7 +55,7 @@ export function Hero({
             className="h-12 rounded-full bg-hibiscus-strong px-7 text-base text-white hover:bg-hibiscus-strong/90"
           >
             <Link href="/designs">
-              Browse designs <ArrowRightIcon />
+              Browse templates <ArrowRightIcon />
             </Link>
           </Button>
           <Button

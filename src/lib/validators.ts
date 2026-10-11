@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-export const PRODUCT_TYPES = ["WEBSITE", "ARCHITECTURE", "INTERIOR"] as const;
 export const TIER_LEVELS = ["STARTER", "STANDARD", "PREMIUM"] as const;
 export const PUBLIC_SORTS = ["newest", "popular", "name"] as const;
 export const PRICE_SORTS = ["price-asc", "price-desc"] as const;
@@ -46,11 +45,6 @@ const one = z
   .transform((v) => (Array.isArray(v) ? v[0] : v));
 
 export const catalogQuerySchema = z.object({
-  type: csv.transform((v) =>
-    v.map((s) => s.toUpperCase()).filter((s): s is (typeof PRODUCT_TYPES)[number] =>
-      (PRODUCT_TYPES as readonly string[]).includes(s),
-    ),
-  ),
   category: csv,
   style: csv,
   tier: csv.transform((v) =>

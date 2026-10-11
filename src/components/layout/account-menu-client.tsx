@@ -9,7 +9,7 @@ import {
   ReceiptTextIcon,
   UserRoundIcon,
 } from "lucide-react";
-import { signOutAction } from "@/app/(auth)/actions";
+import { signOutAction } from "@/app/(store)/(auth)/actions";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

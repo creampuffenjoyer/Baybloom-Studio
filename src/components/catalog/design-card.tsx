@@ -6,7 +6,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { ArrowRightIcon, EyeIcon } from "lucide-react";
 import type { DesignCard as DesignCardData } from "@/lib/catalog";
-import { TIER_LABEL, TYPE_LABEL } from "@/lib/format";
+import { TIER_LABEL } from "@/lib/format";
 import { FavoriteButton } from "@/components/catalog/favorite-button";
 import { CompareToggle } from "@/components/compare/compare-toggle";
 import { PriceChip, type CardPrice } from "@/components/catalog/price-chip";
@@ -86,7 +86,8 @@ export function DesignCard({
 
       <div className="flex flex-1 flex-col gap-2 p-5">
         <p className="text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">
-          {TYPE_LABEL[design.type]} · {design.category.name}
+          {design.category.name}
+          {design.style && ` · ${design.style.name}`}
         </p>
         <h3 className="text-xl leading-snug font-medium">
           <Link
@@ -121,7 +122,7 @@ export function DesignCard({
           </div>
           <div className="space-y-3 p-6 pt-4">
             <p className="text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">
-              {TYPE_LABEL[design.type]} · {design.category.name}
+              {design.category.name}
               {design.style && ` · ${design.style.name}`}
             </p>
             <DialogTitle className="font-serif text-2xl font-medium text-bay">

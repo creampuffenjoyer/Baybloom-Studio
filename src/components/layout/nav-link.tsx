@@ -7,17 +7,17 @@ import { cn } from "@/lib/utils";
 const base =
   "relative rounded-md px-3 py-2 text-sm font-medium text-ink/75 transition-colors hover:text-bay focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none";
 
-function isActive(href: string, pathname: string, type: string | null) {
+function isActive(href: string, pathname: string, category: string | null) {
   const [path, query] = href.split("?");
   if (pathname !== path) return false;
-  const hrefType = new URLSearchParams(query ?? "").get("type");
-  return (hrefType ?? null) === (type?.toLowerCase() ?? null);
+  const hrefCategory = new URLSearchParams(query ?? "").get("category");
+  return (hrefCategory ?? null) === (category ?? null);
 }
 
 export function NavLink({ href, label }: { href: string; label: string }) {
   const pathname = usePathname();
-  const type = useSearchParams().get("type");
-  const active = isActive(href, pathname, type);
+  const category = useSearchParams().get("category");
+  const active = isActive(href, pathname, category);
   return (
     <Link
       href={href}

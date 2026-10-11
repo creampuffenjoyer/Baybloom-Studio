@@ -1,5 +1,5 @@
 import "server-only";
-import type { ProductType, TierLevel } from "@prisma/client";
+import type { TierLevel } from "@prisma/client";
 import { db } from "@/lib/db";
 import { formatPrice, TIER_LABEL } from "@/lib/format";
 
@@ -18,7 +18,7 @@ export function tierRank(level: TierLevel) {
 
 export type CartLine = {
   id: string;
-  design: { id: string; slug: string; title: string; heroImage: string; heroAlt: string; type: ProductType };
+  design: { id: string; slug: string; title: string; heroImage: string; heroAlt: string };
   tier: { id: string; level: TierLevel; label: string; priceCents: number };
   addons: { id: string; name: string; priceCents: number }[];
   lineCents: number;
@@ -34,14 +34,9 @@ export type Cart = {
   couponError: string | null;
 };
 
-function addonAllowed(
-  addon: { designId: string | null; productTypes: ProductType[]; active: boolean },
-  designId: string,
-  type: ProductType,
-) {
-  if (!addon.active) return false;
-  if (addon.designId) return addon.designId === designId;
-  return addon.productTypes.length === 0 || addon.productTypes.includes(type);
+/** Add-ons with no designId apply to every design. */
+function addonAllowed(addon: { designId: string | null; active: boolean }, designId: string) {
+  return addon.active && (!addon.designId || addon.designId === designId);
 }
 
 async function loadLines(userId: string): Promise<CartLine[]> {
@@ -52,7 +47,7 @@ async function loadLines(userId: string): Promise<CartLine[]> {
       id: true,
       addonIds: true,
       design: {
-        select: { id: true, slug: true, title: true, heroImage: true, heroAlt: true, type: true, status: true },
+        select: { id: true, slug: true, title: true, heroImage: true, heroAlt: true, status: true },
       },
       tier: { select: { id: true, level: true, priceCents: true, designId: true } },
     },
@@ -62,7 +57,7 @@ async function loadLines(userId: string): Promise<CartLine[]> {
   const addons = addonIds.length
     ? await db.addon.findMany({
         where: { id: { in: addonIds } },
-        select: { id: true, name: true, priceCents: true, designId: true, productTypes: true, active: true },
+        select: { id: true, name: true, priceCents: true, designId: true, active: true },
       })
     : [];
 
@@ -70,7 +65,7 @@ async function loadLines(userId: string): Promise<CartLine[]> {
     .filter((i) => i.design.status === "PUBLISHED" && i.tier.designId === i.design.id)
     .map((i) => {
       const lineAddons = addons
-        .filter((a) => i.addonIds.includes(a.id) && addonAllowed(a, i.design.id, i.design.type))
+        .filter((a) => i.addonIds.includes(a.id) && addonAllowed(a, i.design.id))
         .map(({ id, name, priceCents }) => ({ id, name, priceCents }));
       return {
         id: i.id,
@@ -80,7 +75,6 @@ async function loadLines(userId: string): Promise<CartLine[]> {
           title: i.design.title,
           heroImage: i.design.heroImage,
           heroAlt: i.design.heroAlt,
-          type: i.design.type,
         },
         tier: {
           id: i.tier.id,
@@ -161,17 +155,17 @@ export async function addToCart(
 ) {
   const design = await db.design.findFirst({
     where: { id: input.designId, status: "PUBLISHED" },
-    select: { id: true, type: true, tiers: { where: { id: input.tierId }, select: { id: true } } },
+    select: { id: true, tiers: { where: { id: input.tierId }, select: { id: true } } },
   });
   if (!design || design.tiers.length === 0) throw new CartError("That design or tier isn't available.");
 
   const addons = input.addonIds.length
     ? await db.addon.findMany({
         where: { id: { in: input.addonIds } },
-        select: { id: true, designId: true, productTypes: true, active: true },
+        select: { id: true, designId: true, active: true },
       })
     : [];
-  const addonIds = addons.filter((a) => addonAllowed(a, design.id, design.type)).map((a) => a.id);
+  const addonIds = addons.filter((a) => addonAllowed(a, design.id)).map((a) => a.id);
 
   await db.cartItem.upsert({
     where: { userId_designId: { userId, designId: design.id } },
