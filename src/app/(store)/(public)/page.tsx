@@ -12,6 +12,7 @@ import { Counter } from "@/components/home/counter";
 import { CardGridSkeleton, SessionCardGrid } from "@/components/catalog/card-grid";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
+import { INDUSTRY_COVERS } from "@/lib/templates";
 import { cn } from "@/lib/utils";
 
 export default async function HomePage() {
@@ -20,14 +21,13 @@ export default async function HomePage() {
     getCategoriesWithCovers(),
     getHomeStats(),
   ]);
-  const lead = featured[0];
 
   return (
     <>
       <Hero
-        image={lead?.heroImage ?? "/images/designs/coral-cove/00-turquoise-lagoon-and-white-sand-beach.webp"}
-        alt={lead?.heroAlt ?? ""}
-        featured={lead ? { title: lead.title, href: `/designs/${lead.slug}` } : null}
+        image={INDUSTRY_COVERS.resort.src}
+        alt={INDUSTRY_COVERS.resort.alt}
+        featured={{ title: "the Coral Cove demo", href: "/designs/coral-cove" }}
       />
 
       {/* Stats */}
@@ -95,9 +95,9 @@ export default async function HomePage() {
                 href={`/designs?category=${c.slug}`}
                 className="group relative flex h-full overflow-hidden rounded-2xl bg-bay focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
               >
-                {c.cover && (
+                {INDUSTRY_COVERS[c.slug] && (
                   <Image
-                    src={c.cover.heroImage}
+                    src={INDUSTRY_COVERS[c.slug].src}
                     alt=""
                     fill
                     sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"

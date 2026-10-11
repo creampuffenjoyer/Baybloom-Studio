@@ -16,6 +16,6 @@ export const TIER_LABEL: Record<TierLevel, string> = {
 
 export const IMAGE_KIND_LABEL: Record<ImageKind, string> = {
   PHOTO: "Photo",
-  MOCKUP: "Mockup",
-  SCREENSHOT: "Screenshot",
+  MOCKUP: "Mobile view",
+  SCREENSHOT: "Live demo screenshot",
 };

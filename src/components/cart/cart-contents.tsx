@@ -33,7 +33,7 @@ export function CartLines({ onNavigate }: { onNavigate?: () => void }) {
               onClick={onNavigate}
               className="relative h-16 w-20 shrink-0 overflow-hidden rounded-lg bg-sand-deep"
             >
-              <Image src={l.design.heroImage} alt="" fill sizes="80px" className="object-cover" />
+              <Image src={l.design.heroImage} alt="" fill sizes="80px" className="object-cover object-top" />
             </Link>
             <div className="min-w-0 flex-1">
               <Link

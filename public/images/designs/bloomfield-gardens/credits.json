@@ -1,0 +1,62 @@
+[
+  {
+    "file": "/images/designs/bloomfield-gardens/00-home-page.webp",
+    "thumb": "/images/designs/bloomfield-gardens/thumbs/00-home-page.webp",
+    "alt": "Bloomfield Gardens template: home page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/bloomfield-gardens",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/bloomfield-gardens/01-spaces-page.webp",
+    "thumb": "/images/designs/bloomfield-gardens/thumbs/01-spaces-page.webp",
+    "alt": "Bloomfield Gardens template: spaces page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/bloomfield-gardens/spaces",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/bloomfield-gardens/02-date-check-and-inquiry.webp",
+    "thumb": "/images/designs/bloomfield-gardens/thumbs/02-date-check-and-inquiry.webp",
+    "alt": "Bloomfield Gardens template: date check and inquiry on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/bloomfield-gardens/inquire",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/bloomfield-gardens/03-wedding-packages.webp",
+    "thumb": "/images/designs/bloomfield-gardens/thumbs/03-wedding-packages.webp",
+    "alt": "Bloomfield Gardens template: wedding packages on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/bloomfield-gardens/weddings",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/bloomfield-gardens/90-mobile-home.webp",
+    "thumb": "/images/designs/bloomfield-gardens/thumbs/90-mobile-home.webp",
+    "alt": "Bloomfield Gardens template: home page on a phone",
+    "kind": "MOCKUP",
+    "width": 780,
+    "height": 1688,
+    "author": "",
+    "source": "/demo/bloomfield-gardens",
+    "license": "",
+    "licenseUrl": null
+  }
+]

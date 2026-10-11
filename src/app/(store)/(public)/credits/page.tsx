@@ -2,20 +2,22 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getImageCredits } from "@/lib/catalog";
+import { TEMPLATE_PHOTOS } from "@/lib/templates";
 
 export const metadata: Metadata = {
   title: "Image credits",
-  description: "Photographers and licenses for the sample imagery used across the catalog.",
+  description: "Photographers and licences for the sample photography used in the template demos.",
 };
 
 export default async function CreditsPage() {
-  const designs = await getImageCredits();
+  // Only templates that are published in the catalog.
+  const designs = (await getImageCredits()).filter((d) => TEMPLATE_PHOTOS[d.slug]);
 
   return (
     <div className="container-page max-w-5xl py-16">
       <h1 className="text-4xl font-medium sm:text-5xl">Image credits</h1>
       <p className="mt-4 max-w-2xl leading-relaxed text-muted-foreground">
-        Sample photography in the catalog comes from{" "}
+        The template demos use sample photography from{" "}
         <a
           href="https://commons.wikimedia.org/"
           className="text-bay underline underline-offset-4"
@@ -24,47 +26,37 @@ export default async function CreditsPage() {
         >
           Wikimedia Commons
         </a>{" "}
-        under free licenses (CC0, CC BY and CC BY-SA). Images were resized and converted to
-        WebP. They illustrate each design’s direction and are not the deliverables
-        themselves.
+        under free licences (CC0, CC BY and CC BY-SA), resized and converted to WebP. Catalog images are
+        screenshots of those demos. Each template ships with its own credits page; replace the sample
+        photos with your own before launch.
       </p>
 
       <div className="mt-12 space-y-14">
         {designs.map((d) => (
           <section key={d.slug} aria-labelledby={`credits-${d.slug}`}>
-            <h2 id={`credits-${d.slug}`} className="text-2xl font-medium">
-              <Link href={`/designs/${d.slug}`} className="hover:underline">
-                {d.title}
+            <div className="flex flex-wrap items-baseline justify-between gap-3">
+              <h2 id={`credits-${d.slug}`} className="text-2xl font-medium">
+                <Link href={`/designs/${d.slug}`} className="hover:underline">
+                  {d.title}
+                </Link>
+              </h2>
+              <Link href={`/demo/${d.slug}/credits`} className="text-sm text-bay underline underline-offset-4">
+                Credits page in the demo
               </Link>
-            </h2>
+            </div>
             <ul className="mt-5 grid gap-4 sm:grid-cols-2">
-              {d.images.map((img) => (
-                <li key={img.id} className="flex gap-4 rounded-2xl bg-white p-3 ring-1 ring-border/70">
+              {TEMPLATE_PHOTOS[d.slug].map((img) => (
+                <li key={img.src} className="flex gap-4 rounded-2xl bg-white p-3 ring-1 ring-border/70">
                   <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-sand-deep">
-                    <Image
-                      src={img.thumbUrl ?? img.url}
-                      alt=""
-                      fill
-                      sizes="112px"
-                      className="object-cover"
-                    />
+                    <Image src={img.src} alt="" fill sizes="112px" className="object-cover" />
                   </div>
                   <div className="min-w-0 text-sm">
                     <p className="line-clamp-2 text-ink">{img.alt}</p>
                     <p className="mt-1 text-muted-foreground">
                       Photo:{" "}
-                      {img.creditUrl ? (
-                        <a
-                          href={img.creditUrl}
-                          className="underline underline-offset-2 hover:text-bay"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {img.creditName}
-                        </a>
-                      ) : (
-                        img.creditName
-                      )}
+                      <a href={img.source} className="underline underline-offset-2 hover:text-bay" target="_blank" rel="noopener noreferrer">
+                        {img.author}
+                      </a>
                       {" · "}
                       {img.licenseUrl ? (
                         <a

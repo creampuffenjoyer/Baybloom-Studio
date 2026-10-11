@@ -5,9 +5,10 @@ import { Suspense } from "react";
 import {
   CheckCircle2Icon,
   ChevronRightIcon,
-  ExternalLinkIcon,
   FileTextIcon,
+  MonitorSmartphoneIcon,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   getDesignBySlug,
   getDesignPricing,
@@ -83,7 +84,8 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
       return acc;
     }, {}),
   );
-  const photos = design.images.filter((i) => i.kind === "PHOTO");
+  const shots = design.images.filter((i) => i.kind !== "MOCKUP");
+  const mobileShot = design.images.find((i) => i.kind === "MOCKUP");
 
   return (
     <article>
@@ -117,8 +119,19 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
             {design.summary}
           </p>
 
+          {design.demoUrl && (
+            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+              <Button asChild size="lg" className="h-12 rounded-full px-6 text-base">
+                <Link href={design.demoUrl}>
+                  <MonitorSmartphoneIcon /> Try the live demo
+                </Link>
+              </Button>
+              <p className="text-sm text-muted-foreground">Every page works, including the booking flow.</p>
+            </div>
+          )}
+
           <div className="mt-8">
-            <DesignGallery images={design.images} title={design.title} />
+            <DesignGallery images={shots} title={design.title} />
           </div>
 
         </div>
@@ -138,36 +151,27 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
               />
             </Suspense>
             {design.demoUrl && (
-              <a
+              <Link
                 href={design.demoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="mt-5 flex items-center justify-center gap-2 text-sm font-medium text-bay underline-offset-4 hover:underline"
               >
-                View live demo <ExternalLinkIcon className="size-3.5" />
-              </a>
+                <MonitorSmartphoneIcon className="size-4" /> Open the live demo
+              </Link>
             )}
           </div>
         </aside>
       </div>
 
-      {photos.length >= 3 && (
+      {shots.length > 0 && mobileShot && (
         <section className="mt-20 bg-gradient-to-b from-transparent via-sand-deep/70 to-transparent py-12">
           <div className="container-page">
             <Reveal className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-medium">Desktop and mobile, out of the box</h2>
               <p className="mt-3 text-muted-foreground">
-                A preview of the template’s home page with sample content. Every page is
-                fully responsive.
+                The real home page, captured from the live demo. Every page is fully responsive.
               </p>
             </Reveal>
-            <DeviceShowcase
-              name={design.title}
-              tagline={design.summary.split(/[.,—]/)[0]}
-              hero={photos[0]}
-              secondary={photos[1]}
-              tertiary={photos[2]}
-            />
+            <DeviceShowcase desktop={shots[0]} mobile={mobileShot} demoUrl={design.demoUrl} />
           </div>
         </section>
       )}

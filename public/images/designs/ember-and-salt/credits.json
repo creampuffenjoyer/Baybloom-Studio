@@ -1,0 +1,62 @@
+[
+  {
+    "file": "/images/designs/ember-and-salt/00-home-page.webp",
+    "thumb": "/images/designs/ember-and-salt/thumbs/00-home-page.webp",
+    "alt": "Ember & Salt template: home page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/ember-and-salt",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/ember-and-salt/01-menu-page.webp",
+    "thumb": "/images/designs/ember-and-salt/thumbs/01-menu-page.webp",
+    "alt": "Ember & Salt template: menu page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/ember-and-salt/menu",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/ember-and-salt/02-table-reservations.webp",
+    "thumb": "/images/designs/ember-and-salt/thumbs/02-table-reservations.webp",
+    "alt": "Ember & Salt template: table reservations on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/ember-and-salt/reserve",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/ember-and-salt/03-private-dining-page.webp",
+    "thumb": "/images/designs/ember-and-salt/thumbs/03-private-dining-page.webp",
+    "alt": "Ember & Salt template: private dining page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/ember-and-salt/private-dining",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/ember-and-salt/90-mobile-home.webp",
+    "thumb": "/images/designs/ember-and-salt/thumbs/90-mobile-home.webp",
+    "alt": "Ember & Salt template: home page on a phone",
+    "kind": "MOCKUP",
+    "width": 780,
+    "height": 1688,
+    "author": "",
+    "source": "/demo/ember-and-salt",
+    "license": "",
+    "licenseUrl": null
+  }
+]

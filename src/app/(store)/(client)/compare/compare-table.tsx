@@ -81,7 +81,7 @@ export function CompareTable({ columns }: { columns: CompareColumn[] }) {
                 className="px-3 pb-5"
               >
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-sand-deep">
-                  <Image src={c.heroImage} alt={c.heroAlt} fill sizes="320px" className="object-cover" />
+                  <Image src={c.heroImage} alt={c.heroAlt} fill sizes="320px" className="object-cover object-top" />
                   <button
                     type="button"
                     onClick={() => removeColumn(c.slug)}

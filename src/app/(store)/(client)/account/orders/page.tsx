@@ -72,7 +72,7 @@ async function Orders() {
                 return (
                   <li key={item.id} className="flex items-center gap-4 py-4">
                     <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-lg bg-sand-deep">
-                      <Image src={item.design.heroImage} alt="" fill sizes="80px" className="object-cover" />
+                      <Image src={item.design.heroImage} alt="" fill sizes="80px" className="object-cover object-top" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <Link href={`/designs/${item.design.slug}`} className="font-medium text-bay hover:underline">

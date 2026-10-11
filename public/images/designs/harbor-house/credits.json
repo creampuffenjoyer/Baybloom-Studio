@@ -1,0 +1,62 @@
+[
+  {
+    "file": "/images/designs/harbor-house/00-home-page.webp",
+    "thumb": "/images/designs/harbor-house/thumbs/00-home-page.webp",
+    "alt": "Harbor House template: home page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/harbor-house",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/harbor-house/01-rooms-as-postcards.webp",
+    "thumb": "/images/designs/harbor-house/thumbs/01-rooms-as-postcards.webp",
+    "alt": "Harbor House template: rooms as postcards on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/harbor-house/rooms",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/harbor-house/02-local-guide.webp",
+    "thumb": "/images/designs/harbor-house/thumbs/02-local-guide.webp",
+    "alt": "Harbor House template: local guide on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/harbor-house/guide",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/harbor-house/03-booking-flow.webp",
+    "thumb": "/images/designs/harbor-house/thumbs/03-booking-flow.webp",
+    "alt": "Harbor House template: booking flow on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/harbor-house/book",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/harbor-house/90-mobile-home.webp",
+    "thumb": "/images/designs/harbor-house/thumbs/90-mobile-home.webp",
+    "alt": "Harbor House template: home page on a phone",
+    "kind": "MOCKUP",
+    "width": 780,
+    "height": 1688,
+    "author": "",
+    "source": "/demo/harbor-house",
+    "license": "",
+    "licenseUrl": null
+  }
+]

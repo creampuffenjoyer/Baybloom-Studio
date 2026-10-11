@@ -219,9 +219,10 @@ async function main() {
           width: c.width,
           height: c.height,
           position,
-          creditName: c.author,
-          creditUrl: c.source,
-          license: c.license,
+          // Screenshots carry no photo credit of their own.
+          creditName: c.author || null,
+          creditUrl: c.author ? c.source : null,
+          license: c.license || null,
           licenseUrl: c.licenseUrl,
         })),
       }),
