@@ -1,0 +1,232 @@
+{
+  "hero": {
+    "src": "/templates/coral-cove/hero.webp",
+    "alt": "Turquoise lagoon and white-sand beach with a wooden pier and sun loungers under palms",
+    "width": 1920,
+    "height": 1078,
+    "author": "Kp93",
+    "source": "https://commons.wikimedia.org/wiki/File:Pigeon_Point_beach.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "villas-row": {
+    "src": "/templates/coral-cove/villas-row.webp",
+    "alt": "Thatched-roof beach villas lined up behind a resort pool",
+    "width": 1400,
+    "height": 992,
+    "author": "Bernard Spragg. NZ from Christchurch, New Zealand",
+    "source": "https://commons.wikimedia.org/wiki/File:Playa_Tropical_Resort_Hotel.Currimao._(15426287033).jpg",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  },
+  "pool": {
+    "src": "/templates/coral-cove/pool.webp",
+    "alt": "Curved resort pool with sun loungers overlooking the sea",
+    "width": 1400,
+    "height": 1050,
+    "author": "HOBOPOCC",
+    "source": "https://commons.wikimedia.org/wiki/File:Odessa_Arcadia_Plaza_Beach_Sea_Water_Sweaming_Pool.JPG",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "palms-dusk": {
+    "src": "/templates/coral-cove/palms-dusk.webp",
+    "alt": "Palm silhouettes reflected in still water at a pink sunset",
+    "width": 1400,
+    "height": 933,
+    "author": "Recal Media recalmedia",
+    "source": "https://commons.wikimedia.org/wiki/File:Negombo_Beach_resort_pool_(Unsplash).jpg",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  },
+  "pool-edge": {
+    "src": "/templates/coral-cove/pool-edge.webp",
+    "alt": "Pool edge with a steel ladder and an ocean view at golden hour",
+    "width": 1400,
+    "height": 1050,
+    "author": "Mats Sjödin",
+    "source": "https://commons.wikimedia.org/wiki/File:Swimming_pool_overlooking_the_Bohol_sea_-_panoramio.jpg",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+  },
+  "sunset": {
+    "src": "/templates/coral-cove/sunset.webp",
+    "alt": "Orange sunset over the sea framed by palm trunks, with a sailboat offshore",
+    "width": 1400,
+    "height": 1050,
+    "author": "Ray in Manila",
+    "source": "https://commons.wikimedia.org/wiki/File:Pacific_Island_Sunset,_Boracay,_Philippines.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "boardwalk": {
+    "src": "/templates/coral-cove/boardwalk.webp",
+    "alt": "Long boardwalk leading to overwater villas above a turquoise lagoon",
+    "width": 1920,
+    "height": 1028,
+    "author": "Martin Falbisoner",
+    "source": "https://commons.wikimedia.org/wiki/File:Diamonds_Thudufushi_Beach_and_Water_Villas,_May_2017_-04.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "overwater-row": {
+    "src": "/templates/coral-cove/overwater-row.webp",
+    "alt": "Row of white-roofed overwater villas linked by a curving jetty",
+    "width": 1400,
+    "height": 586,
+    "author": "Martin Falbisoner",
+    "source": "https://commons.wikimedia.org/wiki/File:Diamonds_Thudufushi_Beach_and_Water_Villas,_May_2017_-03.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "jetty": {
+    "src": "/templates/coral-cove/jetty.webp",
+    "alt": "Jetty to overwater villas beside a palm-covered island",
+    "width": 1400,
+    "height": 707,
+    "author": "Martin Falbisoner",
+    "source": "https://commons.wikimedia.org/wiki/File:Diamonds_Thudufushi_Beach_and_Water_Villas,_May_2017_-10.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "plunge-pool": {
+    "src": "/templates/coral-cove/plunge-pool.webp",
+    "alt": "Private plunge pool under a timber pergola facing the sea",
+    "width": 1400,
+    "height": 933,
+    "author": "Cayo Espanto Private Island",
+    "source": "https://commons.wikimedia.org/wiki/File:Infinity_Plunge_Pool_at_Cayo_Espanto_Private_Island.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "aerial-villa": {
+    "src": "/templates/coral-cove/aerial-villa.webp",
+    "alt": "Aerial view of a villa with a rectangular pool set among gardens and olive trees",
+    "width": 1400,
+    "height": 788,
+    "author": "Rene Kozlović",
+    "source": "https://commons.wikimedia.org/wiki/File:Villa_GioAn_with_private_sport_area_and_pool_-_panoramio.jpg",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+  },
+  "spa": {
+    "src": "/templates/coral-cove/spa.webp",
+    "alt": "Spa treatment room with a massage bed and soaking tub",
+    "width": 1400,
+    "height": 1050,
+    "author": "Missvain",
+    "source": "https://commons.wikimedia.org/wiki/File:Lounge_at_the_Spa_at_Silver_Legacy_-_2021-11-14_-_Sarah_Stierch_01.jpg",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
+  },
+  "reef-fish": {
+    "src": "/templates/coral-cove/reef-fish.webp",
+    "alt": "Snorkellers above a reef of branching coral and a school of blue fish",
+    "width": 1920,
+    "height": 1371,
+    "author": "John Brooks, National Park Service photographer",
+    "source": "https://commons.wikimedia.org/wiki/File:Elkhorn_Coral_Biscayne_NP1.jpg",
+    "license": "Public domain",
+    "licenseUrl": null
+  },
+  "coral": {
+    "src": "/templates/coral-cove/coral.webp",
+    "alt": "Close view of pink, white and purple corals on a shallow reef",
+    "width": 1920,
+    "height": 1440,
+    "author": "Gökhan Tolun",
+    "source": "https://commons.wikimedia.org/wiki/File:Great_Barrier_Reef_Corals.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "snorkeler": {
+    "src": "/templates/coral-cove/snorkeler.webp",
+    "alt": "Snorkeller swimming over table corals in clear blue water",
+    "width": 1920,
+    "height": 1440,
+    "author": "Christo.j.brown",
+    "source": "https://commons.wikimedia.org/wiki/File:GBR-snorkeling-chris-brown.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "bangka": {
+    "src": "/templates/coral-cove/bangka.webp",
+    "alt": "White outrigger bangka boat pulled up on a turquoise beach",
+    "width": 1920,
+    "height": 1280,
+    "author": "Vyacheslav Argenberg",
+    "source": "https://commons.wikimedia.org/wiki/File:Malapascua_(island),_Bangka,_Banca_boat,_Philippines.jpg",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
+  },
+  "sandbar": {
+    "src": "/templates/coral-cove/sandbar.webp",
+    "alt": "Aerial view of a white sandbar curling into turquoise water, with boats moored nearby",
+    "width": 1920,
+    "height": 1280,
+    "author": "Michael Angelo Luna",
+    "source": "https://commons.wikimedia.org/wiki/File:Picturesque_Guyam_Island,_Siargao.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "paraw": {
+    "src": "/templates/coral-cove/paraw.webp",
+    "alt": "Paraw sailboat with a blue sail resting on a white-sand beach",
+    "width": 1920,
+    "height": 1417,
+    "author": "Freyire",
+    "source": "https://commons.wikimedia.org/wiki/File:Boracay_Babe.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "beach-bar": {
+    "src": "/templates/coral-cove/beach-bar.webp",
+    "alt": "Thatched beach bar with string lights, backlit by the low sun",
+    "width": 1920,
+    "height": 1277,
+    "author": "PattayaPatrol",
+    "source": "https://commons.wikimedia.org/wiki/File:DZ6_2656_Sunset_pours_through_the_tiki_bar_as_the_beach_readies_for_evening_-_cocktails_laughter_and_island_vibes.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "bedroom": {
+    "src": "/templates/coral-cove/bedroom.webp",
+    "alt": "Canopy bed with white drapes and red cushions between bedside lamps",
+    "width": 1600,
+    "height": 1200,
+    "author": "Matt @ PEK from Taipei, Taiwan",
+    "source": "https://commons.wikimedia.org/wiki/File:Le_Meridien_Nirwana_Bali_One_bedroom_villa_(3031923188)_(2).jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "bedroom-2": {
+    "src": "/templates/coral-cove/bedroom-2.webp",
+    "alt": "Bed with plump cushions looking out through open doors to a garden pavilion",
+    "width": 1600,
+    "height": 1200,
+    "author": "Matt @ PEK from Taipei, Taiwan",
+    "source": "https://commons.wikimedia.org/wiki/File:Le_Meridien_Nirwana_Bali_One_bedroom_villa_(3031082811).jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "dining": {
+    "src": "/templates/coral-cove/dining.webp",
+    "alt": "Seafood platter of prawns, mussels, squid and fish with lemon and herbs",
+    "width": 1920,
+    "height": 1440,
+    "author": "Gerda Arendt",
+    "source": "https://commons.wikimedia.org/wiki/File:Platter_of_grilled_seafood,_Charco_Azul,_La_Palma.jpg",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  },
+  "beach-dinner": {
+    "src": "/templates/coral-cove/beach-dinner.webp",
+    "alt": "Tables set along a seawall at dusk, lit by warm lanterns",
+    "width": 1920,
+    "height": 1280,
+    "author": "PattayaPatrol",
+    "source": "https://commons.wikimedia.org/wiki/File:DFC_0758_Seaside_dinner_at_dusk_-_candlelit_tables_line_the_shoreline_as_gentle_waves_lap_the_beach_and_city_lights_shimmer_on_the_horizon.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  }
+}
