@@ -1,11 +1,14 @@
 "use client";
 
-import { createContext, use, useCallback, useEffect, useMemo, useState } from "react";
+import { createContext, Suspense, use, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { createRequestQueue } from "@/lib/request-queue";
 import { toast } from "sonner";
 import type { Cart } from "@/lib/cart";
 
 type CartContext = {
   cart: Cart | null;
+  loadState: "loading" | "ready" | "error" | "signed-out";
   open: boolean;
   setOpen: (open: boolean) => void;
   busy: boolean;
@@ -18,12 +21,28 @@ type CartContext = {
 
 const Ctx = createContext<CartContext | null>(null);
 
+function CartSync({ refresh }: { refresh: () => Promise<void> }) {
+  const pathname = usePathname();
+  useEffect(() => {
+    const reload = () => { void refresh(); };
+    reload();
+    window.addEventListener("focus", reload);
+    return () => window.removeEventListener("focus", reload);
+  }, [refresh, pathname]);
+  return null;
+}
+
 async function request(url: string, init?: RequestInit) {
   const res = await fetch(url, {
     ...init,
+    signal: AbortSignal.timeout(15_000),
+    cache: "no-store",
     headers: { "Content-Type": "application/json", ...init?.headers },
   });
-  const body = await res.json().catch(() => ({}));
+  const body = await res.json();
+  if (res.ok && (!Array.isArray(body?.lines) || !Number.isInteger(body?.totalCents))) {
+    throw new Error("Invalid cart response");
+  }
   return { ok: res.ok, status: res.status, body };
 }
 
@@ -31,58 +50,60 @@ async function request(url: string, init?: RequestInit) {
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<Cart | null>(null);
   const [open, setOpen] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const [pending, setPending] = useState(0);
+  const busy = pending > 0;
+  const [loadState, setLoadState] = useState<CartContext["loadState"]>("loading");
+  const queue = useRef(createRequestQueue());
 
-  const refresh = useCallback(async () => {
-    const res = await request("/api/cart");
-    setCart(res.ok ? (res.body as Cart) : null);
+  const sync = useCallback((url: string, init?: RequestInit) => {
+    setPending((n) => n + 1);
+    return queue.current(async () => {
+      try {
+        const res = await request(url, init);
+        if (res.ok) {
+          setCart(res.body as Cart);
+          setLoadState("ready");
+          return null;
+        }
+        if (res.status === 401) {
+          setCart(null);
+          setLoadState("signed-out");
+        } else if (res.status >= 500 || !init?.method) {
+          setLoadState("error");
+        }
+        return typeof res.body.error === "string" ? res.body.error : "Couldn't update your cart. Please retry.";
+      } catch {
+        setLoadState("error");
+        return "Connection interrupted. Refresh your cart before trying again.";
+      } finally {
+        setPending((n) => n - 1);
+      }
+    });
   }, []);
 
-  useEffect(() => {
-    // Initial sync with the server cart (an external system).
-    void request("/api/cart").then((res) => setCart(res.ok ? (res.body as Cart) : null));
-  }, []);
+  const refresh = useCallback(async () => { await sync("/api/cart"); }, [sync]);
 
   const add = useCallback<CartContext["add"]>(async (input) => {
-    setBusy(true);
-    try {
-      const res = await request("/api/cart", { method: "POST", body: JSON.stringify(input) });
-      if (!res.ok) {
-        toast.error(res.body.error ?? "Couldn't add that to your cart.");
-        return false;
-      }
-      setCart(res.body as Cart);
-      return true;
-    } finally {
-      setBusy(false);
-    }
-  }, []);
-
+    const error = await sync("/api/cart", { method: "POST", body: JSON.stringify(input) });
+    if (error) toast.error(error);
+    return !error;
+  }, [sync]);
   const remove = useCallback<CartContext["remove"]>(async (itemId) => {
-    // Optimistic: drop the line immediately; the response carries real totals.
-    setCart((c) => (c ? { ...c, lines: c.lines.filter((l) => l.id !== itemId) } : c));
-    const res = await request(`/api/cart/${itemId}`, { method: "DELETE" });
-    if (res.ok) setCart(res.body as Cart);
-    else void refresh();
-  }, [refresh]);
-
-  const applyCoupon = useCallback<CartContext["applyCoupon"]>(async (code) => {
-    const res = await request("/api/cart/coupon", { method: "POST", body: JSON.stringify({ code }) });
-    if (!res.ok) return (res.body.error as string) ?? "That code isn't valid.";
-    setCart(res.body as Cart);
-    return null;
-  }, []);
-
+    const error = await sync(`/api/cart/${encodeURIComponent(itemId)}`, { method: "DELETE" });
+    if (error) toast.error(error);
+  }, [sync]);
+  const applyCoupon = useCallback<CartContext["applyCoupon"]>((code) =>
+    sync("/api/cart/coupon", { method: "POST", body: JSON.stringify({ code }) }), [sync]);
   const removeCoupon = useCallback(async () => {
-    const res = await request("/api/cart/coupon", { method: "DELETE" });
-    if (res.ok) setCart(res.body as Cart);
-  }, []);
+    const error = await sync("/api/cart/coupon", { method: "DELETE" });
+    if (error) toast.error(error);
+  }, [sync]);
 
   const value = useMemo(
-    () => ({ cart, open, setOpen, busy, refresh, add, remove, applyCoupon, removeCoupon }),
-    [cart, open, busy, refresh, add, remove, applyCoupon, removeCoupon],
+    () => ({ cart, loadState, open, setOpen, busy, refresh, add, remove, applyCoupon, removeCoupon }),
+    [cart, loadState, open, busy, refresh, add, remove, applyCoupon, removeCoupon],
   );
-  return <Ctx value={value}>{children}</Ctx>;
+  return <Ctx value={value}><Suspense fallback={null}><CartSync refresh={refresh} /></Suspense>{children}</Ctx>;
 }
 
 export function useCart() {

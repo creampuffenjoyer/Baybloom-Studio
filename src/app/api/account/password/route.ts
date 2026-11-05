@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   if (!user?.email) {
     return Response.json({ message: "Your session expired. Please log in again." }, { status: 401 });
   }
-  if (!rateLimit(`pw-change:${user.id}`, 5, 15 * 60_000).ok) {
+  if (!(await rateLimit(`pw-change:${user.id}`, 5, 15 * 60_000)).ok) {
     return Response.json({ message: "Too many attempts. Please wait a few minutes." }, { status: 429 });
   }
 

@@ -1,0 +1,222 @@
+{
+  "glasshouse-dinner": {
+    "src": "/templates/bloomfield-gardens/glasshouse-dinner.webp",
+    "alt": "Glasshouse laid for a wedding dinner with white-draped tables",
+    "width": 1920,
+    "height": 1268,
+    "author": "Rodhullandemu",
+    "source": "https://commons.wikimedia.org/wiki/File:Inside_Isla_Gladstone_Convervatory_2018-1.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "glasshouse": {
+    "src": "/templates/bloomfield-gardens/glasshouse.webp",
+    "alt": "White Victorian glasshouse with an ornate domed roof",
+    "width": 1920,
+    "height": 1280,
+    "author": "Chris Denny",
+    "source": "https://commons.wikimedia.org/wiki/File:Conservatory,_Horniman_Museum._-_geograph.org.uk_-_1742969.jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "glasshouse-inside": {
+    "src": "/templates/bloomfield-gardens/glasshouse-inside.webp",
+    "alt": "Green iron glasshouse with three bright chairs among the plants",
+    "width": 1920,
+    "height": 1280,
+    "author": "Daderot",
+    "source": "https://commons.wikimedia.org/wiki/File:Orangery_interior_-_Royal_Castle_of_Laeken_-_Brussels,_Belgium_-_DSC07574.jpg",
+    "license": "Public domain",
+    "licenseUrl": null
+  },
+  "orangery": {
+    "src": "/templates/bloomfield-gardens/orangery.webp",
+    "alt": "Orangery with gothic windows, potted citrus and a long bench",
+    "width": 1920,
+    "height": 1431,
+    "author": "Humphrey Bolton",
+    "source": "https://commons.wikimedia.org/wiki/File:The_Orangery,_Knole_-_geograph.org.uk_-_4657561.jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "orangery-out": {
+    "src": "/templates/bloomfield-gardens/orangery-out.webp",
+    "alt": "Pale stone orangery with tall arched windows in spring sun",
+    "width": 1920,
+    "height": 1440,
+    "author": "Elliott Brown from Birmingham, United Kingdom",
+    "source": "https://commons.wikimedia.org/wiki/File:The_Orangery_at_Blickling_Hall_(4601803657).jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "barn": {
+    "src": "/templates/bloomfield-gardens/barn.webp",
+    "alt": "Empty barn with white posts, festoon lights and a concrete floor",
+    "width": 1920,
+    "height": 897,
+    "author": "Fishkirk",
+    "source": "https://commons.wikimedia.org/wiki/File:MN_Wedding_Venue_in_Red_Wing_ground_floor_2024.jpg",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  },
+  "barn-dinner": {
+    "src": "/templates/bloomfield-gardens/barn-dinner.webp",
+    "alt": "Long tables under the beams of a timber barn, set for a wedding feast",
+    "width": 1600,
+    "height": 1200,
+    "author": "Julian Paren",
+    "source": "https://commons.wikimedia.org/wiki/File:Wedding_reception_at_The_Suffolk_Barn,_Hawstead_Place_-_geograph.org.uk_-_8089956.jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "florals": {
+    "src": "/templates/bloomfield-gardens/florals.webp",
+    "alt": "Tall stands of hydrangea and rose arrangements being prepared",
+    "width": 1920,
+    "height": 1272,
+    "author": "Yelkrokoyade",
+    "source": "https://commons.wikimedia.org/wiki/File:Flower_table_decoration_Wedding_in_Budapest.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "table": {
+    "src": "/templates/bloomfield-gardens/table.webp",
+    "alt": "Place setting beside a low centrepiece of white roses",
+    "width": 1920,
+    "height": 1281,
+    "author": "Bhullargraphic",
+    "source": "https://commons.wikimedia.org/wiki/File:Legant_table_setting_with_white_floral_centerpiece.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "rose-tunnel": {
+    "src": "/templates/bloomfield-gardens/rose-tunnel.webp",
+    "alt": "Long tunnel of climbing roses over a paved garden path",
+    "width": 1920,
+    "height": 1440,
+    "author": "Rick Obst",
+    "source": "https://commons.wikimedia.org/wiki/File:Arches_with_climbing_roses_in_Owen_Memorial_Rose_Garden.jpg",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
+  },
+  "rose-arch": {
+    "src": "/templates/bloomfield-gardens/rose-arch.webp",
+    "alt": "Pink roses and lavender framing a view into a formal garden",
+    "width": 1920,
+    "height": 1437,
+    "author": "RNRS Rose Society",
+    "source": "https://commons.wikimedia.org/wiki/File:Rose_Arch_at_RNRS_gardens_of_the_Rose.JPG",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "rose-gate": {
+    "src": "/templates/bloomfield-gardens/rose-gate.webp",
+    "alt": "Arch of white rambling roses over a garden gate",
+    "width": 1920,
+    "height": 1440,
+    "author": "京浜にけ",
+    "source": "https://commons.wikimedia.org/wiki/File:Moroyama_Takinoiri_Rose_Garden_Entrance_1.JPG",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "pergola": {
+    "src": "/templates/bloomfield-gardens/pergola.webp",
+    "alt": "Pergola heavy with white roses leading through the garden",
+    "width": 1920,
+    "height": 1192,
+    "author": "Pseudopanax at English Wikipedia",
+    "source": "https://commons.wikimedia.org/wiki/File:Path_through_arbors_in_Frimley_Park%27s_rose_garden.jpg",
+    "license": "Public domain",
+    "licenseUrl": null
+  },
+  "ruin": {
+    "src": "/templates/bloomfield-gardens/ruin.webp",
+    "alt": "Ivy-covered brick ruin with gothic arches on a lawn",
+    "width": 1920,
+    "height": 1080,
+    "author": "Acabashi",
+    "source": "https://commons.wikimedia.org/wiki/File:Old_Manor_House_Garden_folly_Capel_Manor_Enfield_London_England_05.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "pond": {
+    "src": "/templates/bloomfield-gardens/pond.webp",
+    "alt": "Timber footbridge over a lily pond in a walled garden",
+    "width": 1920,
+    "height": 1280,
+    "author": "Acabashi",
+    "source": "https://commons.wikimedia.org/wiki/File:Bridge_Old_Manor_House_folly_Capel_Manor_Enfield_London_England.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "lawn": {
+    "src": "/templates/bloomfield-gardens/lawn.webp",
+    "alt": "Wide lawn under a great cedar tree",
+    "width": 1920,
+    "height": 1440,
+    "author": "Johan Doe",
+    "source": "https://commons.wikimedia.org/wiki/File:ChettleManorLawn.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "house": {
+    "src": "/templates/bloomfield-gardens/house.webp",
+    "alt": "Country house glimpsed through tall trees across a lawn",
+    "width": 1920,
+    "height": 1275,
+    "author": "Finetooth",
+    "source": "https://commons.wikimedia.org/wiki/File:Bishop%27s_Close_manor.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "night-path": {
+    "src": "/templates/bloomfield-gardens/night-path.webp",
+    "alt": "Garden path at night under strings of festoon lights",
+    "width": 1920,
+    "height": 1280,
+    "author": "PattayaPatrol",
+    "source": "https://commons.wikimedia.org/wiki/File:DFC_4625_Twinkling_string_lights_guide_the_way_to_a_cozy_garden_caf%C3%A9_on_a_warm_evening.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "bouquet": {
+    "src": "/templates/bloomfield-gardens/bouquet.webp",
+    "alt": "Bride in lace holding a bouquet of pale pink roses",
+    "width": 1920,
+    "height": 1280,
+    "author": "Alvin Mahmudov alvinmahmudov",
+    "source": "https://commons.wikimedia.org/wiki/File:22,_Bridal_bouquet_(Unsplash).jpg",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  },
+  "wildflowers": {
+    "src": "/templates/bloomfield-gardens/wildflowers.webp",
+    "alt": "Loose bouquet of white daisies and wildflowers in a jar",
+    "width": 1920,
+    "height": 1280,
+    "author": "Petro Stelte",
+    "source": "https://commons.wikimedia.org/wiki/File:Flower-bouquet-wild-flowers-Sitia-Crete-Greece.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "bell-tent": {
+    "src": "/templates/bloomfield-gardens/bell-tent.webp",
+    "alt": "Canvas bell tent on a wooden platform in late afternoon sun",
+    "width": 1400,
+    "height": 1050,
+    "author": "Alex Graves",
+    "source": "https://commons.wikimedia.org/wiki/File:Glamping_hut.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "tent-night": {
+    "src": "/templates/bloomfield-gardens/tent-night.webp",
+    "alt": "Glamping tent glowing under a starry night sky",
+    "width": 1400,
+    "height": 933,
+    "author": "Cindy Chen cindychenc",
+    "source": "https://commons.wikimedia.org/wiki/File:Glamping_(Unsplash).jpg",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  }
+}

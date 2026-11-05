@@ -1,0 +1,212 @@
+{
+  "lodge-lake": {
+    "src": "/templates/pine-ridge-lodge/lodge-lake.webp",
+    "alt": "Mountain hotel on the shore of an alpine lake reflecting autumn forest and peaks",
+    "width": 1920,
+    "height": 1275,
+    "author": "Aleksandra Boguslawska aleksandraboguslawska",
+    "source": "https://commons.wikimedia.org/wiki/File:Mountain_lake_(Unsplash).jpg",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  },
+  "chalet": {
+    "src": "/templates/pine-ridge-lodge/chalet.webp",
+    "alt": "Two-storey timber chalet with carved balconies among pine trees",
+    "width": 1400,
+    "height": 1119,
+    "author": "Aeroceanaute",
+    "source": "https://commons.wikimedia.org/wiki/File:Chalet_Beuil_bois.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "snow-chalets": {
+    "src": "/templates/pine-ridge-lodge/snow-chalets.webp",
+    "alt": "Snow-covered wooden chalets under a clear blue winter sky",
+    "width": 1400,
+    "height": 933,
+    "author": "Roland zh",
+    "source": "https://commons.wikimedia.org/wiki/File:Hinwil_-_Ringwilerstrasse_IMG_8009.JPG",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "terrace": {
+    "src": "/templates/pine-ridge-lodge/terrace.webp",
+    "alt": "Stone-and-timber alpine chalet with a sunny terrace",
+    "width": 1400,
+    "height": 828,
+    "author": "Aeroceanaute",
+    "source": "https://commons.wikimedia.org/wiki/File:Chalet_Valberg_pierre_et_bois.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "ridge-lodge": {
+    "src": "/templates/pine-ridge-lodge/ridge-lodge.webp",
+    "alt": "Red-roofed mountain lodge on a ridge facing snow-capped peaks",
+    "width": 1400,
+    "height": 950,
+    "author": "Sana muhammad naeem",
+    "source": "https://commons.wikimedia.org/wiki/File:Hotel_on_mountain_-_Saiful_Muluk_Lake.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "peaks": {
+    "src": "/templates/pine-ridge-lodge/peaks.webp",
+    "alt": "Clouds drifting over forested mountains with snowy summits",
+    "width": 1400,
+    "height": 933,
+    "author": "Ashish Gupta from Noida, India",
+    "source": "https://commons.wikimedia.org/wiki/File:Terrace_view_from_Hotel_Madhu_Sangla_(18592598202).jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "lounge": {
+    "src": "/templates/pine-ridge-lodge/lounge.webp",
+    "alt": "Lodge lounge with leather armchairs, a wood stove and timber-beamed ceiling",
+    "width": 1920,
+    "height": 1440,
+    "author": "Witkoppen",
+    "source": "https://commons.wikimedia.org/wiki/File:Witkoppen_Lodge_Interior.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "twin-room": {
+    "src": "/templates/pine-ridge-lodge/twin-room.webp",
+    "alt": "Twin bedroom with reclaimed-wood walls in warm lamplight",
+    "width": 1400,
+    "height": 933,
+    "author": "Witkoppen",
+    "source": "https://commons.wikimedia.org/wiki/File:Witkoppen_Lodge_Spacious_Room.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "fireplace": {
+    "src": "/templates/pine-ridge-lodge/fireplace.webp",
+    "alt": "Alpine lounge with a whitewashed fireplace and a lit fire",
+    "width": 1400,
+    "height": 931,
+    "author": "Walter Schärer",
+    "source": "https://commons.wikimedia.org/wiki/File:Giardino_Mountain_fireplace_and_lounge_-_panoramio.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "dining": {
+    "src": "/templates/pine-ridge-lodge/dining.webp",
+    "alt": "Lodge dining room with a long wooden table and leather chairs",
+    "width": 1400,
+    "height": 1050,
+    "author": "Wolfmann",
+    "source": "https://commons.wikimedia.org/wiki/File:Grand_Hotel_Terminus_(1928)_whisky_bar_lounge_dining_Bergen_Norway_2017-10-18_table_newspapers.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "restaurant": {
+    "src": "/templates/pine-ridge-lodge/restaurant.webp",
+    "alt": "Pine-panelled restaurant with round windows and set tables",
+    "width": 1400,
+    "height": 1050,
+    "author": "GT1976",
+    "source": "https://commons.wikimedia.org/wiki/File:2018-08-11_(131)_Interior_of_Annaberger_Haus_at_Tirolerkogel,_Annaberg,_Austria.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "lobby": {
+    "src": "/templates/pine-ridge-lodge/lobby.webp",
+    "alt": "Lobby with a stone fireplace, armchairs and tall windows",
+    "width": 1400,
+    "height": 1050,
+    "author": "w_lemay",
+    "source": "https://commons.wikimedia.org/wiki/File:Lobby_Fireplace,_Mount_Washington_Hotel,_Bretton_Woods,_NH_-_54305964848.jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "ski-slope": {
+    "src": "/templates/pine-ridge-lodge/ski-slope.webp",
+    "alt": "Groomed ski slope below jagged peaks, with a few skiers and a hut",
+    "width": 1920,
+    "height": 1281,
+    "author": "This Photo was taken by Wolfgang Moroder. Feel free to use my photos, but please mention me as the author and send me a message. This image is not in the public domain. Please respect the copyright protection. It may only be used according to the rules mentioned here. This specifically excludes use in social media, if applicable terms of the licenses listed here not appropriate. Please do not upload an updated image here without consultation with the Author. The author would like to make corrections only at his own source. This ensures that the changes are preserved.Please if you think that any changes should be required, please inform the author.Otherwise you can upload a new image with a new name. Please use one of the templates derivative or extract.",
+    "source": "https://commons.wikimedia.org/wiki/File:Groomed_skirun_from_Seceda_Val_Gardena.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "ski-village": {
+    "src": "/templates/pine-ridge-lodge/ski-village.webp",
+    "alt": "Snowy ski run leading down to a timber lodge among pines",
+    "width": 1920,
+    "height": 1440,
+    "author": "Franzfoto",
+    "source": "https://commons.wikimedia.org/wiki/File:Sicht_auf_Sch%C3%B6nblick,_Illertal_und_Gr%C3%BCnten_links.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "skiers": {
+    "src": "/templates/pine-ridge-lodge/skiers.webp",
+    "alt": "Skiers resting on a sunny piste above a valley of pine forest",
+    "width": 1920,
+    "height": 1438,
+    "author": "Mike is Michi",
+    "source": "https://commons.wikimedia.org/wiki/File:Skiers_at_SkiWelt_Wilder_Kaiser-Brixental_Austrian_Alps_2026.JPG",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "trail": {
+    "src": "/templates/pine-ridge-lodge/trail.webp",
+    "alt": "Hiking trail winding along a green ridge towards rocky peaks",
+    "width": 1920,
+    "height": 1440,
+    "author": "brewbooks from near Seattle, USA",
+    "source": "https://commons.wikimedia.org/wiki/File:Tatoosh_Range_and_alpine_meadow_-_Flickr_-_brewbooks.jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "autumn-hike": {
+    "src": "/templates/pine-ridge-lodge/autumn-hike.webp",
+    "alt": "Hiker on a trail through autumn-red meadows below a mountain",
+    "width": 1920,
+    "height": 1440,
+    "author": "brewbooks from near Seattle, USA",
+    "source": "https://commons.wikimedia.org/wiki/File:Trail_through_Summerland_-_Flickr_-_brewbooks.jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "meadow-hike": {
+    "src": "/templates/pine-ridge-lodge/meadow-hike.webp",
+    "alt": "Two hikers following a creek through a wildflower meadow",
+    "width": 1920,
+    "height": 1280,
+    "author": "mypubliclands",
+    "source": "https://commons.wikimedia.org/wiki/File:-TravelTuesday_with_My_Public_Lands_(24320354915).jpg",
+    "license": "Public domain",
+    "licenseUrl": null
+  },
+  "canoe-sunset": {
+    "src": "/templates/pine-ridge-lodge/canoe-sunset.webp",
+    "alt": "Canoe pulled up on a lakeshore at sunrise, peaks reflected in the water",
+    "width": 1920,
+    "height": 1080,
+    "author": "Charles Knowles from Meridian Idaho, USA",
+    "source": "https://commons.wikimedia.org/wiki/File:Canoe_parked_on_the_shore_of_an_Idaho_mountain_lake_at_sunrise_-_Flickr_-_Knowles_Gallery.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "canoe-dock": {
+    "src": "/templates/pine-ridge-lodge/canoe-dock.webp",
+    "alt": "Red canoe on a wooden dock over a misty mountain lake",
+    "width": 1920,
+    "height": 1272,
+    "author": "Faye Cornish fcornish",
+    "source": "https://commons.wikimedia.org/wiki/File:Red_kayaks_on_a_mountain_lake_(Unsplash).jpg",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  },
+  "canoe-shore": {
+    "src": "/templates/pine-ridge-lodge/canoe-shore.webp",
+    "alt": "Pale green canoe resting on a pebble beach beside a mountain lake",
+    "width": 1920,
+    "height": 1279,
+    "author": "Miranda.Kopetzky",
+    "source": "https://commons.wikimedia.org/wiki/File:Junker_Lake,_1981_04.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  }
+}

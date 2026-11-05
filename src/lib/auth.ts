@@ -7,6 +7,7 @@ import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { loginSchema } from "@/lib/validators";
 import { rateLimit } from "@/lib/rate-limit";
+import { authorizeGoogleAccount } from "@/lib/google-account";
 
 class RateLimited extends CredentialsSignin {
   code = "rate_limited";
@@ -24,7 +25,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   // Credentials sign-in requires JWT sessions; the jwt callback below still
   // re-checks the database so disabling a client takes effect immediately.
   session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 },
-  pages: { signIn: "/login" },
+  pages: { signIn: "/login", error: "/login" },
   providers: [
     Credentials({
       credentials: { email: {}, password: {} },
@@ -37,8 +38,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ??
           "local";
         if (
-          !rateLimit(`login:ip:${ip}`, 20, 15 * 60_000).ok ||
-          !rateLimit(`login:email:${email}`, 8, 15 * 60_000).ok
+          !(await rateLimit(`login:ip:${ip}`, 20, 15 * 60_000)).ok ||
+          !(await rateLimit(`login:email:${email}`, 8, 15 * 60_000)).ok
         ) {
           throw new RateLimited();
         }
@@ -57,40 +58,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (account?.provider !== "google") return true;
       if (!profile?.email || profile.email_verified !== true) return false;
 
-      const email = profile.email.toLowerCase();
-      const existing = await db.user.findUnique({
-        where: { email },
-        include: { accounts: true },
+      return authorizeGoogleAccount({
+        subject: account.providerAccountId, email: profile.email, name: profile.name,
+        image: typeof profile.picture === "string" ? profile.picture : null,
       });
-      if (existing?.disabled) return false;
-
-      const linked = existing?.accounts.some(
-        (a) =>
-          a.provider === "google" && a.providerAccountId === account.providerAccountId,
-      );
-      if (existing && !linked) {
-        // Google has verified this address, so linking is safe.
-        await db.account.create({
-          data: {
-            userId: existing.id,
-            provider: "google",
-            providerAccountId: account.providerAccountId,
-          },
-        });
-      } else if (!existing) {
-        await db.user.create({
-          data: {
-            email,
-            name: profile.name ?? null,
-            image: typeof profile.picture === "string" ? profile.picture : null,
-            emailVerified: new Date(),
-            accounts: {
-              create: { provider: "google", providerAccountId: account.providerAccountId },
-            },
-          },
-        });
-      }
-      return true;
     },
 
     async jwt({ token, user, account }) {
@@ -99,10 +70,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const dbUser =
           account.provider === "credentials"
             ? { id: user.id!, role: user.role ?? "CLIENT" }
-            : await db.user.findUnique({
-                where: { email: user.email!.toLowerCase() },
-                select: { id: true, role: true },
-              });
+            : (await db.account.findUnique({
+                where: { provider_providerAccountId: {
+                  provider: "google", providerAccountId: account.providerAccountId,
+                } },
+                select: { user: { select: { id: true, role: true } } },
+              }))?.user;
         if (!dbUser) return null;
         token.uid = dbUser.id;
         token.role = dbUser.role;

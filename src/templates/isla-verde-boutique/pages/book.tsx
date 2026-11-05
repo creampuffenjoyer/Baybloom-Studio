@@ -1,0 +1,21 @@
+"use client";
+
+import { useIsla } from "../language";
+
+import { Suspense } from "react";
+import { BookFlow } from "../components/book-flow";
+
+export function BookPage() {
+  const { t } = useIsla();
+  return (
+    <div className="mx-auto max-w-7xl px-5 pt-16 sm:px-8">
+      <h1 className="font-tpl-display text-6xl italic sm:text-7xl">{t("Reserve your stay")}</h1>
+      <p className="mt-4 max-w-[52ch] text-lg text-tpl-muted">{t("Our best rate, with breakfast and a walking tour of the old town.")}</p>
+      <div className="mt-12">
+        <Suspense fallback={<div className="h-[560px] animate-pulse bg-tpl-soft" />}>
+          <BookFlow />
+        </Suspense>
+      </div>
+    </div>
+  );
+}

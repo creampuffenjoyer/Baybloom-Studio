@@ -10,11 +10,13 @@ async function CopyrightYear() {
 
 const COLUMNS = [
   {
-    title: "Catalog",
+    title: "Templates",
     links: [
-      { href: "/designs?type=website", label: "Website designs" },
-      { href: "/designs?type=architecture", label: "Architecture" },
-      { href: "/designs?type=interior", label: "Interior concepts" },
+      { href: "/designs?category=resort", label: "Resorts" },
+      { href: "/designs?category=hotel", label: "Hotels & B&Bs" },
+      { href: "/designs?category=restaurant", label: "Restaurants & cafés" },
+      { href: "/designs?category=spa", label: "Spas & wellness" },
+      { href: "/designs?category=venue", label: "Wedding & event venues" },
     ],
   },
   {
@@ -34,11 +36,11 @@ export function SiteFooter() {
         <div className="max-w-sm">
           <Logo tone="light" className="text-[15px]" />
           <p className="mt-5 font-serif text-2xl leading-snug text-white">
-            Designs for resorts that bloom.
+            Websites for hospitality brands that bloom.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-white/70">
-            Website templates, villa plans and interior concepts for beach, mountain,
-            lake and eco resorts.
+            Ready-made, fully responsive website templates for resorts, hotels,
+            restaurants, spas and event venues.
           </p>
         </div>
         {COLUMNS.map((col) => (

@@ -1,6 +1,6 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
-import type { Prisma, ProductType, TierLevel } from "@prisma/client";
+import type { Prisma, TierLevel } from "@prisma/client";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { PAGE_SIZE, type CatalogQuery } from "@/lib/validators";
@@ -18,7 +18,6 @@ const cardSelect = {
   slug: true,
   title: true,
   summary: true,
-  type: true,
   featured: true,
   heroImage: true,
   heroAlt: true,
@@ -58,7 +57,7 @@ export async function getFilterOptions() {
     }),
     db.feature.findMany({
       orderBy: [{ group: "asc" }, { name: "asc" }],
-      select: { name: true, slug: true, group: true, appliesTo: true },
+      select: { name: true, slug: true, group: true },
     }),
   ]);
   return { categories, styles, features };
@@ -70,7 +69,6 @@ export type FilterOptions = Awaited<ReturnType<typeof getFilterOptions>>;
 
 function buildWhere(q: CatalogQuery): Prisma.DesignWhereInput {
   const and: Prisma.DesignWhereInput[] = [{ status: "PUBLISHED" }];
-  if (q.type.length) and.push({ type: { in: q.type } });
   if (q.category.length) and.push({ category: { slug: { in: q.category } } });
   if (q.style.length) and.push({ style: { slug: { in: q.style } } });
   if (q.tier.length) and.push({ tiers: { some: { level: { in: q.tier } } } });
@@ -249,7 +247,6 @@ export async function getDesignBySlug(slug: string) {
       title: true,
       summary: true,
       description: true,
-      type: true,
       heroImage: true,
       heroAlt: true,
       demoUrl: true,
@@ -297,26 +294,23 @@ export async function getDesignBySlug(slug: string) {
 
 export type DesignDetail = NonNullable<Awaited<ReturnType<typeof getDesignBySlug>>>;
 
-export async function getRelatedDesigns(
-  designId: string,
-  categoryId: string,
-  type: ProductType,
-) {
+/** Up to three other designs, same industry first. */
+export async function getRelatedDesigns(designId: string, categoryId: string) {
   "use cache";
   cacheLife("hours");
   cacheTag("catalog");
 
   const rows = await db.design.findMany({
-    where: {
-      status: "PUBLISHED",
-      id: { not: designId },
-      OR: [{ categoryId }, { type }],
-    },
+    where: { status: "PUBLISHED", id: { not: designId } },
     orderBy: [{ featured: "desc" }, { publishedAt: "desc" }],
-    take: 3,
-    select: cardSelect,
+    take: 12,
+    select: { ...cardSelect, categoryId: true },
   });
-  return rows.map(toCard);
+  const same = (r: (typeof rows)[number]) => Number(r.categoryId === categoryId);
+  return rows
+    .sort((a, b) => same(b) - same(a))
+    .slice(0, 3)
+    .map(toCard);
 }
 
 /** All image credits, for the public credits page. */
@@ -359,7 +353,6 @@ async function pricingCached(designId: string) {
   const design = await db.design.findFirst({
     where: { id: designId, status: "PUBLISHED" },
     select: {
-      type: true,
       tiers: {
         select: { id: true, level: true, name: true, priceCents: true, currency: true },
       },
@@ -370,13 +363,7 @@ async function pricingCached(designId: string) {
   const addons = await db.addon.findMany({
     where: {
       active: true,
-      OR: [
-        { designId },
-        {
-          designId: null,
-          OR: [{ productTypes: { isEmpty: true } }, { productTypes: { has: design.type } }],
-        },
-      ],
+      OR: [{ designId }, { designId: null }],
     },
     orderBy: [{ designId: "asc" }, { priceCents: "asc" }],
     select: { id: true, name: true, description: true, priceCents: true, currency: true },

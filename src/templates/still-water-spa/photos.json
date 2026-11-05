@@ -1,0 +1,172 @@
+{
+  "lounge": {
+    "src": "/templates/still-water-spa/lounge.webp",
+    "alt": "Spa treatment room with a massage bed and soaking tub",
+    "width": 1400,
+    "height": 1050,
+    "author": "Missvain",
+    "source": "https://commons.wikimedia.org/wiki/File:Lounge_at_the_Spa_at_Silver_Legacy_-_2021-11-14_-_Sarah_Stierch_01.jpg",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
+  },
+  "treatment-room": {
+    "src": "/templates/still-water-spa/treatment-room.webp",
+    "alt": "Two massage tables in a calm treatment room with wooden screens",
+    "width": 1920,
+    "height": 1280,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Spa_massage_parlor_in_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "reception": {
+    "src": "/templates/still-water-spa/reception.webp",
+    "alt": "Spa reception lounge with armchairs and a low wooden table",
+    "width": 1920,
+    "height": 1517,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Reception_lounge_of_the_spa_at_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "room": {
+    "src": "/templates/still-water-spa/room.webp",
+    "alt": "Sunlit treatment room with sheer curtains, a massage bed and bowls of oil",
+    "width": 1920,
+    "height": 1659,
+    "author": "Paradisus Bali",
+    "source": "https://commons.wikimedia.org/wiki/File:YHI_Spa_treatment_room_at_Paradisus_by_Meli%C3%A1_Bali.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "stones": {
+    "src": "/templates/still-water-spa/stones.webp",
+    "alt": "Hot-stone massage in a warm room with a wood stove",
+    "width": 1920,
+    "height": 1280,
+    "author": "Daniela",
+    "source": "https://commons.wikimedia.org/wiki/File:Massage_at_Witches_Falls_Cottages.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "table": {
+    "src": "/templates/still-water-spa/table.webp",
+    "alt": "Massage table dressed in soft white linen",
+    "width": 1920,
+    "height": 1280,
+    "author": "Unknown authorUnknown author",
+    "source": "https://commons.wikimedia.org/wiki/File:USMC-100831-M-2664B-015.jpg",
+    "license": "Public domain",
+    "licenseUrl": null
+  },
+  "thai-room": {
+    "src": "/templates/still-water-spa/thai-room.webp",
+    "alt": "Thai massage room with silk drapes and a city view",
+    "width": 1920,
+    "height": 1282,
+    "author": "Jason Jacobs from Honolulu, USA",
+    "source": "https://commons.wikimedia.org/wiki/File:Stress_and_Relaxation_(40355102581).jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "oil": {
+    "src": "/templates/still-water-spa/oil.webp",
+    "alt": "Amber dropper bottle of oil beside sprigs of rosemary",
+    "width": 1920,
+    "height": 1280,
+    "author": "formulatehealth",
+    "source": "https://commons.wikimedia.org/wiki/File:Rosemary_Oil_in_a_bottle_and_rosemary_herb.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "leaves": {
+    "src": "/templates/still-water-spa/leaves.webp",
+    "alt": "Pile of dried bay leaves on a white surface",
+    "width": 1920,
+    "height": 1130,
+    "author": "division, CSIRO",
+    "source": "https://commons.wikimedia.org/wiki/File:CSIRO_ScienceImage_3903_Dried_Lemon_Myrtle_Leaves_Backhousia_citriodora.jpg",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+  },
+  "eucalyptus": {
+    "src": "/templates/still-water-spa/eucalyptus.webp",
+    "alt": "Silvery-green eucalyptus leaves",
+    "width": 1920,
+    "height": 1440,
+    "author": "Thouny",
+    "source": "https://commons.wikimedia.org/wiki/File:Eucalyptus_gundal_leaves_juvenile.jpg",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+  },
+  "round-leaves": {
+    "src": "/templates/still-water-spa/round-leaves.webp",
+    "alt": "Round, blue-green eucalyptus leaves on a branch",
+    "width": 1920,
+    "height": 1440,
+    "author": "Donald Hobern from Canberra, Australia",
+    "source": "https://commons.wikimedia.org/wiki/File:Eucalyptus_polyanthemos_leaves_1.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "green-pool": {
+    "src": "/templates/still-water-spa/green-pool.webp",
+    "alt": "Clear green spring pool among stones and fallen leaves",
+    "width": 1920,
+    "height": 1280,
+    "author": "雷太",
+    "source": "https://commons.wikimedia.org/wiki/File:Kusatsu_Onsen,_Gunma_Prefecture;_November_2018_(04).jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "hot-spring": {
+    "src": "/templates/still-water-spa/hot-spring.webp",
+    "alt": "Steaming turquoise hot-spring pool edged with rocks and wooden walkways",
+    "width": 1920,
+    "height": 1280,
+    "author": "雷太",
+    "source": "https://commons.wikimedia.org/wiki/File:Kusatsu_Onsen,_Gunma_Prefecture;_November_2018_(02).jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "bath-hall": {
+    "src": "/templates/still-water-spa/bath-hall.webp",
+    "alt": "Vaulted white bathing room with rain showers and a plunge pool",
+    "width": 1920,
+    "height": 1280,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Indoor_pool_and_showers_of_the_spa_at_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "long-pool": {
+    "src": "/templates/still-water-spa/long-pool.webp",
+    "alt": "Long, still indoor pool beneath a timber-beamed vaulted roof",
+    "width": 1920,
+    "height": 1280,
+    "author": "Basile Morin",
+    "source": "https://commons.wikimedia.org/wiki/File:Indoor_pool_of_spa_with_open_door_at_Amantaka_luxury_Resort_%26_Hotel_in_Luang_Prabang_Laos.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "pool": {
+    "src": "/templates/still-water-spa/pool.webp",
+    "alt": "Quiet indoor pool with stone surround and soft wall lights",
+    "width": 1920,
+    "height": 1134,
+    "author": "Anne and David from Kent, England UK",
+    "source": "https://commons.wikimedia.org/wiki/File:In_Nov._2018_we_returned_to_Madeira._We_stayed_in_the_Pestana_Royal._Indoor_pool_colocated_with_spa_and_gym._(45289157445).jpg",
+    "license": "Public domain",
+    "licenseUrl": null
+  },
+  "steam": {
+    "src": "/templates/still-water-spa/steam.webp",
+    "alt": "White tiled steam room with a bench along the wall",
+    "width": 1920,
+    "height": 1440,
+    "author": "Todtanis",
+    "source": "https://commons.wikimedia.org/wiki/File:Highgrove_Steam.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  }
+}

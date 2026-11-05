@@ -3,8 +3,8 @@
 import { useEffect, useId, useState } from "react";
 import { SearchIcon, SlidersHorizontalIcon, XIcon } from "lucide-react";
 import type { FilterOptions } from "@/lib/catalog";
-import { TIER_LABEL, TYPE_LABEL_PLURAL } from "@/lib/format";
-import { PRODUCT_TYPES, TIER_LEVELS } from "@/lib/validators";
+import { TIER_LABEL } from "@/lib/format";
+import { TIER_LEVELS } from "@/lib/validators";
 import { useCatalogParams } from "@/components/catalog/catalog-nav";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
-const FILTER_KEYS = ["type", "category", "style", "tier", "features", "q"] as const;
+const FILTER_KEYS = ["category", "style", "tier", "features", "q"] as const;
 
 export function SearchBox() {
   const { params, set } = useCatalogParams();
@@ -123,17 +123,10 @@ function Chip({
 
 export function FilterControls({ options }: { options: FilterOptions }) {
   const { list, toggle, clear, params } = useCatalogParams();
-  const types = list("type");
   const activeCount = FILTER_KEYS.filter((k) => params.get(k)).length;
 
-  // Only show features relevant to the selected product types.
-  const features = options.features.filter(
-    (f) =>
-      types.length === 0 ||
-      f.appliesTo.some((t) => types.includes(t.toLowerCase())),
-  );
   const featureGroups = Object.entries(
-    features.reduce<Record<string, typeof features>>((acc, f) => {
+    options.features.reduce<Record<string, FilterOptions["features"]>>((acc, f) => {
       (acc[f.group] ??= []).push(f);
       return acc;
     }, {}),
@@ -141,18 +134,7 @@ export function FilterControls({ options }: { options: FilterOptions }) {
 
   return (
     <div className="space-y-8">
-      <Group title="Product type">
-        {PRODUCT_TYPES.map((t) => (
-          <CheckRow
-            key={t}
-            label={TYPE_LABEL_PLURAL[t]}
-            checked={types.includes(t.toLowerCase())}
-            onChange={() => toggle("type", t.toLowerCase())}
-          />
-        ))}
-      </Group>
-
-      <Group title="Setting">
+      <Group title="Industry">
         <div className="flex flex-wrap gap-2">
           {options.categories.map((c) => (
             <Chip

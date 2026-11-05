@@ -1,9 +1,6 @@
 import "server-only";
-import type { Prisma } from "@prisma/client";
+import type { Prisma, PrismaClient } from "@prisma/client";
 import { db } from "@/lib/db";
-import type { Cart } from "@/lib/cart";
-import { actionEmail, sendEmail, siteUrl } from "@/lib/email";
-import { formatPrice } from "@/lib/format";
 
 /*
  * Order lifecycle. Every transition is a conditional update (WHERE status IN
@@ -11,42 +8,22 @@ import { formatPrice } from "@/lib/format";
  * all run the same code without double-fulfilling or regressing a status.
  */
 
-export async function createPendingOrder(
-  userId: string,
-  cart: Cart,
-  billing: Prisma.InputJsonValue,
-) {
-  return db.order.create({
-    data: {
-      userId,
-      status: "PENDING",
-      subtotalCents: cart.subtotalCents,
-      discountCents: cart.discountCents,
-      totalCents: cart.totalCents,
-      currency: cart.currency,
-      couponCode: cart.coupon?.code ?? null,
-      billing,
-      items: {
-        create: cart.lines.map((l) => ({
-          designId: l.design.id,
-          tierId: l.tier.id,
-          designTitle: l.design.title,
-          tierName: l.tier.label,
-          priceCents: l.lineCents,
-          addons: l.addons,
-        })),
-      },
-    },
-    select: { id: true },
-  });
+async function lockOrder(tx: Prisma.TransactionClient, orderId: string) {
+  const order = await tx.order.findUnique({ where: { id: orderId }, select: { couponCode: true } });
+  // Always lock coupon before order, matching checkout's reservation lock order.
+  if (order?.couponCode) {
+    await tx.$queryRaw`SELECT "id" FROM "Coupon" WHERE "code" = ${order.couponCode} FOR UPDATE`;
+  }
+  await tx.$queryRaw`SELECT "id" FROM "Order" WHERE "id" = ${orderId} FOR UPDATE`;
 }
 
 /** PENDING/FAILED → PAID. Returns true only for the call that made the change. */
-export async function fulfillOrder(orderId: string, receiptUrl?: string | null) {
-  const changed = await db.$transaction(async (tx) => {
+export async function fulfillOrder(orderId: string, receiptUrl?: string | null, client: PrismaClient = db) {
+  const changed = await client.$transaction(async (tx) => {
+    await lockOrder(tx, orderId);
     const { count } = await tx.order.updateMany({
       where: { id: orderId, status: { in: ["PENDING", "FAILED"] } },
-      data: { status: "PAID", paidAt: new Date(), ...(receiptUrl && { receiptUrl }) },
+      data: { status: "PAID", paidAt: new Date(), confirmationNextAt: new Date(), couponReserved: false, ...(receiptUrl && { receiptUrl }) },
     });
     if (count === 0) return false;
 
@@ -68,56 +45,30 @@ export async function fulfillOrder(orderId: string, receiptUrl?: string | null) 
   });
 
   if (receiptUrl && !changed) {
-    await db.order.updateMany({ where: { id: orderId, receiptUrl: null }, data: { receiptUrl } });
+    await client.order.updateMany({ where: { id: orderId, receiptUrl: null }, data: { receiptUrl } });
   }
-  await sendConfirmationOnce(orderId);
   return changed;
 }
 
-export async function markOrderFailed(orderId: string) {
-  await db.order.updateMany({ where: { id: orderId, status: "PENDING" }, data: { status: "FAILED" } });
-}
-
-export async function markOrderRefunded(orderId: string) {
-  await db.order.updateMany({ where: { id: orderId, status: "PAID" }, data: { status: "REFUNDED" } });
-}
-
-/** Sends the confirmation email at most once per order. */
-async function sendConfirmationOnce(orderId: string) {
-  const claim = await db.order.updateMany({
-    where: { id: orderId, status: "PAID", confirmationSentAt: null },
-    data: { confirmationSentAt: new Date() },
-  });
-  if (claim.count === 0) return;
-
-  const order = await db.order.findUniqueOrThrow({
-    where: { id: orderId },
-    select: {
-      totalCents: true,
-      currency: true,
-      user: { select: { email: true, name: true } },
-      items: { select: { designTitle: true, tierName: true } },
-    },
-  });
-  const ref = orderRef(orderId);
-  const list = order.items.map((i) => `${i.designTitle} (${i.tierName})`).join(", ");
-  try {
-    await sendEmail({
-      to: order.user.email,
-      subject: `Your Baybloom Studio order ${ref}`,
-      ...actionEmail({
-        heading: `Thank you${order.user.name ? `, ${order.user.name.split(" ")[0]}` : ""}!`,
-        body: `Your payment of ${formatPrice(order.totalCents, order.currency)} for ${list} was received. Your files are ready to download from your account.`,
-        cta: "View receipt & downloads",
-        url: siteUrl(`/account/orders/${orderId}`),
-        footer: `Order ${ref}. Download links in your account are refreshed each time you open them.`,
-      }),
+export async function markOrderFailed(orderId: string, client: PrismaClient = db) {
+  await client.$transaction(async (tx) => {
+    await lockOrder(tx, orderId);
+    await tx.order.updateMany({
+      where: { id: orderId, status: "PENDING" },
+      data: { status: "FAILED", couponReserved: false, checkoutKey: null },
     });
-  } catch (e) {
-    // Release the claim so a later webhook retry can resend.
-    await db.order.update({ where: { id: orderId }, data: { confirmationSentAt: null } });
-    console.error("[orders] confirmation email failed", e);
-  }
+  });
+}
+
+export async function markOrderRefunded(orderId: string, client: PrismaClient = db) {
+  await client.$transaction(async (tx) => {
+    await lockOrder(tx, orderId);
+    // A refund is terminal even when its completion event has not arrived yet.
+    await tx.order.updateMany({
+      where: { id: orderId, status: { in: ["PENDING", "FAILED", "PAID"] } },
+      data: { status: "REFUNDED", couponReserved: false },
+    });
+  });
 }
 
 export function orderRef(orderId: string) {

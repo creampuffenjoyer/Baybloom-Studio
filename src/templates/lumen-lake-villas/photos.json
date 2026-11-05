@@ -1,0 +1,162 @@
+{
+  "jetties": {
+    "src": "/templates/lumen-lake-villas/jetties.webp",
+    "alt": "Calm blue lake with wooden jetties and mountains in the distance",
+    "width": 1920,
+    "height": 1281,
+    "author": "Johann Jaritz",
+    "source": "https://commons.wikimedia.org/wiki/File:Krumpendorf_Berthastra%C3%9Fe_59_Villa_Schwalbennest_23012018_2376.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "villas": {
+    "src": "/templates/lumen-lake-villas/villas.webp",
+    "alt": "Lakefront villas with red-tiled roofs behind a row of palm trees",
+    "width": 1400,
+    "height": 788,
+    "author": "Srimathi Ashokkumar",
+    "source": "https://commons.wikimedia.org/wiki/File:Lakeside_Paradise.jpg",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  },
+  "bathhouse": {
+    "src": "/templates/lumen-lake-villas/bathhouse.webp",
+    "alt": "Small bathhouse pavilion standing in a lake with mountains behind",
+    "width": 1400,
+    "height": 938,
+    "author": "Johann Jaritz",
+    "source": "https://commons.wikimedia.org/wiki/File:Poertschach_Hauptstrasse_261_Badehaus_der_Villa_Schnuer_25022015_7792.jpg",
+    "license": "CC BY-SA 3.0 at",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/at/deed.en"
+  },
+  "sunset": {
+    "src": "/templates/lumen-lake-villas/sunset.webp",
+    "alt": "Lake at sunset seen from the end of a wooden dock",
+    "width": 1400,
+    "height": 820,
+    "author": "John Silliman john_silliman",
+    "source": "https://commons.wikimedia.org/wiki/File:Calm_lakeside_sunset_(Unsplash).jpg",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  },
+  "rowboats": {
+    "src": "/templates/lumen-lake-villas/rowboats.webp",
+    "alt": "Two wooden rowboats moored on a blue lake",
+    "width": 1400,
+    "height": 788,
+    "author": "Anas Elkahlaoui",
+    "source": "https://commons.wikimedia.org/wiki/File:Boats_(227522211).jpeg",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+  },
+  "town": {
+    "src": "/templates/lumen-lake-villas/town.webp",
+    "alt": "Lakeside town below steep green mountains",
+    "width": 1400,
+    "height": 830,
+    "author": "Ray in Manila",
+    "source": "https://commons.wikimedia.org/wiki/File:Villa_Melzi,_Bellagio,_Lake_Como.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "kayaks": {
+    "src": "/templates/lumen-lake-villas/kayaks.webp",
+    "alt": "Two kayaks on a lakeshore with mist rising off the hills behind",
+    "width": 1920,
+    "height": 1280,
+    "author": "BLM Alaska",
+    "source": "https://commons.wikimedia.org/wiki/File:Foggy_morning_(51296473677).jpg",
+    "license": "Public domain",
+    "licenseUrl": null
+  },
+  "mist": {
+    "src": "/templates/lumen-lake-villas/mist.webp",
+    "alt": "Morning mist lying over a still lake between dark hills",
+    "width": 1920,
+    "height": 1280,
+    "author": "BLM Alaska",
+    "source": "https://commons.wikimedia.org/wiki/File:Misty_morning_(51297219336).jpg",
+    "license": "Public domain",
+    "licenseUrl": null
+  },
+  "morning": {
+    "src": "/templates/lumen-lake-villas/morning.webp",
+    "alt": "Low sun through trees onto a misty, glassy pond",
+    "width": 1920,
+    "height": 1440,
+    "author": "Thomas &amp; Dianne Jones",
+    "source": "https://commons.wikimedia.org/wiki/File:Okmulgee_State_Park_Good_Morning_Sunshine.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "canoes": {
+    "src": "/templates/lumen-lake-villas/canoes.webp",
+    "alt": "Canoes pulled up on a stony shore on a pale, misty morning",
+    "width": 1920,
+    "height": 1289,
+    "author": "BLM Alaska",
+    "source": "https://commons.wikimedia.org/wiki/File:Fall_frost_at_Tangle_Lakes_(51298231105).jpg",
+    "license": "Public domain",
+    "licenseUrl": null
+  },
+  "vineyard-lake": {
+    "src": "/templates/lumen-lake-villas/vineyard-lake.webp",
+    "alt": "Terraced vineyards and a village above a wide blue lake",
+    "width": 1920,
+    "height": 1280,
+    "author": "JoachimKohler-HB",
+    "source": "https://commons.wikimedia.org/wiki/File:View_on_St-Saphorin_at_Lac_Geneva.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "sauna": {
+    "src": "/templates/lumen-lake-villas/sauna.webp",
+    "alt": "Light timber sauna with tiered benches and a long window",
+    "width": 1920,
+    "height": 1272,
+    "author": "Johann Jaritz",
+    "source": "https://commons.wikimedia.org/wiki/File:Werzer-Bad-Eroeffnung_Sauna_01052013_141.jpg",
+    "license": "CC BY-SA 3.0 at",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/at/deed.en"
+  },
+  "sauna-smoke": {
+    "src": "/templates/lumen-lake-villas/sauna-smoke.webp",
+    "alt": "Smoke drifting from a lakeside sauna cabin in the evening light",
+    "width": 1920,
+    "height": 1280,
+    "author": "Ximonic (Simo Räsänen)",
+    "source": "https://commons.wikimedia.org/wiki/File:Sauna_building_in_R%C3%B6sk%C3%B6n_leirikeskus,_R%C3%B6sk%C3%B6,_Kitee,_North_Karelia,_Finland,_2025_August_-_3.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "cabin": {
+    "src": "/templates/lumen-lake-villas/cabin.webp",
+    "alt": "Small red cabin among birches, reflected in a still lake",
+    "width": 1920,
+    "height": 1440,
+    "author": "Atte Virtanen",
+    "source": "https://commons.wikimedia.org/wiki/File:Lake_-_panoramio_-_Atte_Virtanen_(1).jpg",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+  },
+  "red-house": {
+    "src": "/templates/lumen-lake-villas/red-house.webp",
+    "alt": "Red lake house on a low headland at dusk",
+    "width": 1920,
+    "height": 1280,
+    "author": "Tevfik Teker",
+    "source": "https://commons.wikimedia.org/wiki/File:Lake_Inari_-_panoramio_(10).jpg",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+  },
+  "sauna-modern": {
+    "src": "/templates/lumen-lake-villas/sauna-modern.webp",
+    "alt": "Modern sauna with long benches and a picture window",
+    "width": 1920,
+    "height": 1440,
+    "author": "Asurnipal",
+    "source": "https://commons.wikimedia.org/wiki/File:Bregenz-indoor_swimming_pool_(in_construction)-sauna-02ASD.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  }
+}
