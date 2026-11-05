@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { href, nav, site } from "../site";
+import { LocalLink } from "../language";
 
 export function Footer() {
   return (
@@ -19,9 +19,9 @@ export function Footer() {
         <ul className="space-y-1.5 text-tpl-muted">
           {[...nav, { href: "/book", label: "Reserve" }, { href: "/credits", label: "Photo credits" }].map((i) => (
             <li key={i.href}>
-              <Link href={href(i.href)} className="hover:text-tpl-ink">
+              <LocalLink href={href(i.href)} className="hover:text-tpl-ink">
                 {i.label}
-              </Link>
+              </LocalLink>
             </li>
           ))}
         </ul>

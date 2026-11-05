@@ -8,6 +8,7 @@ export function ReservePage() {
       <p className="mt-5 max-w-[52ch] text-lg text-tpl-muted">
         We release tables 60 days ahead. For nine or more, take a look at private dining.
       </p>
+      <p className="mt-4 text-sm text-tpl-muted">Sample request: availability is illustrative and no table will be reserved.</p>
       <div className="mt-14">
         <Suspense fallback={<div className="h-[640px] animate-pulse bg-tpl-surface" />}>
           <ReserveFlow />

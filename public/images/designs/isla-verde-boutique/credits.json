@@ -1,5 +1,18 @@
 [
   {
+    "role": "cover",
+    "file": "/images/designs/isla-verde-boutique/cover.webp",
+    "thumb": "/images/designs/isla-verde-boutique/thumbs/cover.webp",
+    "alt": "Isla Verde template shown on a laptop and a phone",
+    "kind": "MOCKUP",
+    "width": 1600,
+    "height": 1200,
+    "author": "",
+    "source": "/demo/isla-verde-boutique",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
     "file": "/images/designs/isla-verde-boutique/00-home-page.webp",
     "thumb": "/images/designs/isla-verde-boutique/thumbs/00-home-page.webp",
     "alt": "Isla Verde template: home page on desktop",

@@ -14,6 +14,7 @@ export function MenuPage() {
             Plates are made to share. Two or three per person is about right, and the kitchen sends them
             out as they come off the fire.
           </p>
+          <p className="mt-4 text-sm text-tpl-muted">Search and filters apply to the selected menu. Please confirm ingredients and allergies with the restaurant.</p>
         </div>
         <Link href={href("/reserve")} className="self-start bg-tpl-accent px-6 py-3.5 font-semibold text-tpl-on-accent hover:bg-tpl-alt md:self-end">
           Reserve a table

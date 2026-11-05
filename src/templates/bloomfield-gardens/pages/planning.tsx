@@ -1,10 +1,15 @@
-import Link from "next/link";
+"use client";
+
+import { useBloomfield } from "../language";
+
+import { LocalLink as Link } from "../language";
 import { Suspense } from "react";
 import { DateCheck } from "../components/date-check";
-import { faqs, timeline } from "../content";
+
 import { href } from "../site";
 
 export function PlanningPage() {
+  const { faqs, timeline } = useBloomfield();
   return (
     <>
       <section className="mx-auto max-w-4xl px-5 pt-14 pb-12 text-center sm:px-8">
@@ -52,7 +57,7 @@ export function PlanningPage() {
           </Suspense>
         </div>
         <p className="mt-6 text-center text-tpl-muted">
-          Prefer to talk? <Link href={href("/inquire")} className="underline underline-offset-4">Send us a note</Link> and we’ll call you back.
+          Explore the <Link href={href("/inquire")} className="underline underline-offset-4">sample inquiry</Link>. No message is sent.
         </p>
       </section>
     </>

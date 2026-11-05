@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { LockIcon } from "lucide-react";
+import { CartStatus } from "@/components/cart/cart-status";
 import { useCart } from "@/components/cart/cart-provider";
 import { CartLines, CartTotals, CouponField, EmptyCart } from "@/components/cart/cart-contents";
 import { Button } from "@/components/ui/button";
 
 export function CartView() {
-  const { cart } = useCart();
-  if (!cart) return <div className="shimmer h-80 rounded-3xl" aria-hidden />;
+  const { cart, loadState } = useCart();
+  if (!cart || loadState !== "ready") return <CartStatus />;
   if (cart.lines.length === 0) {
     return (
       <div className="rounded-3xl border border-dashed border-border bg-white/60">

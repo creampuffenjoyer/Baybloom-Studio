@@ -1,5 +1,18 @@
 [
   {
+    "role": "cover",
+    "file": "/images/designs/pine-ridge-lodge/cover.webp",
+    "thumb": "/images/designs/pine-ridge-lodge/thumbs/cover.webp",
+    "alt": "Pine Ridge Lodge template shown on a laptop and a phone",
+    "kind": "MOCKUP",
+    "width": 1600,
+    "height": 1200,
+    "author": "",
+    "source": "/demo/pine-ridge-lodge",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
     "file": "/images/designs/pine-ridge-lodge/00-home-page.webp",
     "thumb": "/images/designs/pine-ridge-lodge/thumbs/00-home-page.webp",
     "alt": "Pine Ridge Lodge template: home page on desktop",

@@ -1,14 +1,17 @@
+"use client";
+
+import { useHarbor } from "../language";
+
 import Image from "next/image";
-import { breakfast, photo } from "../content";
+
 
 export function BreakfastPage() {
+  const { t, breakfast, photo } = useHarbor();
   return (
     <div className="mx-auto max-w-6xl px-5 pt-10 sm:px-8">
-      <h1 className="font-tpl-display text-5xl sm:text-6xl">Breakfast</h1>
+      <h1 className="font-tpl-display text-5xl sm:text-6xl">{t("Breakfast")}</h1>
       <p className="mt-4 max-w-[56ch] text-lg text-tpl-muted">
-        7 to 10 every morning at the big table by the window. Mila cooks, Joel pours the coffee and tells
-        you where to go today.
-      </p>
+        {t("7 to 10 every morning at the big table by the window. Mila cooks, Joel pours the coffee and tells you where to go today.")}</p>
       <div className="mt-12 grid gap-4 sm:grid-cols-3">
         {(["breakfast", "tray", "pastries"] as const).map((k, i) => (
           <div key={k} className={`relative aspect-square overflow-hidden rounded-3xl ${i === 1 ? "sm:translate-y-8" : ""}`}>
@@ -31,7 +34,7 @@ export function BreakfastPage() {
           </section>
         ))}
       </div>
-      <p className="mt-10 font-[family-name:var(--hh-hand)] text-3xl text-tpl-accent">Early boat or flight? We’ll pack you breakfast to go.</p>
+      <p className="mt-10 font-[family-name:var(--hh-hand)] text-3xl text-tpl-accent">{t("Early boat or flight? We’ll pack you breakfast to go.")}</p>
     </div>
   );
 }

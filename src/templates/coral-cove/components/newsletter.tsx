@@ -1,17 +1,17 @@
 "use client";
+import { useCoral } from "../language";
 
 import { formHandler, useDemoSubmit } from "../../_kit/demo-form";
 
 export function Newsletter() {
+  const { t } = useCoral();
   const { status, submit } = useDemoSubmit();
   if (status === "sent") {
-    return <p className="text-lg">You’re on the list. Watch for our next tide-table of offers.</p>;
+    return <p role="status" className="text-lg">{t("Sample complete. No subscription was created.")}</p>;
   }
   return (
     <form onSubmit={formHandler(submit)} className="flex max-w-md flex-col gap-3 sm:flex-row">
-      <label htmlFor="cc-news" className="sr-only">
-        Email address
-      </label>
+      <label htmlFor="cc-news" className="sr-only">{t("Email address")}</label>
       <input
         id="cc-news"
         name="email"
@@ -25,7 +25,7 @@ export function Newsletter() {
         disabled={status === "sending"}
         className="h-12 rounded-full bg-white px-6 font-semibold text-tpl-deep disabled:opacity-70"
       >
-        {status === "sending" ? "Subscribing…" : "Subscribe"}
+        {status === "sending" ? t("Trying…") : t("Try signup")}
       </button>
     </form>
   );

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Shell } from "@/templates/isla-verde-boutique/shell";
-import { DemoBar } from "../demo-bar";
+import { Suspense } from "react";
+import { PreviewChrome } from "./preview-chrome";
 
 export const metadata: Metadata = {
   title: { default: "Isla Verde \u00b7 Heritage hotel on Calle Crisologo, Vigan", template: "%s · Isla Verde" },
@@ -9,9 +10,8 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <Shell>
+    <><Suspense><PreviewChrome /></Suspense><Shell>
       {children}
-      <DemoBar slug="isla-verde-boutique" title="Isla Verde" />
-    </Shell>
+    </Shell></>
   );
 }

@@ -25,6 +25,17 @@ import { SessionCardGrid } from "@/components/catalog/card-grid";
 import { Reveal, RevealGroup, RevealItem, RevealListItem } from "@/components/motion/reveal";
 import { cn } from "@/lib/utils";
 
+const previewFacts: Record<string, { fit: string; explore: string; languages?: string }> = {
+  "still-water-spa": { fit: "day spas with treatments of different types and durations.", explore: "treatment matching, duration choices, packages and sample appointment requests.", languages: "English in the preview. Partial Tagalog and Taglish drafts are included in the source." },
+  "ember-and-salt": { fit: "restaurants and bars with changing menus and private dining.", explore: "searchable menus with dietary labels, sample table requests, private dining, and gift cards.", languages: "English. Tagalog and Taglish versions are not yet available." },
+  "bloomfield-gardens": { fit: "garden wedding and event venues with several celebration spaces.", explore: "space matching by guest count and arrangement, package details, and a sample inquiry.", languages: "English, with partial draft Tagalog and Taglish translations. Some text remains in English." },
+  "isla-verde-boutique": { fit: "heritage hotels with distinctive rooms, local stories, dining, and events.", explore: "room matching by guest count and setting, the house story, Vigan journals, and sample stay planning." },
+  "harbor-house": { fit: "owner-run guesthouses and small B&Bs that want to introduce their rooms and local area.", explore: "individual room pages, a local guide, breakfast, and a three-step sample booking." },
+  "coral-cove": { fit: "island resorts with several villa styles, experiences, and stay packages.", explore: "villa comparison by capacity and pool type, stay planning, sample extras and estimates, and resort galleries." },
+  "pine-ridge-lodge": { fit: "seasonal mountain lodges with rooms, cabins, and outdoor activities.", explore: "winter and summer trip planning, activities by level, rooms that fit your group, and sample stay estimates." },
+  "lumen-lake-villas": { fit: "quiet lakeside retreats with several distinct villa styles and nature led experiences.", explore: "villa matching by group size, side by side amenity comparisons, a guided lake tour, and sample stay planning." },
+};
+
 export async function generateStaticParams() {
   const slugs = await getPublishedSlugs();
   return slugs.map((slug) => ({ slug }));
@@ -86,6 +97,8 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
   );
   const shots = design.images.filter((i) => i.kind !== "MOCKUP");
   const mobileShot = design.images.find((i) => i.kind === "MOCKUP");
+  const facts = previewFacts[design.slug];
+  const previewUrl = facts ? `/preview/${design.slug}` : design.demoUrl;
 
   return (
     <article>
@@ -122,14 +135,22 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
           {design.demoUrl && (
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
               <Button asChild size="lg" className="h-12 rounded-full px-6 text-base">
-                <Link href={design.demoUrl}>
+                <Link href={previewUrl!}>
                   <MonitorSmartphoneIcon /> Try the live demo
                 </Link>
               </Button>
-              <p className="text-sm text-muted-foreground">Every page works, including the booking flow.</p>
+              <p className="text-sm text-muted-foreground">Explore the pages and sample interactions. No reservations are made.</p>
             </div>
           )}
 
+          {facts && (
+            <section aria-label="About this template" className="mt-6 space-y-3 border-y border-border py-5 text-sm leading-relaxed">
+              <p><strong>Best for:</strong> {facts.fit}</p>
+              <p><strong>Explore:</strong> {facts.explore}</p>
+              <p><strong>What you receive:</strong> downloadable website source. This is not a hosted booking service. Live availability, form delivery, hosting, and payments need configuration or integration.</p>
+              <p><strong>Languages:</strong> {facts.languages ?? "Explore this template in English, Tagalog, or Taglish."}</p>
+            </section>
+          )}
           <div className="mt-8">
             <DesignGallery images={shots} title={design.title} />
           </div>
@@ -152,7 +173,7 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
             </Suspense>
             {design.demoUrl && (
               <Link
-                href={design.demoUrl}
+                href={previewUrl!}
                 className="mt-5 flex items-center justify-center gap-2 text-sm font-medium text-bay underline-offset-4 hover:underline"
               >
                 <MonitorSmartphoneIcon className="size-4" /> Open the live demo
@@ -171,7 +192,7 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
                 The real home page, captured from the live demo. Every page is fully responsive.
               </p>
             </Reveal>
-            <DeviceShowcase desktop={shots[0]} mobile={mobileShot} demoUrl={design.demoUrl} />
+            <DeviceShowcase desktop={shots[0]} mobile={mobileShot} demoUrl={previewUrl} />
           </div>
         </section>
       )}

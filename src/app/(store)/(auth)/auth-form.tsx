@@ -50,6 +50,7 @@ export function AuthForm({
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "";
   const justReset = mode === "login" && searchParams.get("reset") === "1";
+  const googleDenied = searchParams.get("error") === "AccessDenied";
   const [state, action, pending] = useActionState<AuthFormState, FormData>(
     mode === "login" ? loginAction : registerAction,
     {},
@@ -60,6 +61,12 @@ export function AuthForm({
 
   return (
     <div className="space-y-6">
+      {googleDenied && (
+        <p role="alert" className="rounded-lg bg-secondary px-3 py-2.5 text-sm text-bay-deep">
+          Google sign-in could not be completed. If you already have an account with this email,
+          log in with your password or use the password reset link. Accounts are not linked automatically.
+        </p>
+      )}
       {justReset && !state.error && (
         <p role="status" className="rounded-lg bg-secondary px-3 py-2.5 text-sm text-bay-deep">
           Your password has been changed. Log in with your new password.

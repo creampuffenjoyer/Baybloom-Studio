@@ -1,15 +1,18 @@
+"use client";
+import { useCoral, LocalLink as Link } from "../language";
 import Image from "next/image";
-import Link from "next/link";
+
 import { PageIntro } from "../components/page-intro";
-import { experiences, photo } from "../content";
+
 import { href } from "../site";
 
 export function ExperiencesPage() {
+  const { t, experiences, photo } = useCoral();
   return (
     <>
       <PageIntro
-        title="Days on the water"
-        lede="Snorkel gear, kayaks and paddleboards are free for every guest. Everything else, our front desk can book in a few minutes, or ask us before you arrive."
+        title={t("Days on the water")}
+        lede={t("Snorkel gear, kayaks and paddleboards are free for every guest. Everything else, our front desk can book in a few minutes, or ask us before you arrive.")}
         image={photo("sandbar")}
       />
       <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
@@ -26,11 +29,11 @@ export function ExperiencesPage() {
                 <p className="mt-3 leading-relaxed text-tpl-muted">{x.detail}</p>
                 <dl className="mt-5 flex flex-wrap gap-x-8 gap-y-2 text-sm">
                   <div>
-                    <dt className="inline text-tpl-muted">Length: </dt>
+                    <dt className="inline text-tpl-muted">{t("Length:")}{" "}</dt>
                     <dd className="inline font-semibold">{x.duration}</dd>
                   </div>
                   <div>
-                    <dt className="inline text-tpl-muted">Price: </dt>
+                    <dt className="inline text-tpl-muted">{t("Price:")}{" "}</dt>
                     <dd className="inline font-semibold">{x.price}</dd>
                   </div>
                 </dl>
@@ -40,15 +43,9 @@ export function ExperiencesPage() {
         </ul>
       </div>
       <section className="bg-tpl-deep px-5 py-20 text-center text-white">
-        <h2 className="mx-auto max-w-2xl font-tpl-display text-4xl font-bold tracking-[-0.035em] sm:text-5xl">
-          Plan your days before you land
-        </h2>
-        <p className="mx-auto mt-4 max-w-xl text-lg text-white/80">
-          Tell us what you love and we’ll pencil in boats, dives and dinners around the tides.
-        </p>
-        <Link href={href("/contact")} className="mt-8 inline-block rounded-full bg-white px-7 py-3.5 font-semibold text-tpl-deep">
-          Ask our team
-        </Link>
+        <h2 className="mx-auto max-w-2xl font-tpl-display text-4xl font-bold tracking-[-0.035em] sm:text-5xl">{t("Plan your days before you land")}</h2>
+        <p className="mx-auto mt-4 max-w-xl text-lg text-white/80">{t("Tell us what you love and we’ll pencil in boats, dives and dinners around the tides.")}</p>
+        <Link href={href("/contact")} className="mt-8 inline-block rounded-full bg-white px-7 py-3.5 font-semibold text-tpl-deep">{t("Ask our team")}</Link>
       </section>
     </>
   );

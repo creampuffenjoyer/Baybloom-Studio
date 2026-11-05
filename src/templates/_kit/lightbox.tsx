@@ -13,10 +13,12 @@ export function Lightbox({
   photos,
   children,
   overlayClassName = "bg-black/92 text-white",
+  labels = { viewer: "Photo viewer", close: "Close", previous: "Previous photo", next: "Next photo" },
 }: {
   photos: Photo[];
   children: (open: (index: number) => void) => React.ReactNode;
   overlayClassName?: string;
+  labels?: { viewer: string; close: string; previous: string; next: string };
 }) {
   const [index, setIndex] = useState<number | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
@@ -58,7 +60,7 @@ export function Lightbox({
       {children(open)}
       <dialog
         ref={dialog}
-        aria-label="Photo viewer"
+        aria-label={labels.viewer}
         className={`fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none p-0 backdrop:bg-transparent ${overlayClassName}`}
         onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
         onTouchEnd={(e) => {
@@ -79,7 +81,7 @@ export function Lightbox({
                 onClick={close}
                 className="rounded-full px-3 py-1.5 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-current"
               >
-                Close
+                {labels.close}
               </button>
             </div>
             <div className="relative flex-1">
@@ -94,7 +96,7 @@ export function Lightbox({
               <button
                 type="button"
                 onClick={() => step(-1)}
-                aria-label="Previous photo"
+                aria-label={labels.previous}
                 className="absolute top-1/2 left-2 grid size-12 -translate-y-1/2 place-items-center rounded-full text-2xl hover:bg-white/10 sm:left-4"
               >
                 ‹
@@ -102,7 +104,7 @@ export function Lightbox({
               <button
                 type="button"
                 onClick={() => step(1)}
-                aria-label="Next photo"
+                aria-label={labels.next}
                 className="absolute top-1/2 right-2 grid size-12 -translate-y-1/2 place-items-center rounded-full text-2xl hover:bg-white/10 sm:right-4"
               >
                 ›

@@ -9,8 +9,7 @@ export function GiftCardsPage() {
       <div>
         <h1 className="font-tpl-display text-6xl sm:text-7xl">Give an afternoon off</h1>
         <p className="mt-5 max-w-[50ch] text-lg text-tpl-muted">
-          Digital gift cards, sent straight away or on the day you choose. Valid for twelve months on any
-          treatment, package or membership.
+          Explore a sample gift card. No payment is taken and no card is sent.
         </p>
         <div className="mt-12">
           <GiftForm />

@@ -1,14 +1,15 @@
+"use client";
+
 import Image from "next/image";
 import { ExperienceInquiry } from "../components/experience-inquiry";
-import { experiences, photo } from "../content";
+import { useLumen } from "../language";
 
 export function ExperiencesPage() {
+  const { experiences, photo, t } = useLumen();
   return (
     <div className="mx-auto max-w-[1400px] px-6 pt-10 sm:px-10">
-      <h1 className="font-tpl-display text-7xl sm:text-8xl">Experiences</h1>
-      <p className="mt-6 max-w-[48ch] text-lg text-tpl-muted">
-        Kayaks, bicycles and the sauna are always free to use. These take a little arranging.
-      </p>
+      <h1 className="font-tpl-display text-7xl sm:text-8xl">{t("Experiences")}</h1>
+      <p className="mt-6 max-w-[48ch] text-lg text-tpl-muted">{t("Kayaks, bicycles and the sauna are always free to use. These take a little arranging.")}</p>
       <ul className="mt-24 space-y-32">
         {experiences.map((x, i) => {
           const p = photo(x.photo);

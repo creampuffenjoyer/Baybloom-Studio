@@ -73,6 +73,22 @@ model User {
   favorites Favorite[]
   cartItems CartItem[]
   orders    Order[]
+  personalizationDrafts PersonalizationDraft[]
+}
+
+/// One saved pilot draft per account and template. Assets are not stored here.
+model PersonalizationDraft {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  template  String
+  content   Json
+  /// One normalized pilot hero image, private to the owning account.
+  heroImage Bytes?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, template])
 }
 
 /// OAuth identities (e.g. Google) linked to a user.
@@ -277,6 +293,12 @@ model Order {
   totalCents         Int
   currency           String
   paymentRef         String?     @unique // Stripe Checkout session id
+  /// Stable cart snapshot key; cleared only after a confirmed terminal failure.
+  checkoutKey        String?     @unique
+  checkoutExpiresAt  DateTime?
+  /// Immutable Stripe request, reused after network/process failures.
+  checkoutParameters Json?
+  couponReserved     Boolean     @default(false)
   couponCode         String?
   paidAt             DateTime?
   /// Stripe-hosted receipt for the charge
@@ -285,12 +307,32 @@ model Order {
   billing            Json?
   /// Set once the confirmation email has gone out (webhook retries are idempotent)
   confirmationSentAt DateTime?
+  confirmationNextAt DateTime?
+  confirmationAttempts Int @default(0)
+  confirmationLeaseUntil DateTime?
+  confirmationLeaseToken String?
+  confirmationPayload Json?
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
   items              OrderItem[]
+  checkoutRequests   CheckoutRequest[]
 
   @@index([userId, createdAt])
   @@index([status])
+  @@index([couponCode, couponReserved])
+  @@index([status, checkoutExpiresAt])
+  @@index([status, confirmationNextAt])
+}
+
+/// Client retry keys are scoped to the authenticated buyer, never trusted as ownership.
+model CheckoutRequest {
+  userId    String
+  key       String
+  orderId   String
+  order     Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  @@id([userId, key])
+  @@index([orderId])
 }
 
 model OrderItem {
@@ -322,4 +364,12 @@ model Coupon {
   expiresAt        DateTime?
   active           Boolean   @default(true)
   createdAt        DateTime  @default(now())
+}
+
+model RateLimitBucket {
+  key String @id
+  count Int
+  resetAt DateTime
+
+  @@index([resetAt])
 }

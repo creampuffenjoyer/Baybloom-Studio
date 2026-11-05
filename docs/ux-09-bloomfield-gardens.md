@@ -1,0 +1,5 @@
+# Bloomfield Gardens UX and language work
+
+The space finder matches guest counts against the chosen ceremony, seated-dinner, or standing capacity. Links carry the selected space and guest count into the sample inquiry. The date picker and inquiry outcome explain that the demo neither holds dates nor sends messages. The preview and source package include the partial language variants described below.
+
+Draft Tagalog and Taglish copy for the five venue descriptions and space finder is stored in `src/templates/bloomfield-gardens/space-translations.ts`. Package descriptions, FAQs, planning timeline and reviews are in `planning-translations.ts`; accessible photo descriptions are in `photo-translations.ts`. These drafts are connected to the corresponding pages and the site offers a language selector. A visible notice explains that the variants are partial. Complete page and inquiry copy, navigation, credits headings, form validation and calendar labels. Preserve space slugs, option values and capacity numbers. Review Tagalog and Taglish with a fluent speaker before publication.

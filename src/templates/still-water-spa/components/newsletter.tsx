@@ -4,7 +4,7 @@ import { formHandler, useDemoSubmit } from "../../_kit/demo-form";
 
 export function Newsletter() {
   const { status, submit } = useDemoSubmit();
-  if (status === "sent") return <p>Thank you. We’ll be in touch, gently.</p>;
+  if (status === "sent") return <p>Sample complete. No subscription or message was sent.</p>;
   return (
     <form onSubmit={formHandler(submit)} className="flex max-w-md gap-2">
       <label htmlFor="sw-news" className="sr-only">

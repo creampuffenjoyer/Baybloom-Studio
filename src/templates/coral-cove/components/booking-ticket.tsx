@@ -1,7 +1,9 @@
 "use client";
+import { useCoral } from "../language";
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { validStay } from "../stay-plan";
 import { addDays } from "../../_kit/dates";
 import { useClientToday } from "../../_kit/use-today";
 import { href } from "../site";
@@ -26,6 +28,7 @@ const field =
 
 /** The home-page booking bar, drawn as a boarding pass: dates and guests on the ticket, search on the stub. */
 export function BookingTicket() {
+  const { t, language } = useCoral();
   const router = useRouter();
   const today = useClientToday();
   const [checkIn, setCheckIn] = useState("");
@@ -35,11 +38,11 @@ export function BookingTicket() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (checkIn && checkOut && checkOut <= checkIn) {
-      setError("Check-out needs to be after check-in.");
+    if ((checkIn || checkOut) && !validStay(checkIn, checkOut, today)) {
+      setError("Choose future arrival and departure dates, for a stay of 1–30 nights.");
       return;
     }
-    const q = new URLSearchParams({ guests });
+    const q = new URLSearchParams({ guests, lang: language });
     if (checkIn && checkOut) {
       q.set("checkin", checkIn);
       q.set("checkout", checkOut);
@@ -50,7 +53,7 @@ export function BookingTicket() {
   return (
     <form
       onSubmit={submit}
-      aria-label="Check villa availability"
+      aria-label={t("Plan a sample stay")}
       className="relative flex flex-col drop-shadow-[0_24px_40px_rgb(13_43_51/0.28)] md:flex-row"
     >
       <style>{ticketCss}</style>
@@ -58,7 +61,7 @@ export function BookingTicket() {
         className="cc-ticket-body grid flex-1 grid-cols-2 gap-px overflow-hidden rounded-t-3xl bg-tpl-line sm:grid-cols-3 md:rounded-l-3xl md:rounded-tr-none"
       >
         <label className="block bg-white px-4 py-3 sm:px-6 sm:py-4">
-          <span className="text-sm text-tpl-muted">Arrive</span>
+          <span className="text-sm text-tpl-muted">{t("Arrive")}</span>
           <input
             type="date"
             min={today ?? undefined}
@@ -74,7 +77,7 @@ export function BookingTicket() {
           />
         </label>
         <label className="block bg-white px-4 py-3 sm:px-6 sm:py-4">
-          <span className="text-sm text-tpl-muted">Leave</span>
+          <span className="text-sm text-tpl-muted">{t("Leave")}</span>
           <input
             type="date"
             min={checkIn ? addDays(checkIn, 1) : (today ?? undefined)}
@@ -87,11 +90,11 @@ export function BookingTicket() {
           />
         </label>
         <label className="col-span-2 block bg-white px-4 py-3 sm:col-span-1 sm:px-6 sm:py-4">
-          <span className="text-sm text-tpl-muted">Guests</span>
+          <span className="text-sm text-tpl-muted">{t("Guests")}</span>
           <select value={guests} onChange={(e) => setGuests(e.target.value)} className={field}>
             {[1, 2, 3, 4, 5].map((n) => (
               <option key={n} value={n}>
-                {n} {n === 1 ? "guest" : "guests"}
+                {n} {n === 1 ? t("guest") : t("guests")}
               </option>
             ))}
           </select>
@@ -103,13 +106,11 @@ export function BookingTicket() {
         <button
           type="submit"
           className="w-full rounded-full px-6 py-2 text-lg font-bold sm:py-3 whitespace-nowrap text-tpl-on-accent focus-visible:outline-2 focus-visible:outline-white md:w-auto"
-        >
-          See available villas
-        </button>
+        >{t("Plan a stay")}</button>
       </div>
       {error && (
-        <p role="alert" className="absolute -bottom-8 left-6 text-sm font-semibold text-white">
-          {error}
+        <p role="alert" className="rounded-xl bg-white px-4 py-3 text-sm font-semibold text-tpl-accent md:absolute md:top-full md:left-0 md:mt-3 md:max-w-xl">
+          {error && t(error)}
         </p>
       )}
     </form>

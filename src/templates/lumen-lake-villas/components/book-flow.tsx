@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { bookingRef } from "../../_kit/availability";
 import { Calendar } from "../../_kit/calendar";
 import { formatDay, formatLong, formatMoney } from "../../_kit/dates";
 import { useStayBooking } from "../../_kit/use-stay-booking";
-import { extras, villas } from "../content";
 import { CURRENCY, href } from "../site";
+import { LocalLink, useLumen } from "../language";
 
 const money = (n: number) => formatMoney(n, CURRENCY);
 /** "the Shore Villa", but "The Boathouse" (some names already carry the article). */
@@ -17,19 +16,15 @@ const QUESTIONS = ["When will you come?", "Where would you like to stay?", "Who 
 
 /** One question at a time, in large type, with a quiet running summary underneath. */
 export function BookFlow() {
+  const { t, locale, villas, extras } = useLumen();
   const b = useStayBooking(villas, extras);
 
   if (b.step === 4) {
     return (
       <div className="max-w-3xl">
-        <p className="font-tpl-display text-6xl leading-tight sm:text-7xl">{the(b.room?.name, true)} is yours.</p>
-        <p className="mt-6 text-lg text-tpl-muted">
-          {b.checkIn && formatLong(b.checkIn)} to {b.checkOut && formatLong(b.checkOut)}. Reference {b.reference}. We’ve written to{" "}
-          {b.details.email} with directions and the door code.
-        </p>
-        <Link href={href("/experiences")} className="mt-10 inline-block border-b border-tpl-ink pb-0.5 text-sm">
-          Plan your days on the lake
-        </Link>
+        <p className="font-tpl-display text-6xl leading-tight sm:text-7xl">{the(b.room?.name, true)} {t("is yours.")}</p>
+        <p className="mt-6 text-lg text-tpl-muted">{b.checkIn && formatLong(b.checkIn, locale)} {t("to")} {b.checkOut && formatLong(b.checkOut, locale)}. {t("Reference")} {b.reference}. {t("We’ve written to")} {b.details.email} {t("with directions and the door code.")}</p>
+        <LocalLink href={href("/experiences")} className="mt-10 inline-block border-b border-tpl-ink pb-0.5 text-sm">{t("Plan your days on the lake")}</LocalLink>
       </div>
     );
   }
@@ -39,7 +34,7 @@ export function BookFlow() {
       <p className="text-sm text-tpl-muted" aria-live="polite">
         {b.step + 1} / 4
       </p>
-      <h2 className="mt-3 font-tpl-display text-5xl leading-tight sm:text-6xl">{QUESTIONS[b.step]}</h2>
+      <h2 className="mt-3 font-tpl-display text-5xl leading-tight sm:text-6xl">{t(QUESTIONS[b.step])}</h2>
 
       <div className="mt-12">
         {b.step === 0 && (
@@ -47,6 +42,7 @@ export function BookFlow() {
             <Calendar
               mode="range"
               months={2}
+              locale={locale}
               start={b.checkIn}
               end={b.checkOut}
               onSelect={(a, z) => b.setDates(a, z)}
@@ -57,7 +53,7 @@ export function BookFlow() {
             />
             <div className="mt-10 flex flex-wrap items-center gap-8">
               <label className="flex items-center gap-3 text-sm text-tpl-muted">
-                Guests
+                {t("Guests")}
                 <select value={b.guests} onChange={(e) => b.setGuests(Number(e.target.value))} className="border-b border-tpl-line bg-transparent py-1 text-tpl-ink">
                   {[1, 2, 3, 4, 5].map((n) => (
                     <option key={n}>{n}</option>
@@ -65,7 +61,7 @@ export function BookFlow() {
                 </select>
               </label>
               <button type="button" className={next} disabled={b.nights < 1} onClick={() => b.goTo(1)}>
-                Next
+                {t("Next")}
               </button>
             </div>
           </>
@@ -89,7 +85,7 @@ export function BookFlow() {
                       />
                       <span className="flex-1">
                         <span className="font-tpl-display text-3xl">{v.name}</span>
-                        <span className="ml-3 text-sm text-tpl-muted">{free ? v.line : v.maxGuests < b.guests ? `Sleeps ${v.maxGuests}` : "Taken"}</span>
+                        <span className="ml-3 text-sm text-tpl-muted">{free ? v.line : v.maxGuests < b.guests ? `${t("Sleeps")} ${v.maxGuests}` : t("Taken")}</span>
                       </span>
                       <span className="text-sm">{money(v.price * b.nights)}</span>
                     </label>
@@ -98,7 +94,7 @@ export function BookFlow() {
               })}
             </ul>
             <fieldset className="mt-10">
-              <legend className="text-sm text-tpl-muted">Add</legend>
+              <legend className="text-sm text-tpl-muted">{t("Add")}</legend>
               <div className="mt-3 space-y-3">
                 {extras.map((x) => (
                   <label key={x.id} className="flex items-center gap-4">
@@ -111,10 +107,10 @@ export function BookFlow() {
             </fieldset>
             <div className="mt-10 flex items-center gap-8">
               <button type="button" className={next} disabled={!b.room || !b.availability[b.room.slug]} onClick={() => b.goTo(2)}>
-                Next
+                {t("Next")}
               </button>
               <button type="button" onClick={() => b.goTo(0)} className="text-sm text-tpl-muted">
-                Back
+                {t("Back")}
               </button>
             </div>
           </>
@@ -130,23 +126,23 @@ export function BookFlow() {
             className="grid max-w-2xl gap-8 sm:grid-cols-2"
           >
             <label className="block text-sm text-tpl-muted">
-              Name
+              {t("Name")}
               <input name="name" required autoComplete="name" defaultValue={b.details.name} className={input} />
             </label>
             <label className="block text-sm text-tpl-muted">
-              Email
+              {t("Email")}
               <input name="email" type="email" required autoComplete="email" defaultValue={b.details.email} className={input} />
             </label>
             <label className="block text-sm text-tpl-muted sm:col-span-2">
-              Anything we should prepare?
-              <input name="notes" defaultValue={b.details.notes} className={input} placeholder="A cot, firewood, an early sauna…" />
+              {t("Anything we should prepare?")}
+              <input name="notes" defaultValue={b.details.notes} className={input} placeholder={t("A cot, firewood, an early sauna…")} />
             </label>
             <div className="flex items-center gap-8 sm:col-span-2">
               <button type="submit" className={next}>
-                Next
+                {t("Next")}
               </button>
               <button type="button" onClick={() => b.goTo(1)} className="text-sm text-tpl-muted">
-                Back
+                {t("Back")}
               </button>
             </div>
           </form>
@@ -155,16 +151,16 @@ export function BookFlow() {
         {b.step === 3 && (
           <>
             <p className="max-w-2xl font-tpl-display text-3xl leading-snug">
-              {b.details.name}, {b.guests} {b.guests === 1 ? "guest" : "guests"}, in {the(b.room?.name)}, {b.nights}{" "}
-              {b.nights === 1 ? "night" : "nights"} from {b.checkIn && formatLong(b.checkIn)}. {money(b.total)} in all.
+              {b.details.name}, {b.guests} {t(b.guests === 1 ? "guest" : "guests")}, {t("in")} {the(b.room?.name)}, {b.nights}{" "}
+              {t(b.nights === 1 ? "night" : "nights")} {t("from")} {b.checkIn && formatLong(b.checkIn)}. {money(b.total)} {t("in all.")}
             </p>
-            <p className="mt-4 text-sm text-tpl-muted">Pay on arrival. Free cancellation until 14 days before. Demo: nothing is booked.</p>
+            <p className="mt-4 text-sm text-tpl-muted">{t("Pay on arrival. Free cancellation until 14 days before. Demo: nothing is booked.")}</p>
             <div className="mt-10 flex items-center gap-8">
               <button type="button" className={next} onClick={() => b.confirm(bookingRef("LL"))}>
-                Yes, hold it
+                {t("Yes, hold it")}
               </button>
               <button type="button" onClick={() => b.goTo(2)} className="text-sm text-tpl-muted">
-                Back
+                {t("Back")}
               </button>
             </div>
           </>
@@ -172,7 +168,7 @@ export function BookFlow() {
       </div>
 
       <p className="mt-20 border-t border-tpl-line pt-6 text-sm text-tpl-muted">
-        {b.checkIn ? `${formatDay(b.checkIn)} – ${b.checkOut ? formatDay(b.checkOut) : "…"}` : "No dates yet"}
+        {b.checkIn ? `${formatDay(b.checkIn, undefined, locale)} – ${b.checkOut ? formatDay(b.checkOut, undefined, locale) : "…"}` : t("No dates yet")}
         {b.room ? ` · ${b.room.name}` : ""}
         {b.room && b.nights ? ` · ${money(b.total)}` : ""}
       </p>

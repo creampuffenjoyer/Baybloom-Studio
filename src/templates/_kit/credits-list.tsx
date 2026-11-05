@@ -5,7 +5,7 @@ import type { PhotoRecord } from "./photos";
  * CC BY-SA, which require this; keep the page (or replace the photos with
  * your own) when you launch.
  */
-export function CreditsList({ photos, className }: { photos: PhotoRecord[]; className?: string }) {
+export function CreditsList({ photos, className, labels = { by: "Photo by", edited: ". Cropped and resized." } }: { photos: PhotoRecord[]; className?: string; labels?: { by: string; edited: string } }) {
   return (
     <ul className={className}>
       {photos.map((p) => (
@@ -14,7 +14,7 @@ export function CreditsList({ photos, className }: { photos: PhotoRecord[]; clas
           <img src={p.src} alt="" className="size-20 shrink-0 rounded-lg object-cover" loading="lazy" />
           <p className="text-sm leading-relaxed">
             <span className="block font-semibold">{p.alt}</span>
-            Photo by{" "}
+            {labels.by}{" "}
             <a href={p.source} className="underline underline-offset-2" rel="noopener noreferrer" target="_blank">
               {p.author}
             </a>
@@ -26,7 +26,7 @@ export function CreditsList({ photos, className }: { photos: PhotoRecord[]; clas
             ) : (
               p.license
             )}
-            . Cropped and resized.
+            {labels.edited}
           </p>
         </li>
       ))}

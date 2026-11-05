@@ -34,8 +34,8 @@ export async function requestPasswordResetAction(
   const email = parsed.data;
 
   if (
-    !rateLimit(`reset:ip:${await clientIp()}`, 10, 60 * 60_000).ok ||
-    !rateLimit(`reset:email:${email}`, 3, 60 * 60_000).ok
+    !(await rateLimit(`reset:ip:${await clientIp()}`, 10, 60 * 60_000)).ok ||
+    !(await rateLimit(`reset:email:${email}`, 3, 60 * 60_000)).ok
   ) {
     return { error: "Too many requests. Please wait a while and try again.", email };
   }
@@ -101,7 +101,7 @@ export async function resetPasswordAction(
 export async function resendVerificationAction(): Promise<{ ok: boolean; message: string }> {
   const user = await getCurrentUser();
   if (!user?.email) return { ok: false, message: "Please log in again." };
-  if (!rateLimit(`verify:${user.id}`, 3, 60 * 60_000).ok) {
+  if (!(await rateLimit(`verify:${user.id}`, 3, 60 * 60_000)).ok) {
     return { ok: false, message: "We've sent a few already. Please check your inbox and spam folder." };
   }
   const row = await db.user.findUnique({

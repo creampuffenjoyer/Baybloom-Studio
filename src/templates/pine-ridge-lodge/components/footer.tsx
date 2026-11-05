@@ -1,15 +1,18 @@
-import Link from "next/link";
-import { href, nav, site } from "../site";
+"use client";
+import { usePine, LocalLink as Link } from "../language";
+
+import { href } from "../site";
 import { Contours } from "./contours";
 
 export function Footer() {
+  const { t, nav, site } = usePine();
   return (
     <footer className="relative mt-24 overflow-hidden bg-tpl-deep text-tpl-on-deep">
       <Contours className="absolute inset-0 size-full text-white/[0.06]" />
       <div className="relative mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-8 md:grid-cols-3">
         <div>
           <p className="font-tpl-display text-4xl font-bold">Pine Ridge Lodge</p>
-          <p className="mt-3 max-w-xs text-tpl-on-deep/75">{site.tagline}. Elevation 1,640 m.</p>
+          <p className="mt-3 max-w-xs text-tpl-on-deep/75">{site.tagline}{t(". Elevation 1,640 m.")}</p>
         </div>
         <div className="text-tpl-on-deep/80">
           <address className="not-italic">
@@ -29,12 +32,12 @@ export function Footer() {
             </a>
           </p>
         </div>
-        <nav aria-label="Footer">
+        <nav aria-label={t("Footer")}>
           <ul className="grid grid-cols-2 gap-y-2 text-tpl-on-deep/80">
             {[...nav, { href: "/book", label: "Book" }, { href: "/credits", label: "Photo credits" }].map((i) => (
               <li key={i.href}>
                 <Link href={href(i.href)} className="hover:text-tpl-accent">
-                  {i.label}
+                  {t(i.label)}
                 </Link>
               </li>
             ))}

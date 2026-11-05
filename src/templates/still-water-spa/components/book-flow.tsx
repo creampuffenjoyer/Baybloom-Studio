@@ -1,12 +1,14 @@
 "use client";
 
-import Link from "next/link";
+import { useStillWater } from "../language";
+
+import { LocalLink as Link } from "../language";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { bookingRef, formatTime, freeSlots, timeSlots } from "../../_kit/availability";
 import { Calendar } from "../../_kit/calendar";
 import { formatLong, formatMoney, fromDay, type Day } from "../../_kit/dates";
-import { RITUALS, treatments } from "../content";
+import { RITUALS } from "../content";
 import { href, site } from "../site";
 
 const THERAPIST = [
@@ -26,6 +28,7 @@ function slotsFor(day: Day) {
 }
 
 export function BookFlow() {
+  const { treatments, t, locale } = useStillWater();
   const params = useSearchParams();
   const initial = treatments.find((t) => t.slug === params.get("treatment"));
   const initialMinutes = Number(params.get("minutes"));
@@ -49,22 +52,20 @@ export function BookFlow() {
   if (step === 3) {
     return (
       <div className="mx-auto max-w-xl py-8 text-center">
-        <p className="font-tpl-display text-5xl sm:text-6xl">We’ll see you soon, {name.split(" ")[0] || "friend"}.</p>
+        <p className="font-tpl-display text-5xl sm:text-6xl">{t("Sample booking,")}{" "}{name.split(" ")[0] || t("friend")}.</p>
         <p className="mt-6 text-lg text-tpl-muted">
-          {treatment?.name}, {option?.minutes} minutes, on {day && formatLong(day)} at {time && formatTime(time)}.
+          {treatment?.name}, {option?.minutes}{" "}{t("minutes, on")}{" "}{day && formatLong(day, locale)}{" "}{t("at")}{" "}{time && formatTime(time)}.
         </p>
-        <p className="mt-2 text-tpl-muted">Reference {ref}</p>
+        <p className="mt-2 text-tpl-muted">{t("Sample reference")}{" "}{ref}. {t("No appointment was booked and no message was sent.")}</p>
         <div className="mt-10 rounded-[2rem] bg-tpl-surface p-7 text-left">
-          <h2 className="font-tpl-display text-2xl">Before you come</h2>
+          <h2 className="font-tpl-display text-2xl">{t("Typical visit details")}</h2>
           <ul className="mt-4 space-y-2 text-tpl-muted">
-            <li>Arrive 20 minutes early to change and settle in.</li>
-            <li>Robes, slippers and towels are waiting for you.</li>
-            <li>Need to move it? Call {site.phone} at least 24 hours ahead.</li>
+            <li>{t("Arrive 20 minutes early to change and settle in.")}</li>
+            <li>{t("Robes, slippers and towels are waiting for you.")}</li>
+            <li>{t("For actual availability and cancellation terms, contact the spa at")}{" "}{site.phone}.</li>
           </ul>
         </div>
-        <Link href={href("/")} className={`${primary} mt-10 inline-block`}>
-          Back to Still Water
-        </Link>
+        <Link href={href("/")} className={`${primary} mt-10 inline-block`}>{t("Back to Still Water")}</Link>
       </div>
     );
   }
@@ -73,7 +74,7 @@ export function BookFlow() {
     <div className="grid gap-12 lg:grid-cols-[1fr_340px]">
       <div>
         <div className="flex items-center gap-4 text-[15px] text-tpl-muted">
-          <span>Step {step + 1} of 3</span>
+          <span>{t("Step")}{" "}{step + 1}{" "}{t("of 3")}</span>
           <span aria-hidden className="h-1 flex-1 overflow-hidden rounded-full bg-tpl-soft">
             <span className="block h-full rounded-full bg-tpl-accent transition-all duration-500" style={{ width: `${((step + 1) / 3) * 100}%` }} />
           </span>
@@ -81,33 +82,31 @@ export function BookFlow() {
 
         {step === 0 && (
           <section aria-labelledby="choose" className="mt-8">
-            <h2 id="choose" className="font-tpl-display text-4xl">
-              What would you like?
-            </h2>
+            <h2 id="choose" className="font-tpl-display text-4xl">{t("What would you like?")}</h2>
             <div className="mt-8 space-y-10">
               {RITUALS.map((r) => (
                 <fieldset key={r.id}>
-                  <legend className="font-tpl-display text-xl text-tpl-muted">{r.label}</legend>
+                  <legend className="font-tpl-display text-xl text-tpl-muted">{t(r.label)}</legend>
                   <div className="mt-3 space-y-2">
                     {treatments
                       .filter((t) => t.ritual === r.id)
-                      .map((t) => (
+                      .map((item) => (
                         <div
-                          key={t.slug}
-                          className={`rounded-2xl p-4 ring-1 transition-colors ${slug === t.slug ? "bg-tpl-surface ring-2 ring-tpl-accent" : "ring-tpl-line"}`}
+                          key={item.slug}
+                          className={`rounded-2xl p-4 ring-1 transition-colors ${slug === item.slug ? "bg-tpl-surface ring-2 ring-tpl-accent" : "ring-tpl-line"}`}
                         >
-                          <p className="font-semibold">{t.name}</p>
-                          <p className="text-sm text-tpl-muted">{t.summary}</p>
+                          <p className="font-semibold">{item.name}</p>
+                          <p className="text-sm text-tpl-muted">{item.summary}</p>
                           <div className="mt-3 flex flex-wrap gap-2">
-                            {t.options.map((o) => {
-                              const on = slug === t.slug && minutes === o.minutes;
+                            {item.options.map((o) => {
+                              const on = slug === item.slug && minutes === o.minutes;
                               return (
                                 <button
                                   key={o.minutes}
                                   type="button"
                                   aria-pressed={on}
                                   onClick={() => {
-                                    setSlug(t.slug);
+                                    setSlug(item.slug);
                                     setMinutes(o.minutes);
                                     setTime(null);
                                   }}
@@ -115,7 +114,7 @@ export function BookFlow() {
                                     on ? "bg-tpl-accent text-tpl-on-accent ring-tpl-accent" : "ring-tpl-line hover:ring-tpl-ink/40"
                                   }`}
                                 >
-                                  {o.minutes} min · {formatMoney(o.price)}
+                                  {o.minutes}{" "}{t("min ·")}{" "}{formatMoney(o.price)}
                                 </button>
                               );
                             })}
@@ -126,20 +125,18 @@ export function BookFlow() {
                 </fieldset>
               ))}
             </div>
-            <button type="button" className={`${primary} mt-10`} disabled={!option} onClick={() => setStep(1)}>
-              Choose a time
-            </button>
+            <button type="button" className={`${primary} mt-10`} disabled={!option} onClick={() => setStep(1)}>{t("Choose a time")}</button>
           </section>
         )}
 
         {step === 1 && (
           <section aria-labelledby="when" className="mt-8">
-            <h2 id="when" className="font-tpl-display text-4xl">
-              When suits you?
-            </h2>
+            <h2 id="when" className="font-tpl-display text-4xl">{t("When suits you?")}</h2>
             <div className="mt-8 grid gap-8 md:grid-cols-[minmax(0,340px)_1fr]">
               <Calendar
                 mode="single"
+                locale={locale}
+                labels={{ previous: t("Previous month"), next: t("Next month"), to: t("to") }}
                 start={day}
                 onSelect={(d) => {
                   setDay(d);
@@ -153,7 +150,7 @@ export function BookFlow() {
               />
               <div>
                 <fieldset>
-                  <legend className="font-semibold">Therapist</legend>
+                  <legend className="font-semibold">{t("Therapist")}</legend>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {THERAPIST.map((x) => (
                       <button
@@ -168,17 +165,17 @@ export function BookFlow() {
                           therapist === x.id ? "bg-tpl-deep text-tpl-on-deep ring-tpl-deep" : "ring-tpl-line"
                         }`}
                       >
-                        {x.label}
+                        {t(x.label)}
                       </button>
                     ))}
                   </div>
                 </fieldset>
                 <fieldset className="mt-6">
-                  <legend className="font-semibold">Start time</legend>
+                  <legend className="font-semibold">{t("Start time")}</legend>
                   {!day ? (
-                    <p className="mt-2 text-tpl-muted">Pick a day to see free times.</p>
+                    <p className="mt-2 text-tpl-muted">{t("Pick a day to see free times.")}</p>
                   ) : free.length === 0 ? (
-                    <p className="mt-2 text-tpl-muted">Fully booked. Try another day or any therapist.</p>
+                    <p className="mt-2 text-tpl-muted">{t("Fully booked. Try another day or any therapist.")}</p>
                   ) : (
                     <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4">
                       {free.map((s) => (
@@ -200,12 +197,8 @@ export function BookFlow() {
               </div>
             </div>
             <div className="mt-10 flex items-center gap-6">
-              <button type="button" className={primary} disabled={!time} onClick={() => setStep(2)}>
-                Continue
-              </button>
-              <button type="button" onClick={() => setStep(0)} className="underline underline-offset-4">
-                Back
-              </button>
+              <button type="button" className={primary} disabled={!time} onClick={() => setStep(2)}>{t("Continue")}</button>
+              <button type="button" onClick={() => setStep(0)} className="underline underline-offset-4">{t("Back")}</button>
             </div>
           </section>
         )}
@@ -221,80 +214,63 @@ export function BookFlow() {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
           >
-            <h2 id="details" className="font-tpl-display text-4xl">
-              A little about you
-            </h2>
+            <h2 id="details" className="font-tpl-display text-4xl">{t("A little about you")}</h2>
             <div className="mt-8 grid gap-5 sm:grid-cols-2">
-              <label className="block">
-                Full name
-                <input required autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className={input} />
+              <label className="block">{t("Full name")}<input required autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className={input} />
               </label>
-              <label className="block">
-                Mobile
-                <input type="tel" required autoComplete="tel" className={input} />
+              <label className="block">{t("Mobile")}<input type="tel" required autoComplete="tel" className={input} />
               </label>
-              <label className="block sm:col-span-2">
-                Email
-                <input type="email" required autoComplete="email" className={input} />
+              <label className="block sm:col-span-2">{t("Email")}<input type="email" required autoComplete="email" className={input} />
               </label>
             </div>
             <fieldset className="mt-8">
-              <legend className="font-semibold">So your therapist can take care of you</legend>
+              <legend className="font-semibold">{t("So your therapist can take care of you")}</legend>
               <div className="mt-3 space-y-2">
                 {["I’m pregnant", "I have an injury or recent surgery", "I have high blood pressure", "I have skin allergies"].map((h) => (
                   <label key={h} className="flex items-center gap-3">
                     <input type="checkbox" className="size-5 accent-[var(--t-accent)]" />
-                    {h}
+                    {t(h)}
                   </label>
                 ))}
               </div>
-              <label className="mt-5 block">
-                Anything else?
-                <textarea rows={3} className={input} placeholder="Areas to focus on or avoid, pressure preference…" />
+              <label className="mt-5 block">{t("Anything else?")}<textarea rows={3} className={input} placeholder={t("Areas to focus on or avoid, pressure preference…")} />
               </label>
             </fieldset>
-            <p className="mt-6 text-sm text-tpl-muted">
-              Demo: connect your spa booking software here. Payment is taken at the spa; nothing is booked.
-            </p>
+            <p className="mt-6 text-sm text-tpl-muted">{t("Sample booking only. No appointment is booked and no payment is taken.")}</p>
             <div className="mt-8 flex items-center gap-6">
-              <button type="submit" className={primary}>
-                Confirm booking
-              </button>
-              <button type="button" onClick={() => setStep(1)} className="underline underline-offset-4">
-                Back
-              </button>
+              <button type="submit" className={primary}>{t("Confirm booking")}</button>
+              <button type="button" onClick={() => setStep(1)} className="underline underline-offset-4">{t("Back")}</button>
             </div>
           </form>
         )}
       </div>
 
-      <aside aria-label="Your booking" className="lg:sticky lg:top-28 lg:self-start">
+      <aside aria-label={t("Your booking")} className="lg:sticky lg:top-28 lg:self-start">
         <div className="rounded-[2rem] bg-tpl-deep p-7 text-tpl-on-deep">
-          <h2 className="font-tpl-display text-2xl">Your booking</h2>
+          <h2 className="font-tpl-display text-2xl">{t("Your booking")}</h2>
           {treatment && option ? (
             <dl className="mt-5 space-y-3 text-[15px]">
               <div>
-                <dt className="text-tpl-on-deep/60">Treatment</dt>
+                <dt className="text-tpl-on-deep/60">{t("Treatment")}</dt>
                 <dd>
-                  {treatment.name}, {option.minutes} min
-                </dd>
+                  {treatment.name}, {option.minutes}{t("min")}</dd>
               </div>
               <div>
-                <dt className="text-tpl-on-deep/60">When</dt>
-                <dd>{day ? `${formatLong(day)}${time ? `, ${formatTime(time)}` : ""}` : "Not chosen yet"}</dd>
+                <dt className="text-tpl-on-deep/60">{t("When")}</dt>
+                <dd>{day ? `${formatLong(day, locale)}${time ? `, ${formatTime(time)}` : ""}` : t("Not chosen yet")}</dd>
               </div>
               <div>
-                <dt className="text-tpl-on-deep/60">Therapist</dt>
-                <dd>{THERAPIST.find((x) => x.id === therapist)!.label}</dd>
+                <dt className="text-tpl-on-deep/60">{t("Therapist")}</dt>
+                <dd>{t(THERAPIST.find((x) => x.id === therapist)!.label)}</dd>
               </div>
               <div className="flex justify-between border-t border-white/15 pt-3 text-lg">
-                <dt>Total</dt>
+                <dt>{t("Total")}</dt>
                 <dd>{formatMoney(option.price)}</dd>
               </div>
-              {option.minutes >= 90 && <p className="text-sm text-tpl-on-deep/70">Includes the thermal circuit.</p>}
+              {option.minutes >= 90 && <p className="text-sm text-tpl-on-deep/70">{t("Includes the thermal circuit.")}</p>}
             </dl>
           ) : (
-            <p className="mt-4 text-tpl-on-deep/70">Choose a treatment to begin.</p>
+            <p className="mt-4 text-tpl-on-deep/70">{t("Choose a treatment to begin.")}</p>
           )}
         </div>
       </aside>

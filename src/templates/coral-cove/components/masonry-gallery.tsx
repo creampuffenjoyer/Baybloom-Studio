@@ -1,11 +1,13 @@
 "use client";
+import { useCoral } from "../language";
 
 import Image from "next/image";
 import { Lightbox, type Photo } from "../../_kit/lightbox";
 
 export function MasonryGallery({ photos }: { photos: (Photo & { width: number; height: number })[] }) {
+  const { t } = useCoral();
   return (
-    <Lightbox photos={photos} overlayClassName="bg-[#062a28]/96 text-white">
+    <Lightbox labels={{viewer: t("Photo viewer"), close: t("Close"), previous: t("Previous photo"), next: t("Next photo")}} photos={photos} overlayClassName="bg-[#062a28]/96 text-white">
       {(open) => (
         <ul className="columns-1 gap-4 sm:columns-2 lg:columns-3">
           {photos.map((p, i) => (

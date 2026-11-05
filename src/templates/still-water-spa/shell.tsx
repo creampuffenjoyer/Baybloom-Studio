@@ -3,11 +3,13 @@ import { Footer } from "./components/footer";
 import { Header } from "./components/header";
 import { body, display } from "./fonts";
 import { theme } from "./site";
+import { Suspense } from "react";
+import { LanguageProvider } from "./language";
 
 /** Wraps every Still Water page: theme, fonts, header and footer. */
 export function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div
+    <Suspense><LanguageProvider><div
       data-template="still-water-spa"
       className={`${display.variable} ${body.variable} flex min-h-dvh flex-col bg-tpl-bg font-tpl-body text-tpl-ink antialiased`}
       style={themeStyle(theme, { display: "var(--sw-display)", body: "var(--sw-body)" })}
@@ -23,6 +25,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <Footer />
-    </div>
+    </div></LanguageProvider></Suspense>
   );
 }

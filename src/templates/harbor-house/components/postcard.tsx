@@ -1,7 +1,11 @@
+"use client";
+
+import { useHarbor } from "../language";
+
 import Image from "next/image";
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { formatMoney } from "../../_kit/dates";
-import { photo, type Room } from "../content";
+import { type Room } from "../content";
 import { href } from "../site";
 
 /** A stamp with a perforated edge, used for prices. */
@@ -17,6 +21,7 @@ export function Stamp({ children, className = "" }: { children: React.ReactNode;
 
 /** A room shown as a postcard: photo on the front, a note and a stamp. */
 export function Postcard({ room, tilt = 0 }: { room: Room; tilt?: number }) {
+  const { t, photo } = useHarbor();
   const p = photo(room.photos[0]);
   return (
     <Link
@@ -27,7 +32,7 @@ export function Postcard({ room, tilt = 0 }: { room: Room; tilt?: number }) {
       <div className="relative aspect-[4/3] overflow-hidden">
         <Image src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 45vw, 100vw" className="object-cover" />
         <Stamp className="absolute top-3 right-3 rotate-3">
-          <span className="block text-[11px] font-semibold">from</span>
+          <span className="block text-[11px] font-semibold">{t("from")}</span>
           <span className="block font-tpl-display text-lg">{formatMoney(room.price)}</span>
         </Stamp>
       </div>

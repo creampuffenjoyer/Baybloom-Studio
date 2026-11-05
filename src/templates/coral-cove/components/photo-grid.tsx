@@ -1,12 +1,14 @@
 "use client";
+import { useCoral } from "../language";
 
 import Image from "next/image";
 import { Lightbox, type Photo } from "../../_kit/lightbox";
 
 /** One large photo and up to two smaller ones; any photo opens the viewer. */
 export function PhotoGrid({ photos }: { photos: Photo[] }) {
+  const { t } = useCoral();
   return (
-    <Lightbox photos={photos} overlayClassName="bg-[#062a28]/96 text-white">
+    <Lightbox labels={{viewer: t("Photo viewer"), close: t("Close"), previous: t("Previous photo"), next: t("Next photo")}} photos={photos} overlayClassName="bg-[#062a28]/96 text-white">
       {(open) => (
         <div className="grid gap-2 sm:grid-cols-4 sm:grid-rows-2">
           {photos.slice(0, 3).map((p, i) => (
@@ -26,9 +28,7 @@ export function PhotoGrid({ photos }: { photos: Photo[] }) {
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
               {i === 0 && (
-                <span className="absolute right-4 bottom-4 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-tpl-ink">
-                  View {photos.length} photos
-                </span>
+                <span className="absolute right-4 bottom-4 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-tpl-ink">{t("View photos")} ({photos.length})</span>
               )}
             </button>
           ))}

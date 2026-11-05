@@ -1,13 +1,13 @@
 "use client";
 
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { bookingRef } from "../../_kit/availability";
 import { Calendar } from "../../_kit/calendar";
-import { addDays, formatLong, isDay, today, type Day } from "../../_kit/dates";
+import { formatLong, isDay, type Day } from "../../_kit/dates";
 import { isDateFree, packages, spaces } from "../content";
-import { href, site } from "../site";
+import { href } from "../site";
 import { Sprig } from "./sprig";
 
 const STEPS = ["Your date", "Your celebration", "About you"];
@@ -26,7 +26,7 @@ export function InquiryFlow() {
   const [day, setDay] = useState<Day | null>(startDate);
   const [flexible, setFlexible] = useState(false);
   const [event, setEvent] = useState(EVENTS[0]);
-  const [guests, setGuests] = useState(100);
+  const [guests, setGuests] = useState(() => { const n = Number(params.get("guests")); return Number.isInteger(n) && n >= 2 && n <= 250 ? n : 100; });
   const [chosen, setChosen] = useState<string[]>(() => {
     const s = params.get("space");
     return s && spaces.some((x) => x.slug === s) ? [s] : [];
@@ -34,7 +34,6 @@ export function InquiryFlow() {
   const [pkg, setPkg] = useState(() => packages.find((p) => p.name === params.get("package"))?.name ?? "Not sure yet");
   const [names, setNames] = useState("");
   const [ref, setRef] = useState("");
-  const [holdUntil, setHoldUntil] = useState<Day | null>(null);
 
   const toggleSpace = (slug: string) =>
     setChosen((c) => (c.includes(slug) ? c.filter((x) => x !== slug) : [...c, slug]));
@@ -44,22 +43,8 @@ export function InquiryFlow() {
       <div className="mx-auto max-w-2xl text-center">
         <Sprig className="mx-auto w-32 text-tpl-alt" />
         <p className="mt-6 font-tpl-display text-6xl font-medium italic">Thank you, {names || "both"}.</p>
-        {day && !flexible && holdUntil && holdUntil >= day ? (
-          <p className="mt-5 text-lg text-tpl-muted">
-            <span className="text-tpl-ink">{formatLong(day)}</span> is only days away, so we’ll call you today to
-            confirm everything.
-          </p>
-        ) : day && !flexible ? (
-          <p className="mt-5 text-lg text-tpl-muted">
-            We’re holding <span className="text-tpl-ink">{formatLong(day)}</span> for you until{" "}
-            {holdUntil && formatLong(holdUntil)}.
-          </p>
-        ) : (
-          <p className="mt-5 text-lg text-tpl-muted">We’ll send you the open dates that fit what you told us.</p>
-        )}
-        <p className="mt-3 text-tpl-muted">
-          Your coordinator will call within one working day to arrange a viewing. Reference {ref}.
-        </p>
+        <p className="mt-5 text-lg text-tpl-muted">{day && !flexible ? `Sample date: ${formatLong(day)}.` : "Your sample inquiry has a flexible date."}</p>
+        <p className="mt-3 text-tpl-muted">Sample reference {ref}. No date is held, no message is sent, and no call is scheduled.</p>
         <Link href={href("/spaces")} className={`${primary} mt-10 inline-block`}>
           Wander the estate
         </Link>
@@ -137,7 +122,7 @@ export function InquiryFlow() {
               type="range"
               min={2}
               max={250}
-              step={2}
+              step={1}
               value={guests}
               onChange={(e) => setGuests(Number(e.target.value))}
               className="mt-4 block w-full accent-[var(--t-alt)]"
@@ -191,7 +176,6 @@ export function InquiryFlow() {
           onSubmit={(e) => {
             e.preventDefault();
             setRef(bookingRef("BG"));
-            setHoldUntil(addDays(today(), 7));
             setStep(3);
             window.scrollTo({ top: 0, behavior: "smooth" });
           }}
@@ -224,7 +208,7 @@ export function InquiryFlow() {
               {chosen.length > 0 && `, interested in ${chosen.map((s) => spaces.find((x) => x.slug === s)!.name).join(", ")}`}.
             </p>
           </div>
-          <p className="mt-4 text-sm text-tpl-muted">Demo: send this to your CRM or email ({site.email}). Nothing is sent.</p>
+          <p className="mt-4 text-sm text-tpl-muted">Sample inquiry only. No message is sent and no date is held.</p>
           <div className="mt-8 flex justify-center gap-6">
             <button type="button" onClick={() => setStep(1)} className="underline underline-offset-4">
               Back

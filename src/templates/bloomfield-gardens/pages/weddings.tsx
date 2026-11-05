@@ -1,10 +1,15 @@
+"use client";
+
+import { useBloomfield } from "../language";
+
 import Image from "next/image";
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { formatMoney } from "../../_kit/dates";
-import { packages, photo } from "../content";
+
 import { href } from "../site";
 
 export function WeddingsPage() {
+  const { packages, photo } = useBloomfield();
   return (
     <>
       <section className="mx-auto max-w-7xl px-5 pt-14 pb-12 text-center sm:px-8">

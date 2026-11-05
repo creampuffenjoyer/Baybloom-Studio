@@ -48,7 +48,7 @@ for (const slug of slugs) {
   const demoDir = path.join(ROOT, "src", "app", "demo", slug);
   for (const file of await walk(demoDir)) {
     const rel = path.relative(demoDir, file);
-    if (rel === "layout.tsx") continue;
+    if (rel === "layout.tsx" || rel === "preview-chrome.tsx") continue;
     const text = (await readFile(file, "utf8")).replaceAll(`/demo/${slug}`, "");
     await write(path.join(out, "src", "app", rel), text.replace(/PageProps<"">/g, 'PageProps<"/">'));
   }
@@ -120,6 +120,7 @@ html {
         name: slug,
         version: "1.0.0",
         private: true,
+        engines: { node: "^22.13.0 || >=24.0.0" },
         scripts: { dev: "next dev", build: "next build", start: "next start", lint: "eslint" },
         dependencies: { next: dep("next"), react: dep("react"), "react-dom": dep("react-dom") },
         devDependencies: {
@@ -144,12 +145,14 @@ html {
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  partialPrefetching: true,
+  turbopack: { root: process.cwd() },
 };
 
 export default nextConfig;
 `,
   );
-  await write(path.join(out, "postcss.config.mjs"), `export default { plugins: { "@tailwindcss/postcss": {} } };\n`);
+  await write(path.join(out, "postcss.config.mjs"), `const config = { plugins: { "@tailwindcss/postcss": {} } };\nexport default config;\n`);
   await write(
     path.join(out, "eslint.config.mjs"),
     `import { defineConfig, globalIgnores } from "eslint/config";
@@ -215,7 +218,7 @@ npm run dev        # http://localhost:3000
 npm run build && npm start
 \`\`\`
 
-Requires Node.js 20.9 or newer. Deploys as-is to Vercel, Netlify or any Node host.
+Requires Node.js 22.13+ within the 22.x line, or Node.js 24+. Use the same supported runtime for local development and your Node hosting environment.
 
 ## Pages
 
@@ -228,6 +231,57 @@ ${pages.map((p) => `- \`${p}\``).join("\n")}
 - **Fonts:** \`src/templates/${slug}/fonts.ts\` (Google Fonts via \`next/font\`).
 - **Photos:** replace the files in \`public/templates/${slug}/\` and update \`src/templates/${slug}/photos.json\` (alt text and credits). The sample photos are freely licensed; keep the credits page or use your own photography.
 - **Page layouts:** \`src/templates/${slug}/pages/\` and \`components/\`. Shared building blocks (calendar, availability, lightbox, booking state) live in \`src/templates/_kit/\`.
+${["harbor-house", "coral-cove", "pine-ridge-lodge", "isla-verde-boutique"].includes(slug) ? `
+## Languages
+
+Use the language picker or add \`?lang=en\`, \`?lang=tl\`, or \`?lang=taglish\` to any page.
+Edit \`src/templates/${slug}/translations.ts\` alongside English copy in the pages and content file.
+Translation keys use the English text, so update both when changing copy. Keep route slugs and photo IDs unchanged.
+Language changes preserve in-progress forms; a page reload starts a new sample session.
+The Tagalog and Taglish copy is a draft and should receive fluent editorial review before publication.
+` : ""}
+${slug === "pine-ridge-lodge" ? `
+## Seasonal trip planning
+
+The default view is winter. Use \`?season=winter\` or \`?season=summer\` to share a seasonal view.
+Activity interests and guest counts follow internal links into room selection and the sample stay flow.
+The sample accepts 1–30 nights, within December–April for winter or June–October for summer.
+These are illustrative operating windows, not live conditions or inventory.
+
+Lift passes and dinner are estimated per guest per night. Rental is one set per night, independent of guest count.
+Summer omits lift passes and uses bike rental. Activities are interests only, with no reservation or included guide fee.
+Edit these rules in \`src/templates/pine-ridge-lodge/plan.ts\` and \`components/book-flow.tsx\` before connecting your own services.
+Booking confirmation is handled in \`components/book-flow.tsx\`; it does not send through the demo form hook.
+` : ""}
+
+${slug === "isla-verde-boutique" ? `
+## Stay discovery
+
+The story and rooms pages share a finder for guest count and preferred setting.
+Edit room settings in \`src/templates/isla-verde-boutique/components/stay-finder.tsx\`.
+Booking links carry the room slug and guest count. The sample booking accepts up to four guests and thirty nights.
+All prices and availability are illustrative. Booking and inquiry outcomes do not send messages or reserve inventory.
+English, Tagalog and Taglish are available from the language picker. Edit UI copy in \`translations.ts\`, descriptive copy in \`content-copy.ts\`, and image descriptions in \`photo-copy.ts\` within the template folder. Preserve stable form option values, route slugs, and photo attribution.
+Tagalog and Taglish use Filipino document language metadata; Taglish deliberately mixes Filipino and English copy. Switching language preserves the current page, query parameters and in-progress form values without submitting them.
+` : ""}
+
+${slug === "bloomfield-gardens" ? `
+## Space finder
+
+The space finder matches guest counts against the selected ceremony, dinner, or standing capacity in \`src/templates/bloomfield-gardens/content.ts\`. Inquiry links carry the selected space and guest count. Availability and inquiries are examples and do not hold a date or send a message. English is complete. Tagalog and Taglish are partial drafts; edit \`space-translations.ts\`, \`planning-translations.ts\`, and \`photo-translations.ts\`, and translate the remaining pages and controls before publication.
+` : ""}
+
+${slug === "ember-and-salt" ? `
+## Menu discovery
+
+The menu search matches dish names and ingredient descriptions in the selected menu, then filters by the selected dietary label. Edit the data in \`src/templates/ember-and-salt/content.ts\` and matching rules in \`menu-search.ts\`. Labels do not guarantee allergen safety; confirm ingredients and cross-contact with the kitchen. The reservation, private inquiry, and gift-card flows are samples and do not send messages, reserve tables, or take payments. This version is in English.
+` : ""}
+
+${slug === "still-water-spa" ? `
+## Treatment discovery
+
+The treatment finder matches type and duration using \`src/templates/still-water-spa/treatment-search.ts\` and the options in \`content.ts\`. Selection links preserve treatment and duration into the sample booking. Availability is illustrative: no appointment, payment, subscription, or gift is sent. English is complete. Tagalog and Taglish treatment and booking copy are partial drafts; other pages and controls remain in English. Edit \`treatment-translations.ts\` and \`booking-translations.ts\` and translate the remaining content before publication.
+` : ""}
 
 ## Forms, bookings and payments
 

@@ -1,6 +1,7 @@
 import type Stripe from "stripe";
 import { stripe, stripeConfigured } from "@/lib/stripe";
 import { handleStripeEvent } from "@/lib/stripe-orders";
+import { reportEvent } from "@/lib/monitoring";
 
 /**
  * Stripe webhook. The signature is verified against the raw body; payment
@@ -25,8 +26,8 @@ export async function POST(request: Request) {
 
   try {
     await handleStripeEvent(event);
-  } catch (e) {
-    console.error(`[stripe] ${event.type} ${event.id} failed`, e);
+  } catch {
+    reportEvent("stripe_handler_failed", { type: event.type, eventId: event.id });
     return Response.json({ error: "Handler failed." }, { status: 500 });
   }
   return Response.json({ received: true });

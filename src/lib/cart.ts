@@ -1,5 +1,5 @@
 import "server-only";
-import type { TierLevel } from "@prisma/client";
+import type { Prisma, TierLevel } from "@prisma/client";
 import { db } from "@/lib/db";
 import { formatPrice, TIER_LABEL } from "@/lib/format";
 
@@ -39,8 +39,8 @@ function addonAllowed(addon: { designId: string | null; active: boolean }, desig
   return addon.active && (!addon.designId || addon.designId === designId);
 }
 
-async function loadLines(userId: string): Promise<CartLine[]> {
-  const items = await db.cartItem.findMany({
+async function loadLines(userId: string, client: Prisma.TransactionClient): Promise<CartLine[]> {
+  const items = await client.cartItem.findMany({
     where: { userId },
     orderBy: { createdAt: "asc" },
     select: {
@@ -55,7 +55,7 @@ async function loadLines(userId: string): Promise<CartLine[]> {
 
   const addonIds = [...new Set(items.flatMap((i) => i.addonIds))];
   const addons = addonIds.length
-    ? await db.addon.findMany({
+    ? await client.addon.findMany({
         where: { id: { in: addonIds } },
         select: { id: true, name: true, priceCents: true, designId: true, active: true },
       })
@@ -89,10 +89,10 @@ async function loadLines(userId: string): Promise<CartLine[]> {
 }
 
 /** Validates a coupon against a subtotal. Returns the discount or why it doesn't apply. */
-export async function evaluateCoupon(rawCode: string, subtotalCents: number) {
+export async function evaluateCoupon(rawCode: string, subtotalCents: number, client: Prisma.TransactionClient = db) {
   const code = rawCode.trim().toUpperCase();
   if (!code) return { ok: false as const, error: "Enter a code." };
-  const coupon = await db.coupon.findUnique({ where: { code } });
+  const coupon = await client.coupon.findUnique({ where: { code } });
   if (!coupon || !coupon.active) return { ok: false as const, error: "That code isn't valid." };
   if (coupon.expiresAt && coupon.expiresAt < new Date()) {
     return { ok: false as const, error: "That code has expired." };
@@ -118,15 +118,15 @@ export async function evaluateCoupon(rawCode: string, subtotalCents: number) {
   return { ok: true as const, code, label, discountCents };
 }
 
-export async function getCart(userId: string, couponCode?: string | null): Promise<Cart> {
-  const lines = await loadLines(userId);
+export async function getCart(userId: string, couponCode?: string | null, client: Prisma.TransactionClient = db): Promise<Cart> {
+  const lines = await loadLines(userId, client);
   const subtotalCents = lines.reduce((s, l) => s + l.lineCents, 0);
 
   let coupon: Cart["coupon"] = null;
   let couponError: string | null = null;
   let discountCents = 0;
   if (couponCode && lines.length > 0) {
-    const result = await evaluateCoupon(couponCode, subtotalCents);
+    const result = await evaluateCoupon(couponCode, subtotalCents, client);
     if (result.ok) {
       coupon = { code: result.code, label: result.label };
       discountCents = result.discountCents;

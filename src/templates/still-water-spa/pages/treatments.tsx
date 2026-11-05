@@ -1,10 +1,16 @@
+"use client";
+
+import { useStillWater } from "../language";
+
 import Image from "next/image";
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { formatMoney } from "../../_kit/dates";
-import { RITUALS, photo, treatments } from "../content";
+import { RITUALS, photo } from "../content";
 import { href, pebbles } from "../site";
+import { TreatmentFinder } from "../components/treatment-finder";
 
 export function TreatmentsPage() {
+  const { treatments } = useStillWater();
   return (
     <>
       <section className="mx-auto max-w-7xl px-5 pt-12 pb-10 sm:px-8">
@@ -22,6 +28,7 @@ export function TreatmentsPage() {
         </nav>
       </section>
 
+      <TreatmentFinder />
       <div className="mx-auto max-w-7xl space-y-20 px-5 py-10 sm:px-8">
         {RITUALS.map((r) => (
           <section key={r.id} id={r.id} aria-labelledby={`h-${r.id}`} className="scroll-mt-28">

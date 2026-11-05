@@ -1,7 +1,12 @@
+"use client";
+
+import { useBloomfield } from "../language";
+
 import { GalleryGrid } from "../components/gallery-grid";
-import { galleryOrder, photo } from "../content";
+
 
 export function GalleryPage() {
+  const { galleryOrder, photo } = useBloomfield();
   return (
     <>
       <section className="mx-auto max-w-7xl px-5 pt-14 pb-10 text-center sm:px-8">

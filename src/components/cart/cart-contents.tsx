@@ -12,7 +12,7 @@ import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export function CartLines({ onNavigate }: { onNavigate?: () => void }) {
-  const { cart, remove } = useCart();
+  const { cart, remove, busy } = useCart();
   if (!cart) return null;
 
   return (
@@ -61,6 +61,7 @@ export function CartLines({ onNavigate }: { onNavigate?: () => void }) {
               <button
                 type="button"
                 onClick={() => remove(l.id)}
+                disabled={busy}
                 aria-label={`Remove ${l.design.title} from cart`}
                 className="grid size-8 place-items-center rounded-full text-muted-foreground transition hover:bg-sand-deep hover:text-destructive"
               >

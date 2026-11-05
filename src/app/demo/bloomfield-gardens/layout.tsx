@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Shell } from "@/templates/bloomfield-gardens/shell";
-import { DemoBar } from "../demo-bar";
+import { Suspense } from "react";
+import { PreviewChrome } from "./preview-chrome";
 
 export const metadata: Metadata = {
   title: { default: "Bloomfield Gardens \u00b7 Garden weddings in Tagaytay", template: "%s · Bloomfield Gardens" },
@@ -9,9 +10,8 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <Shell>
+    <><Suspense><PreviewChrome /></Suspense><Shell>
       {children}
-      <DemoBar slug="bloomfield-gardens" title="Bloomfield Gardens" />
-    </Shell>
+    </Shell></>
   );
 }

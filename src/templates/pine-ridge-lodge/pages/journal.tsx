@@ -1,17 +1,19 @@
+"use client";
+import { usePine, LocalLink as Link } from "../language";
 import Image from "next/image";
-import Link from "next/link";
+
 import { notFound } from "next/navigation";
-import { formatDay } from "../../_kit/dates";
-import { photo, posts } from "../content";
+import { fromDay } from "../../_kit/dates";
+
 import { href } from "../site";
 
-const longDate = (d: string) => formatDay(d, { day: "numeric", month: "long", year: "numeric" });
 
 export function JournalPage() {
+  const { t, photo, posts, locale } = usePine();
   return (
     <div className="mx-auto max-w-5xl px-5 pt-14 sm:px-8">
-      <h1 className="font-tpl-display text-5xl font-bold sm:text-6xl">Lodge journal</h1>
-      <p className="mt-4 text-lg text-tpl-muted">Conditions, tips and stories from the valley.</p>
+      <h1 className="font-tpl-display text-5xl font-bold sm:text-6xl">{t("Lodge journal")}</h1>
+      <p className="mt-4 text-lg text-tpl-muted">{t("Conditions, tips and stories from the valley.")}</p>
       <ul className="mt-12 space-y-12">
         {posts.map((p) => (
           <li key={p.slug}>
@@ -20,7 +22,7 @@ export function JournalPage() {
                 <Image src={photo(p.photo).src} alt={photo(p.photo).alt} fill sizes="(min-width: 768px) 40vw, 100vw" className="object-cover" />
               </span>
               <span>
-                <span className="text-sm text-tpl-muted">{longDate(p.date)}</span>
+                <span className="text-sm text-tpl-muted">{new Intl.DateTimeFormat(locale, {day: "numeric", month: "long", year: "numeric"}).format(fromDay(p.date))}</span>
                 <span className="mt-1 block font-tpl-display text-3xl font-bold group-hover:text-tpl-alt">{p.title}</span>
                 <span className="mt-2 block text-lg text-tpl-muted">{p.dek}</span>
               </span>
@@ -33,16 +35,15 @@ export function JournalPage() {
 }
 
 export function PostPage({ slug }: { slug: string }) {
+  const { t, photo, posts, locale } = usePine();
   const p = posts.find((x) => x.slug === slug);
   if (!p) notFound();
   return (
     <article className="mx-auto max-w-3xl px-5 pt-14 sm:px-8">
-      <Link href={href("/journal")} className="font-medium text-tpl-alt hover:underline">
-        Lodge journal
-      </Link>
+      <Link href={href("/journal")} className="font-medium text-tpl-alt hover:underline">{t("Lodge journal")}</Link>
       <h1 className="mt-3 font-tpl-display text-5xl leading-tight font-bold">{p.title}</h1>
       <p className="mt-3 text-xl text-tpl-muted">{p.dek}</p>
-      <p className="mt-2 text-sm text-tpl-muted">{longDate(p.date)}</p>
+      <p className="mt-2 text-sm text-tpl-muted">{new Intl.DateTimeFormat(locale, {day: "numeric", month: "long", year: "numeric"}).format(fromDay(p.date))}</p>
       <div className="relative mt-10 aspect-[3/2] overflow-hidden rounded-md">
         <Image src={photo(p.photo).src} alt={photo(p.photo).alt} fill priority sizes="(min-width: 768px) 768px, 100vw" className="object-cover" />
       </div>

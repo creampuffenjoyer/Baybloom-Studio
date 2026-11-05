@@ -22,8 +22,8 @@ export function GiftForm() {
   if (status === "sent") {
     return (
       <div role="status" className="rounded-[2rem] bg-tpl-surface p-10 text-center">
-        <p className="font-tpl-display text-4xl">A gift of quiet, on its way.</p>
-        <p className="mt-4 text-tpl-muted">We’ve emailed the gift card. It’s valid for twelve months.</p>
+        <p className="font-tpl-display text-4xl">Sample gift request complete.</p>
+        <p className="mt-4 text-tpl-muted">No payment was taken and no gift card was emailed.</p>
       </div>
     );
   }
@@ -69,9 +69,9 @@ export function GiftForm() {
         disabled={status === "sending"}
         className="rounded-full bg-tpl-accent px-7 py-3.5 font-semibold text-tpl-on-accent disabled:opacity-60"
       >
-        {status === "sending" ? "Sending…" : `Send gift card · ${formatMoney(picked.price)}`}
+        {status === "sending" ? "Preparing…" : `Try sample gift · ${formatMoney(picked.price)}`}
       </button>
-      <p className="text-sm text-tpl-muted">Demo: connect your payment provider here. No payment is taken.</p>
+      <p className="text-sm text-tpl-muted">Sample only. No payment is taken and no card is sent.</p>
     </form>
   );
 }

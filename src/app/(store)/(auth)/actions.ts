@@ -75,7 +75,7 @@ export async function registerAction(
   };
   const values = { name: input.name, email: input.email };
 
-  if (!rateLimit(`register:${await clientIp()}`, 5, 60 * 60_000).ok) {
+  if (!(await rateLimit(`register:${await clientIp()}`, 5, 60 * 60_000)).ok) {
     return { error: "Too many sign-ups from this network. Please try again later.", values };
   }
 
@@ -91,9 +91,14 @@ export async function registerAction(
     };
   }
 
-  await db.user.create({
-    data: { name, email, passwordHash: await bcrypt.hash(password, 12) },
-  });
+  try {
+    await db.user.create({
+      data: { name, email, passwordHash: await bcrypt.hash(password, 12) },
+    });
+  } catch (error) {
+    if (!(error && typeof error === "object" && "code" in error && error.code === "P2002")) throw error;
+    return { fieldErrors: { email: "An account with this email already exists. Try logging in." }, values };
+  }
   // Don't block sign-up if the email provider is down; they can resend later.
   await sendVerificationEmail(email, name).catch((e) =>
     console.error("[register] verification email failed", e),

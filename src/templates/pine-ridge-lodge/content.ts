@@ -24,16 +24,16 @@ export const seasons: Record<Season, { label: string; headline: string; lede: st
   },
 };
 
-export type Activity = { name: string; season: Season; detail: string; level: string; duration: string; photo: PhotoKey };
+export type Activity = { id: string; levelId: "easy" | "moderate" | "strong" | "all"; name: string; season: Season; detail: string; level: string; duration: string; photo: PhotoKey };
 
 export const activities: Activity[] = [
-  { name: "Ski and ride the Ridge", season: "winter", detail: "Ski-in, ski-out from the Ridge chair, with 62 runs and a 1,100 m vertical. Lift passes at the front desk.", level: "All levels", duration: "Full day", photo: "ski-slope" },
-  { name: "Backcountry touring", season: "winter", detail: "Guided tours to the Whitebark bowls with avalanche-certified guides. Skins and transceivers provided.", level: "Strong skiers", duration: "6 hours", photo: "skiers" },
-  { name: "Snowshoe to the falls", season: "winter", detail: "A gentle loop through old cedars to the frozen Cascade Falls, with hot chocolate at the turnaround.", level: "Easy", duration: "3 hours", photo: "ski-village" },
-  { name: "Larch Lake hike", season: "summer", detail: "Our favourite day hike: up through the meadows to a turquoise lake ringed by peaks. 14 km return.", level: "Moderate", duration: "6 hours", photo: "trail" },
-  { name: "Sunrise paddle", season: "summer", detail: "Canoes leave the lodge dock at 6 am, when the lake is glass and the mist still lies on the water.", level: "Easy", duration: "2 hours", photo: "canoe-dock" },
-  { name: "Wildflower meadows", season: "summer", detail: "A naturalist-led walk through the high meadows in July, when the lupin and paintbrush are out.", level: "Easy", duration: "4 hours", photo: "meadow-hike" },
-  { name: "Larch season", season: "summer", detail: "For two weeks in late September the larches turn gold. Book early: it’s our busiest fortnight.", level: "Moderate", duration: "Half day", photo: "autumn-hike" },
+  { id: "ridge-ski", levelId: "all", name: "Ski and ride the Ridge", season: "winter", detail: "Ski-in, ski-out from the Ridge chair, with 62 runs and a 1,100 m vertical. Lift passes at the front desk.", level: "All levels", duration: "Full day", photo: "ski-slope" },
+  { id: "backcountry", levelId: "strong", name: "Backcountry touring", season: "winter", detail: "Guided tours to the Whitebark bowls with avalanche-certified guides. Skins and transceivers provided.", level: "Strong skiers", duration: "6 hours", photo: "skiers" },
+  { id: "snowshoe", levelId: "easy", name: "Snowshoe to the falls", season: "winter", detail: "A gentle loop through old cedars to the frozen Cascade Falls, with hot chocolate at the turnaround.", level: "Easy", duration: "3 hours", photo: "ski-village" },
+  { id: "lake-hike", levelId: "moderate", name: "Larch Lake hike", season: "summer", detail: "Our favourite day hike: up through the meadows to a turquoise lake ringed by peaks. 14 km return.", level: "Moderate", duration: "6 hours", photo: "trail" },
+  { id: "paddle", levelId: "easy", name: "Sunrise paddle", season: "summer", detail: "Canoes leave the lodge dock at 6 am, when the lake is glass and the mist still lies on the water.", level: "Easy", duration: "2 hours", photo: "canoe-dock" },
+  { id: "wildflowers", levelId: "easy", name: "Wildflower meadows", season: "summer", detail: "A naturalist-led walk through the high meadows in July, when the lupin and paintbrush are out.", level: "Easy", duration: "4 hours", photo: "meadow-hike" },
+  { id: "larch", levelId: "moderate", name: "Larch season", season: "summer", detail: "For two weeks in late September the larches turn gold. Book early: it’s our busiest fortnight.", level: "Moderate", duration: "Half day", photo: "autumn-hike" },
 ];
 
 export type Room = {
@@ -113,9 +113,9 @@ export const rooms: Room[] = [
 ];
 
 export const extras: StayExtra[] = [
-  { id: "lift", name: "Ridge lift pass (per day)", price: 119, per: "guest" },
-  { id: "rental", name: "Ski or bike rental", price: 65, per: "night" },
-  { id: "dinner", name: "Three-course dinner, nightly", price: 75, per: "guest" },
+  { id: "lift", name: "Ridge lift pass, daily per guest", price: 119, per: "guest" },
+  { id: "rental", name: "One ski or bike set, daily", price: 65, per: "night" },
+  { id: "dinner", name: "Three-course dinner, nightly per guest", price: 75, per: "guest" },
 ];
 
 export const menu = [
@@ -148,7 +148,7 @@ export const posts: Post[] = [
     date: "2026-09-02",
     photo: "autumn-hike",
     body: [
-      "Larches are the only conifers that lose their needles, and before they do, they turn the whole valley gold. It lasts about two weeks, usually from the third week of September.",
+      "Larches lose their needles each year, and before they do, they turn the valley gold. It lasts about two weeks, usually from the third week of September.",
       "Go early. The trailhead lot fills by 8 am on weekends, so we run a shuttle from the lodge at 7.",
       "Bring a warm layer and a thermos: the best viewpoint is just above the lake, and you’ll want to sit for a while.",
     ],

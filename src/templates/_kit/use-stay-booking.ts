@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { isStayAvailable } from "./availability";
-import { isDay, nightsBetween, type Day } from "./dates";
+import { fromDay, isDay, nightsBetween, toDay, type Day } from "./dates";
 
 /*
  * Headless state for a room-booking flow: dates → room → guest details →
@@ -18,19 +18,19 @@ export type StayExtra = { id: string; name: string; price: number; per: "stay" |
 export const STAY_STEPS = ["Dates", "Room", "Details", "Review"] as const;
 export type StayStep = 0 | 1 | 2 | 3 | 4; // 4 = confirmed
 
-export function useStayBooking<R extends StayRoom>(rooms: R[], extras: StayExtra[] = []) {
+export function useStayBooking<R extends StayRoom>(rooms: R[], extras: StayExtra[] = [], limits: { maxGuests?: number; maxNights?: number } = {}) {
   const params = useSearchParams();
   const initialIn = params.get("checkin");
   const initialOut = params.get("checkout");
   const initialRoom = rooms.find((r) => r.slug === params.get("room")) ?? null;
-  const hasDates = isDay(initialIn) && isDay(initialOut) && initialOut > initialIn;
+  const hasDates = isDay(initialIn) && isDay(initialOut) && toDay(fromDay(initialIn)) === initialIn && toDay(fromDay(initialOut)) === initialOut && initialOut > initialIn && nightsBetween(initialIn, initialOut) <= (limits.maxNights ?? Infinity);
 
   const [step, setStep] = useState<StayStep>(hasDates ? 1 : 0);
   const [checkIn, setCheckIn] = useState<Day | null>(hasDates ? initialIn : null);
   const [checkOut, setCheckOut] = useState<Day | null>(hasDates ? initialOut : null);
   const [guests, setGuests] = useState(() => {
     const n = Number(params.get("guests"));
-    return Number.isInteger(n) && n > 0 && n <= 12 ? n : 2;
+    return Number.isInteger(n) && n > 0 && n <= (limits.maxGuests ?? 12) ? n : 2;
   });
   const [roomSlug, setRoomSlug] = useState<string | null>(initialRoom?.slug ?? null);
   const [extraIds, setExtraIds] = useState<string[]>([]);

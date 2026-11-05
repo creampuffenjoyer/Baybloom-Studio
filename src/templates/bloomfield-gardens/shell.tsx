@@ -3,11 +3,13 @@ import { Footer } from "./components/footer";
 import { Header } from "./components/header";
 import { body, display } from "./fonts";
 import { theme } from "./site";
+import { Suspense } from "react";
+import { LanguagePicker, LanguageProvider } from "./language";
 
 /** Wraps every Bloomfield page: theme, fonts, header and footer. */
 export function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div
+    <Suspense><LanguageProvider><div
       data-template="bloomfield-gardens"
       className={`${display.variable} ${body.variable} flex min-h-dvh flex-col bg-tpl-bg font-tpl-body text-tpl-ink antialiased`}
       style={themeStyle(theme, { display: "var(--bf-display)", body: "var(--bf-body)" })}
@@ -19,10 +21,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
         Skip to content
       </a>
       <Header />
+      <LanguagePicker />
       <main id="content" className="flex-1">
         {children}
       </main>
       <Footer />
-    </div>
+    </div></LanguageProvider></Suspense>
   );
 }

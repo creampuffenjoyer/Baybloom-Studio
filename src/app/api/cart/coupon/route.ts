@@ -8,7 +8,7 @@ import { rateLimit } from "@/lib/rate-limit";
 export async function POST(request: Request) {
   const user = await getCurrentUser();
   if (!user) return Response.json({ error: "Please log in." }, { status: 401 });
-  if (!rateLimit(`coupon:${user.id}`, 10, 10 * 60_000).ok) {
+  if (!(await rateLimit(`coupon:${user.id}`, 10, 10 * 60_000)).ok) {
     return Response.json({ error: "Too many attempts. Please wait a few minutes." }, { status: 429 });
   }
 

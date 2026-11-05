@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
 import { ShoppingBagIcon } from "lucide-react";
+import { CartStatus } from "@/components/cart/cart-status";
 import { useCart } from "@/components/cart/cart-provider";
 import { CartLines, CartTotals, CouponField, EmptyCart } from "@/components/cart/cart-contents";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,7 @@ import {
 
 /** Slide-in cart (spec §7.1). Opens after "Add to cart" and from the header. */
 export function CartDrawer() {
-  const { cart, open, setOpen } = useCart();
+  const { cart, loadState, open, setOpen } = useCart();
   const close = () => setOpen(false);
   const empty = !cart || cart.lines.length === 0;
 
@@ -30,7 +31,7 @@ export function CartDrawer() {
             {empty ? "Nothing here yet." : `${cart.lines.length} ${cart.lines.length === 1 ? "design" : "designs"}`}
           </SheetDescription>
         </SheetHeader>
-        {empty ? (
+        {loadState !== "ready" ? <CartStatus /> : empty ? (
           <EmptyCart onNavigate={close} />
         ) : (
           <>

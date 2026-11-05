@@ -47,6 +47,8 @@ npm run dev
 - Changing or resetting a password sets `sessionsValidAfter`, which signs out every session that started earlier (the device that changed it is signed straight back in).
 - Verification and reset links are single-use; only a SHA-256 hash of each token is stored. Reset links last 1 hour, verification links 24 hours.
 - Email goes through Resend when `RESEND_API_KEY` is set (sender: `EMAIL_FROM`); otherwise emails are printed to the dev server console.
+- Console email delivery is allowed only with `NODE_ENV=development`; all other environments require Resend configuration.
+- Google never automatically links to an existing password account. Existing customers should use their password or email recovery.
 
 ## Payments (Stripe)
 
@@ -63,7 +65,26 @@ How it fits together:
 - Paying clears the purchased designs from the cart, counts the coupon redemption and sends one confirmation email.
 - Fully discounted (₱0) orders skip Stripe.
 
+Checkout now persists buyer-scoped retry keys and immutable Stripe parameters.
+Identical cart snapshots reuse an order across tabs. Coupon capacity is reserved
+under a database row lock, then redeemed once at fulfillment or released after a
+confirmed failure/expiration. Full refunds are terminal even if their webhook
+arrives before checkout completion.
+
+Before deploying these changes, read [the Phase 1 deployment guide](docs/phase-1-deployment.md).
+`db:deploy` and `db:migrate` run a read-only safety gate for the older websites-only
+migration. Do not bypass that gate on a populated database.
+
+## Tests
+
+`npm test` runs isolated security/payment regression tests using the existing
+tsx loader and Node test runner. `npm run test:integration` additionally
+requires an explicit `TEST_DATABASE_URL` pointing to a migrated disposable database
+whose name contains `_test`. It never falls back to `.env` or the application database.
+
 ## Downloads
+
+Audit Phase 2 adds a durable email worker, shared rate limits, cart recovery, structured error events, and PostgreSQL CI. Before deploying, follow [Phase 2 deployment and operations](docs/phase-2-deployment.md), including the migration and authenticated scheduler setup.
 
 - Each design has `DeliverableFile`s with a minimum tier; a purchase unlocks files from Starter up to the tier bought.
 - `GET /api/downloads/[orderItemId]?file=…` checks ownership, payment and tier, then redirects to a link that expires in 5 minutes.

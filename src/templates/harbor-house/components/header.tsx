@@ -1,9 +1,11 @@
 "use client";
 
-import Link from "next/link";
+import { useHarbor } from "../language";
+
+import { LocalLink as Link } from "../language";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { href, nav } from "../site";
+import { href } from "../site";
 
 /** A little house-and-wave mark. */
 function Mark() {
@@ -17,17 +19,17 @@ function Mark() {
 }
 
 export function Header() {
+  const { t, nav, site } = useHarbor();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   return (
     <header className="relative z-40 bg-tpl-bg">
-      <div className="mx-auto flex h-20 max-w-6xl items-center gap-6 px-5 sm:px-8">
-        <Link href={href("/")} onClick={() => setOpen(false)} className="flex items-center gap-2.5 font-tpl-display text-2xl">
+      <div className="mx-auto flex min-h-20 max-w-6xl flex-wrap items-center gap-3 py-3 px-5 sm:px-8">
+        <Link href={href("/")} onClick={() => setOpen(false)} className="flex items-center gap-2.5 font-tpl-display text-xl whitespace-nowrap sm:text-2xl">
           <Mark />
-          Harbor House
-        </Link>
-        <nav aria-label="Main" className="ml-auto hidden items-center gap-6 md:flex">
+          {site.name}</Link>
+        <nav aria-label={t("Main")} className="ml-auto hidden items-center gap-6 md:flex">
           {nav.map((item) => {
             const active = pathname.startsWith(href(item.href));
             return (
@@ -37,25 +39,25 @@ export function Header() {
                 aria-current={active ? "page" : undefined}
                 className={`text-[15px] font-semibold decoration-tpl-alt decoration-2 underline-offset-8 hover:underline ${active ? "underline" : ""}`}
               >
-                {item.label}
+                {t(item.label)}
               </Link>
             );
           })}
         </nav>
-        <Link href={href("/book")} className="ml-auto rounded-full bg-tpl-accent px-5 py-2.5 text-[15px] font-bold text-tpl-on-accent md:ml-0">
-          Book a room
+        <Link href={href("/book")} className="ml-auto hidden rounded-full bg-tpl-accent px-5 py-2.5 text-[15px] font-bold text-tpl-on-accent sm:inline-flex md:ml-0">
+          {t("Book")}
         </Link>
-        <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="hh-menu" className="font-semibold md:hidden">
-          {open ? "Close" : "Menu"}
+        <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="hh-menu" className="ml-auto min-h-11 font-semibold sm:ml-0 md:hidden">
+          {open ? t("Close") : t("Menu")}
         </button>
       </div>
       {open && (
-        <nav id="hh-menu" aria-label="Mobile" className="absolute inset-x-0 top-20 border-y border-tpl-line bg-tpl-bg px-5 pb-6 shadow-lg md:hidden">
+        <nav id="hh-menu" aria-label={t("Mobile")} className="absolute inset-x-0 top-20 border-y border-tpl-line bg-tpl-bg px-5 pb-6 shadow-lg md:hidden">
           <ul>
-            {[{ href: "/", label: "Home" }, ...nav].map((i) => (
+            {[{ href: "/", label: "Home" }, { href: "/book", label: "Book a room" }, ...nav].map((i) => (
               <li key={i.href}>
                 <Link href={href(i.href)} onClick={() => setOpen(false)} className="block border-b border-tpl-line py-3 font-tpl-display text-2xl">
-                  {i.label}
+                  {t(i.label)}
                 </Link>
               </li>
             ))}

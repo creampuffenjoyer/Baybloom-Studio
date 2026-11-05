@@ -1,5 +1,18 @@
 [
   {
+    "role": "cover",
+    "file": "/images/designs/coral-cove/cover.webp",
+    "thumb": "/images/designs/coral-cove/thumbs/cover.webp",
+    "alt": "Coral Cove template shown on a laptop and a phone",
+    "kind": "MOCKUP",
+    "width": 1600,
+    "height": 1200,
+    "author": "",
+    "source": "/demo/coral-cove",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
     "file": "/images/designs/coral-cove/00-home-page.webp",
     "thumb": "/images/designs/coral-cove/thumbs/00-home-page.webp",
     "alt": "Coral Cove template: home page on desktop",

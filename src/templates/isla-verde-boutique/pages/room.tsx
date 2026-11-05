@@ -1,11 +1,15 @@
+"use client";
+
+import { useIsla } from "../language";
+
 import Image from "next/image";
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { notFound } from "next/navigation";
 import { formatMoney } from "../../_kit/dates";
-import { photo, rooms } from "../content";
-import { arch, href, site } from "../site";
+import { arch, href } from "../site";
 
 export function RoomPage({ slug }: { slug: string }) {
+  const { t, photo, rooms, site } = useIsla();
   const r = rooms.find((x) => x.slug === slug);
   if (!r) notFound();
   const [a, b, c] = r.photos.map(photo);
@@ -14,10 +18,8 @@ export function RoomPage({ slug }: { slug: string }) {
     <>
       <section className="mx-auto grid max-w-7xl gap-12 px-5 pt-14 sm:px-8 lg:grid-cols-[1fr_1fr]">
         <div className="lg:pt-10">
-          <nav aria-label="Breadcrumb" className="text-[15px] text-tpl-muted">
-            <Link href={href("/rooms")} className="hover:text-tpl-ink">
-              Rooms
-            </Link>
+          <nav aria-label={t("Breadcrumb")} className="text-[15px] text-tpl-muted">
+            <Link href={href("/rooms")} className="hover:text-tpl-ink">{t("Rooms")}</Link>
             {" / "}
             {r.name}
           </nav>
@@ -29,13 +31,11 @@ export function RoomPage({ slug }: { slug: string }) {
           </div>
           <div className="mt-10 flex flex-wrap items-end gap-8 border-t border-tpl-line pt-8">
             <p>
-              <span className="block text-sm text-tpl-muted">From</span>
+              <span className="block text-sm text-tpl-muted">{t("From")}</span>
               <span className="font-tpl-display text-4xl">{formatMoney(r.price)}</span>
-              <span className="text-tpl-muted"> a night</span>
+              <span className="text-tpl-muted">{t(" a night")}</span>
             </p>
-            <Link href={`${href("/book")}?room=${r.slug}`} className="bg-tpl-accent px-6 py-3.5 text-tpl-on-accent hover:bg-tpl-alt">
-              Check availability
-            </Link>
+            <Link href={`${href("/book")}?room=${r.slug}`} className="bg-tpl-accent px-6 py-3.5 text-tpl-on-accent hover:bg-tpl-alt">{t("Check availability")}</Link>
           </div>
         </div>
         <div className={`relative aspect-[3/4] overflow-hidden ${arch}`}>
@@ -44,7 +44,7 @@ export function RoomPage({ slug }: { slug: string }) {
       </section>
       <section className="mx-auto mt-20 grid max-w-7xl gap-12 px-5 sm:px-8 md:grid-cols-[1fr_1.5fr]">
         <div>
-          <h2 className="font-tpl-display text-3xl italic">In the room</h2>
+          <h2 className="font-tpl-display text-3xl italic">{t("In the room")}</h2>
           <ul className="mt-5 space-y-3">
             {r.details.map((d) => (
               <li key={d} className="border-b border-tpl-line pb-3">
@@ -52,8 +52,7 @@ export function RoomPage({ slug }: { slug: string }) {
               </li>
             ))}
           </ul>
-          <p className="mt-6 text-[15px] text-tpl-muted">
-            Check-in from {site.checkIn}, check-out by {site.checkOut}. Sleeps up to {r.maxGuests}.
+          <p className="mt-6 text-[15px] text-tpl-muted">{t("Check-in from ")}{site.checkIn}{t(", check-out by ")}{site.checkOut}{t(". Sleeps up to ")}{r.maxGuests}.
           </p>
         </div>
         <div className="grid grid-cols-2 gap-4">

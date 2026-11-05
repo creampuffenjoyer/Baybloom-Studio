@@ -1,15 +1,18 @@
+"use client";
+
+import { useHarbor } from "../language";
+
 import Image from "next/image";
-import { photo, places } from "../content";
+
 
 export function GuidePage() {
+  const { t, photo, places } = useHarbor();
   const kinds = [...new Set(places.map((p) => p.kind))];
   return (
     <div className="mx-auto max-w-6xl px-5 pt-10 sm:px-8">
-      <h1 className="font-tpl-display text-5xl sm:text-6xl">Around Basco</h1>
+      <h1 className="font-tpl-display text-5xl sm:text-6xl">{t("Around Basco")}</h1>
       <p className="mt-4 max-w-[56ch] text-lg text-tpl-muted">
-        Batanes is small, safe and best seen slowly. Tricycles wait outside the house, and we lend bicycles
-        and umbrellas for free.
-      </p>
+        {t("Batanes is small, safe and best seen slowly. Tricycles wait outside the house, and we lend bicycles and umbrellas for free.")}</p>
       <div className="mt-10 grid gap-4 sm:grid-cols-[2fr_1fr]">
         <div className="relative aspect-[16/10] overflow-hidden rounded-3xl">
           <Image src={photo("headland").src} alt={photo("headland").alt} fill priority sizes="(min-width: 640px) 66vw, 100vw" className="object-cover" />
@@ -25,7 +28,7 @@ export function GuidePage() {
       {kinds.map((kind) => (
         <section key={kind} aria-labelledby={`k-${kind}`} className="mt-14">
           <h2 id={`k-${kind}`} className="font-tpl-display text-3xl">
-            {kind === "Walk" ? "Walks" : kind === "Cycle" ? "By bike" : kind === "Beach" ? "Beaches" : kind === "Café" ? "Coffee" : "Dinner"}
+            {kind === "Walk" ? t("Walks") : kind === "Cycle" ? t("By bike") : kind === "Beach" ? t("Beaches") : kind === "Café" ? t("Coffee") : t("Dinner")}
           </h2>
           <ul className="mt-4 grid gap-4 md:grid-cols-2">
             {places

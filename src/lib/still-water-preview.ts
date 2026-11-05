@@ -1,0 +1,3 @@
+export const STILL_WATER_BASE = "/demo/still-water-spa";
+export const STILL_WATER_LANGUAGES = ["en"] as const;
+export const STILL_WATER_PAGES = [["", "Home"], ["/treatments", "Find a treatment"], ["/book", "Sample booking"], ["/packages", "Packages"], ["/about", "About"], ["/gift-cards", "Sample gift"], ["/visit", "Visit"], ["/credits", "Photo credits"], ["/treatments/hilot", "Hilot massage"], ["/treatments/deep-tissue", "Deep tissue massage"], ["/treatments/hot-stone", "Hot stone massage"], ["/treatments/botanical-facial", "Botanical facial"], ["/treatments/coffee-scrub", "Coffee and coconut scrub"], ["/treatments/eucalyptus-wrap", "Eucalyptus body wrap"], ["/treatments/thermal-circuit", "Thermal circuit"], ["/treatments/private-soak", "Private soak"]] as const;

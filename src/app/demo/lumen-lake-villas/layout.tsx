@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Shell } from "@/templates/lumen-lake-villas/shell";
 import { DemoBar } from "../demo-bar";
+import { PreviewChrome } from "./preview-chrome";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: { default: "Lumen Lake Villas \u00b7 Four villas on Lake Lumen, V\u00e4rmland", template: "%s · Lumen Lake Villas" },
@@ -8,10 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <Shell>
-      {children}
-      <DemoBar slug="lumen-lake-villas" title="Lumen Lake Villas" />
-    </Shell>
-  );
+  return <><Suspense><PreviewChrome /></Suspense><Suspense><Shell>{children}<DemoBar slug="lumen-lake-villas" title="Lumen Lake Villas" /></Shell></Suspense></>;
 }

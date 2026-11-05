@@ -40,15 +40,15 @@ export function ReserveFlow() {
   if (stage === "done") {
     return (
       <div className="mx-auto max-w-xl py-6 text-center">
-        <p className="font-tpl-display text-6xl leading-none sm:text-7xl">See you soon.</p>
+        <p className="font-tpl-display text-6xl leading-none sm:text-7xl">Sample request complete.</p>
         <p className="mt-6 text-lg text-tpl-muted">
           A table for {party} on {day && formatLong(day)} at {time && formatTime(time)}, {seatingNote.label.toLowerCase()}.
         </p>
         <p className="mt-2 text-tpl-muted">
-          Reference <span className="font-semibold text-tpl-ink">{ref}</span>. Confirmation sent to {guest.email}.
+          Sample reference <span className="font-semibold text-tpl-ink">{ref}</span>. No reservation or email was sent to {guest.email}.
         </p>
         <p className="mt-8 border-y border-tpl-line py-5 text-[15px] text-tpl-muted">
-          We hold tables for 15 minutes. Running late or need to change? Call us on{" "}
+          This is a website demonstration. No table has been booked. Contact the restaurant on{" "}
           <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="text-tpl-accent">
             {site.phone}
           </a>

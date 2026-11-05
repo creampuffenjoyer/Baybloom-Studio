@@ -1,26 +1,28 @@
+"use client";
+
+import { useIsla } from "../language";
+
 import Image from "next/image";
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { notFound } from "next/navigation";
-import { formatDay } from "../../_kit/dates";
-import { photo, posts } from "../content";
+
 import { arch, href } from "../site";
 
-const longDate = (d: string) => formatDay(d, { day: "numeric", month: "long", year: "numeric" });
 
 export function JournalPage() {
+  const { t, date: longDate, photo, posts } = useIsla();
   const [lead, ...rest] = posts;
   return (
     <div className="mx-auto max-w-7xl px-5 pt-16 sm:px-8">
-      <h1 className="font-tpl-display text-6xl italic sm:text-8xl">Journal</h1>
-      <p className="mt-5 max-w-[50ch] text-lg text-tpl-muted">Notes from the house and the old town around it.</p>
+      <h1 className="font-tpl-display text-6xl italic sm:text-8xl">{t("Journal")}</h1>
+      <p className="mt-5 max-w-[50ch] text-lg text-tpl-muted">{t("Notes from the house and the old town around it.")}</p>
       <Link href={href(`/journal/${lead.slug}`)} className="group mt-14 grid gap-10 border-t border-tpl-line pt-14 lg:grid-cols-2 lg:items-center">
         <div className="relative aspect-[4/3] overflow-hidden">
           <Image src={photo(lead.photo).src} alt={photo(lead.photo).alt} fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
         </div>
         <div>
           <p className="text-tpl-muted">
-            {longDate(lead.date)} · {lead.minutes} min read
-          </p>
+            {longDate(lead.date)} · {lead.minutes}{t(" min read")}</p>
           <h2 className="mt-3 font-tpl-display text-5xl italic group-hover:text-tpl-alt">{lead.title}</h2>
           <p className="mt-4 text-lg text-tpl-muted">{lead.dek}</p>
         </div>
@@ -30,8 +32,7 @@ export function JournalPage() {
           <li key={p.slug}>
             <Link href={href(`/journal/${p.slug}`)} className="group block">
               <p className="text-tpl-muted">
-                {longDate(p.date)} · {p.minutes} min read
-              </p>
+                {longDate(p.date)} · {p.minutes}{t(" min read")}</p>
               <h2 className="mt-2 font-tpl-display text-4xl italic group-hover:text-tpl-alt">{p.title}</h2>
               <p className="mt-3 text-tpl-muted">{p.dek}</p>
             </Link>
@@ -43,6 +44,7 @@ export function JournalPage() {
 }
 
 export function PostPage({ slug }: { slug: string }) {
+  const { t, date: longDate, photo, posts } = useIsla();
   const p = posts.find((x) => x.slug === slug);
   if (!p) notFound();
   const others = posts.filter((x) => x.slug !== slug);
@@ -50,13 +52,11 @@ export function PostPage({ slug }: { slug: string }) {
     <article className="px-5 pt-16 sm:px-8">
       <header className="mx-auto max-w-3xl text-center">
         <p className="text-tpl-muted">
-          <Link href={href("/journal")} className="hover:text-tpl-ink">
-            Journal
-          </Link>
+          <Link href={href("/journal")} className="hover:text-tpl-ink">{t("Journal")}</Link>
           {" · "}
           {longDate(p.date)}
         </p>
-        <h1 className="mt-4 font-tpl-display text-5xl leading-tight italic sm:text-7xl">{p.title}</h1>
+        <h1 className="mt-4 font-tpl-display text-4xl leading-tight italic sm:text-7xl">{p.title}</h1>
         <p className="mt-5 text-xl text-tpl-muted">{p.dek}</p>
       </header>
       <div className={`relative mx-auto mt-12 aspect-[4/5] max-w-xl overflow-hidden ${arch}`}>
@@ -68,9 +68,7 @@ export function PostPage({ slug }: { slug: string }) {
         ))}
       </div>
       <aside aria-labelledby="more" className="mx-auto mt-20 max-w-3xl border-t border-tpl-line pt-10">
-        <h2 id="more" className="font-tpl-display text-3xl italic">
-          More from the journal
-        </h2>
+        <h2 id="more" className="font-tpl-display text-3xl italic">{t("More from the journal")}</h2>
         <ul className="mt-6 space-y-4">
           {others.map((o) => (
             <li key={o.slug}>

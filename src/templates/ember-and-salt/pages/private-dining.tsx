@@ -51,7 +51,7 @@ export function PrivateDiningPage() {
               Start planning
             </h2>
             <p className="mt-5 max-w-[40ch] text-lg text-tpl-muted">
-              Share a few details and we’ll send sample menus, availability and a quote.
+              Explore the sample inquiry form. No message is sent or quote requested.
             </p>
           </div>
           <InquiryForm />

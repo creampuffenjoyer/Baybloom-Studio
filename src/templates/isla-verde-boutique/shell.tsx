@@ -1,3 +1,7 @@
+"use client";
+
+import { Suspense } from "react";
+import { LanguageProvider, useIsla } from "./language";
 import { themeStyle } from "../_kit/theme";
 import { Footer } from "./components/footer";
 import { Header } from "./components/header";
@@ -6,6 +10,11 @@ import { theme } from "./site";
 
 /** Wraps every Isla Verde page: theme, fonts, header and footer. */
 export function Shell({ children }: { children: React.ReactNode }) {
+  return <Suspense fallback={<div className="min-h-dvh" />}><LanguageProvider><ShellContent>{children}</ShellContent></LanguageProvider></Suspense>;
+}
+
+function ShellContent({ children }: { children: React.ReactNode }) {
+  const { t } = useIsla();
   return (
     <div
       data-template="isla-verde-boutique"
@@ -13,7 +22,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       style={themeStyle(theme, { display: "var(--iv-display)", body: "var(--iv-body)" })}
     >
       <a href="#content" className="sr-only z-[60] bg-tpl-deep px-4 py-2 text-tpl-on-deep focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
-        Skip to content
+        {t("Skip to content")}
       </a>
       <Header />
       <main id="content" className="flex-1">

@@ -1,5 +1,18 @@
 [
   {
+    "role": "cover",
+    "file": "/images/designs/ember-and-salt/cover.webp",
+    "thumb": "/images/designs/ember-and-salt/thumbs/cover.webp",
+    "alt": "Ember & Salt template shown on a laptop and a phone",
+    "kind": "MOCKUP",
+    "width": 1600,
+    "height": 1200,
+    "author": "",
+    "source": "/demo/ember-and-salt",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
     "file": "/images/designs/ember-and-salt/00-home-page.webp",
     "thumb": "/images/designs/ember-and-salt/thumbs/00-home-page.webp",
     "alt": "Ember & Salt template: home page on desktop",

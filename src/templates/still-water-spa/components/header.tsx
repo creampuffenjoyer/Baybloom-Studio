@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { href, nav } from "../site";

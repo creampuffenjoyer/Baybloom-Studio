@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { addDays, fromDay, monthGrid, monthLabel, WEEKDAYS, type Day } from "./dates";
+import { addDays, fromDay, monthGrid, WEEKDAYS, type Day } from "./dates";
 import { useToday } from "./use-today";
 
 /*
@@ -30,6 +30,8 @@ type Props = {
   dayClassName?: string;
   /** Optional content under each day number (e.g. a price or "full"). */
   renderDayNote?: (day: Day, disabled: boolean) => React.ReactNode;
+  locale?: string;
+  labels?: { previous: string; next: string; to: string };
 };
 
 export function Calendar({
@@ -46,7 +48,11 @@ export function Calendar({
   weekdayClassName,
   dayClassName,
   renderDayNote,
+  locale = "en-GB",
+  labels = { previous: "Previous month", next: "Next month", to: "to" },
 }: Props) {
+  const labelMonth = (y: number, m: number) => new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(new Date(y, m, 1));
+  const weekdays = locale === "en-GB" ? WEEKDAYS : Array.from({ length: 7 }, (_, i) => new Intl.DateTimeFormat(locale, { weekday: "short" }).format(new Date(2024, 0, 1 + i)));
   const now = useToday();
   const first = fromDay(start ?? now);
   const [cursor, setCursor] = useState({ y: first.getFullYear(), m: first.getMonth() });
@@ -82,23 +88,23 @@ export function Calendar({
           className={navClassName}
           onClick={() => shift(-1)}
           disabled={atMin}
-          aria-label="Previous month"
+          aria-label={labels.previous}
         >
           ‹
         </button>
         <span aria-live="polite" className="flex-1 text-center">
-          {months === 1 ? monthLabel(views[0].y, views[0].m) : <span className="sr-only">{views.map((v) => monthLabel(v.y, v.m)).join(" to ")}</span>}
+          {months === 1 ? labelMonth(views[0].y, views[0].m) : <span className="sr-only">{views.map((v) => labelMonth(v.y, v.m)).join(` ${labels.to} `)}</span>}
         </span>
-        <button type="button" className={navClassName} onClick={() => shift(1)} aria-label="Next month">
+        <button type="button" className={navClassName} onClick={() => shift(1)} aria-label={labels.next}>
           ›
         </button>
       </div>
       <div className={months === 2 ? "grid gap-6 sm:grid-cols-2" : undefined}>
         {views.map((v) => (
           <div key={`${v.y}-${v.m}`} className={monthClassName}>
-            {months === 2 && <p className="mb-3 text-center font-semibold">{monthLabel(v.y, v.m)}</p>}
-            <div role="grid" aria-label={monthLabel(v.y, v.m)} className="grid grid-cols-7 gap-y-1">
-              {WEEKDAYS.map((w) => (
+            {months === 2 && <p className="mb-3 text-center font-semibold">{labelMonth(v.y, v.m)}</p>}
+            <div role="grid" aria-label={labelMonth(v.y, v.m)} className="grid grid-cols-7 gap-y-1">
+              {weekdays.map((w) => (
                 <span key={w} role="columnheader" className={weekdayClassName}>
                   {w}
                 </span>
@@ -119,7 +125,7 @@ export function Calendar({
                     className={dayClassName}
                     disabled={!selectable}
                     aria-selected={selected}
-                    aria-label={fromDay(day).toDateString()}
+                    aria-label={new Intl.DateTimeFormat(locale, { weekday: "long", year: "numeric", month: "long", day: "numeric" }).format(fromDay(day))}
                     data-selected={selected}
                     data-in-range={inRange}
                     data-disabled={!selectable}

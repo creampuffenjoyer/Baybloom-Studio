@@ -1,13 +1,18 @@
+"use client";
+
+import { useBloomfield } from "../language";
+
 import Image from "next/image";
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { Suspense } from "react";
 import { formatMoney } from "../../_kit/dates";
 import { DateCheck } from "../components/date-check";
 import { Sprig } from "../components/sprig";
-import { packages, photo, reviews, spaces } from "../content";
+
 import { href } from "../site";
 
 export function HomePage() {
+  const { packages, photo, reviews, spaces } = useBloomfield();
   const [left, center, right] = (["bouquet", "lawn", "glasshouse-dinner"] as const).map(photo);
 
   return (

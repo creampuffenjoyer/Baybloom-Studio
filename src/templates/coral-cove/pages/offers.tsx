@@ -1,15 +1,18 @@
+"use client";
+import { useCoral, LocalLink as Link } from "../language";
 import Image from "next/image";
-import Link from "next/link";
+
 import { PageIntro } from "../components/page-intro";
-import { offers, photo } from "../content";
+
 import { href } from "../site";
 
 export function OffersPage() {
+  const { t, offers, photo } = useCoral();
   return (
     <>
       <PageIntro
-        title="Offers and packages"
-        lede="Book direct for our best rates, free speedboat transfers on stays of four nights or more, and the offers below."
+        title={t("Offers and packages")}
+        lede={t("Illustrative resort packages. The sample planner calculates the fifth-night discount only; other packages need a separate quote.")}
       />
       <div className="mx-auto max-w-7xl space-y-10 px-5 py-20 sm:px-8">
         {offers.map((o, i) => {
@@ -43,9 +46,7 @@ export function OffersPage() {
                   className={`mt-8 inline-block rounded-full px-6 py-3 font-semibold ${
                     i === 0 ? "bg-white text-tpl-accent" : "bg-tpl-ink text-white"
                   }`}
-                >
-                  Book this offer
-                </Link>
+                >{t("Explore this sample offer")}</Link>
               </div>
             </article>
           );

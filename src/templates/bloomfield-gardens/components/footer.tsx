@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { href, nav, site } from "../site";
 import { Sprig } from "./sprig";
 

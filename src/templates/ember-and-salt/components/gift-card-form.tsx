@@ -20,10 +20,10 @@ export function GiftCardForm() {
     <div className="grid gap-12 lg:grid-cols-[1fr_420px]">
       {status === "sent" ? (
         <div role="status">
-          <p className="font-tpl-display text-5xl">Gift card sent.</p>
+          <p className="font-tpl-display text-5xl">Sample gift card.</p>
           <p className="mt-4 text-lg text-tpl-muted">
-            {to || "Your recipient"} will receive a {formatMoney(amount)} gift card by email, code{" "}
-            <span className="text-tpl-ink">{code}</span>. Valid for 12 months on food and drink.
+            Sample for {to || "your recipient"}, amount {formatMoney(amount)}, reference{" "}
+            <span className="text-tpl-ink">{code}</span>. No payment was taken and no gift card was sent.
           </p>
         </div>
       ) : (
@@ -87,9 +87,9 @@ export function GiftCardForm() {
             disabled={status === "sending"}
             className="bg-tpl-accent px-7 py-4 text-lg font-semibold text-tpl-on-accent hover:bg-tpl-alt disabled:opacity-60"
           >
-            {status === "sending" ? "Processing…" : `Buy ${formatMoney(amount)} gift card`}
+            {status === "sending" ? "Processing…" : `Try a ${formatMoney(amount)} sample gift card`}
           </button>
-          <p className="text-sm text-tpl-muted">Demo: connect your payment provider here. No payment is taken.</p>
+          <p className="text-sm text-tpl-muted">Sample only. No payment is taken and no gift card is sent.</p>
         </form>
       )}
 

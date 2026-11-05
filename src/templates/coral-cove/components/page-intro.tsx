@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import type { PhotoRecord } from "../../_kit/photos";
 
@@ -14,7 +15,7 @@ export function PageIntro({
   children?: React.ReactNode;
 }) {
   return (
-    <section className="pt-32 sm:pt-40">
+    <section className="pt-14 sm:pt-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <h1 className="max-w-4xl font-tpl-display text-5xl leading-[0.95] font-extrabold tracking-[-0.045em] text-balance [font-stretch:88%] sm:text-7xl">
           {title}

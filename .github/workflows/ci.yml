@@ -1,0 +1,42 @@
+name: Quality and commerce regressions
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: baybloom_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U test -d baybloom_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://test:test@localhost:5432/baybloom_test
+      DIRECT_URL: postgresql://test:test@localhost:5432/baybloom_test
+      AUTH_SECRET: ci-only-disposable-secret-not-for-deployment
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run db:deploy
+      - run: npm run lint
+      - run: npx next typegen
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run test:integration
+        env:
+          TEST_DATABASE_URL: postgresql://test:test@localhost:5432/baybloom_test
+          DATABASE_URL: postgresql://unused:unused@localhost:5432/not_application
+      - run: npm run db:seed
+      - run: npm run build

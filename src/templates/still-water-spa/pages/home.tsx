@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { formatMoney } from "../../_kit/dates";
 import { Breathe } from "../components/breathe";
 import { RITUALS, packages, photo, reviews, treatments, type Ritual } from "../content";

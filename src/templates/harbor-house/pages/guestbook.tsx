@@ -1,11 +1,16 @@
+"use client";
+
+import { useHarbor } from "../language";
+
 import { GuestbookForm } from "../components/guestbook-form";
-import { guestbook } from "../content";
+
 
 export function GuestbookPage() {
+  const { t, guestbook } = useHarbor();
   return (
     <div className="mx-auto max-w-6xl px-5 pt-10 sm:px-8">
-      <h1 className="font-tpl-display text-5xl sm:text-6xl">The guestbook</h1>
-      <p className="mt-4 max-w-[56ch] text-lg text-tpl-muted">It lives on the hall table. Here are a few recent pages.</p>
+      <h1 className="font-tpl-display text-5xl sm:text-6xl">{t("The guestbook")}</h1>
+      <p className="mt-4 max-w-[56ch] text-lg text-tpl-muted">{t("It lives on the hall table. Here are a few recent pages.")}</p>
       <div className="mt-12 columns-1 gap-6 md:columns-2">
         {guestbook.map((g, i) => (
           <figure
@@ -22,9 +27,8 @@ export function GuestbookPage() {
       </div>
       <section aria-labelledby="sign" className="mt-16 max-w-2xl">
         <h2 id="sign" className="font-tpl-display text-3xl">
-          Stayed with us?
-        </h2>
-        <p className="mt-2 mb-6 text-tpl-muted">Leave a few words for Mila and Joel.</p>
+          {t("Stayed with us?")}</h2>
+        <p className="mt-2 mb-6 text-tpl-muted">{t("Leave a few words for Mila and Joel.")}</p>
         <GuestbookForm />
       </section>
     </div>

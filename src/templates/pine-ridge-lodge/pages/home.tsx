@@ -1,11 +1,14 @@
+"use client";
+import { usePine, LocalLink as Link } from "../language";
 import Image from "next/image";
-import Link from "next/link";
+
 import { formatMoney } from "../../_kit/dates";
 import { Seasonal } from "../components/seasonal";
-import { menu, photo, posts, rooms } from "../content";
+
 import { CURRENCY, href } from "../site";
 
 export function HomePage() {
+  const { t, menu, photo, posts, rooms } = usePine();
   return (
     <>
       <Seasonal />
@@ -14,12 +17,8 @@ export function HomePage() {
       <section aria-labelledby="rooms" className="bg-tpl-surface">
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8">
           <div className="flex flex-wrap items-end justify-between gap-4">
-            <h2 id="rooms" className="font-tpl-display text-4xl font-bold sm:text-5xl">
-              Rooms and the chalet
-            </h2>
-            <Link href={href("/rooms")} className="font-bold text-tpl-alt underline underline-offset-4">
-              Compare rooms
-            </Link>
+            <h2 id="rooms" className="font-tpl-display text-4xl font-bold sm:text-5xl">{t("Rooms and the chalet")}</h2>
+            <Link href={href("/rooms")} className="font-bold text-tpl-alt underline underline-offset-4">{t("Compare rooms")}</Link>
           </div>
           <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {rooms.map((r) => {
@@ -29,12 +28,11 @@ export function HomePage() {
                   <Link href={href(`/rooms/${r.slug}`)} className="group block">
                     <div className="relative aspect-[3/4] overflow-hidden rounded-md">
                       <Image src={p.src} alt={p.alt} fill sizes="(min-width: 1024px) 25vw, 50vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                      <span className="absolute bottom-3 left-3 rounded bg-tpl-deep/90 px-2.5 py-1 text-sm text-tpl-on-deep">
-                        Sleeps {r.maxGuests}
+                      <span className="absolute bottom-3 left-3 rounded bg-tpl-deep/90 px-2.5 py-1 text-sm text-tpl-on-deep">{t("Sleeps")}{" "}{r.maxGuests}
                       </span>
                     </div>
                     <h3 className="mt-3 font-tpl-display text-2xl font-bold group-hover:text-tpl-alt">{r.name}</h3>
-                    <p className="text-tpl-muted">from {formatMoney(r.price, CURRENCY)} a night</p>
+                    <p className="text-tpl-muted">{t("from")}{" "}{formatMoney(r.price, CURRENCY)}{" "}{t("a night")}</p>
                   </Link>
                 </li>
               );
@@ -57,11 +55,8 @@ export function HomePage() {
           </div>
         </div>
         <div>
-          <h2 className="font-tpl-display text-4xl font-bold sm:text-5xl">Supper at the long table</h2>
-          <p className="mt-4 text-lg text-tpl-muted">
-            Dinner is served at 7, family style, under the old beams. Hearty food from the valley, and a
-            wine list heavy on the Okanagan.
-          </p>
+          <h2 className="font-tpl-display text-4xl font-bold sm:text-5xl">{t("Supper at the long table")}</h2>
+          <p className="mt-4 text-lg text-tpl-muted">{t("Dinner is served at 7, family style, under the old beams. Hearty food from the valley, and a wine list heavy on the Okanagan.")}</p>
           <ul className="mt-6 space-y-3">
             {menu.slice(0, 3).map((m) => (
               <li key={m.name} className="flex items-baseline justify-between gap-4 border-b border-tpl-line pb-3">
@@ -73,17 +68,13 @@ export function HomePage() {
               </li>
             ))}
           </ul>
-          <Link href={href("/dining")} className="mt-6 inline-block font-bold text-tpl-alt underline underline-offset-4">
-            Dining at the lodge
-          </Link>
+          <Link href={href("/dining")} className="mt-6 inline-block font-bold text-tpl-alt underline underline-offset-4">{t("Dining at the lodge")}</Link>
         </div>
       </section>
 
       {/* Journal */}
       <section aria-labelledby="journal" className="mx-auto max-w-7xl px-5 sm:px-8">
-        <h2 id="journal" className="font-tpl-display text-4xl font-bold">
-          From the lodge journal
-        </h2>
+        <h2 id="journal" className="font-tpl-display text-4xl font-bold">{t("From the lodge journal")}</h2>
         <ul className="mt-8 grid gap-8 md:grid-cols-2">
           {posts.map((p) => (
             <li key={p.slug}>

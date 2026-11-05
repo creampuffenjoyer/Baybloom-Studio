@@ -1,5 +1,18 @@
 [
   {
+    "role": "cover",
+    "file": "/images/designs/lumen-lake-villas/cover.webp",
+    "thumb": "/images/designs/lumen-lake-villas/thumbs/cover.webp",
+    "alt": "Lumen Lake Villas template shown on a laptop and a phone",
+    "kind": "MOCKUP",
+    "width": 1600,
+    "height": 1200,
+    "author": "",
+    "source": "/demo/lumen-lake-villas",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
     "file": "/images/designs/lumen-lake-villas/00-home-page.webp",
     "thumb": "/images/designs/lumen-lake-villas/thumbs/00-home-page.webp",
     "alt": "Lumen Lake Villas template: home page on desktop",

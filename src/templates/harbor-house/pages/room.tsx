@@ -1,20 +1,24 @@
+"use client";
+
+import { useHarbor } from "../language";
+
 import Image from "next/image";
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { notFound } from "next/navigation";
 import { formatMoney } from "../../_kit/dates";
 import { Stamp } from "../components/postcard";
-import { photo, rooms } from "../content";
+
 import { href } from "../site";
 
 export function RoomPage({ slug }: { slug: string }) {
+  const { t, photo, rooms } = useHarbor();
   const r = rooms.find((x) => x.slug === slug);
   if (!r) notFound();
   const [a, b, c] = r.photos.map(photo);
   return (
     <div className="mx-auto max-w-6xl px-5 pt-8 sm:px-8">
       <Link href={href("/rooms")} className="text-[15px] font-semibold text-tpl-muted hover:text-tpl-ink">
-        ← All rooms
-      </Link>
+        {t("← All rooms")}</Link>
       <div className="mt-6 grid gap-12 lg:grid-cols-[1.2fr_1fr]">
         <div className="space-y-4">
           <div className="relative aspect-[4/3] overflow-hidden rounded-3xl">
@@ -37,7 +41,7 @@ export function RoomPage({ slug }: { slug: string }) {
             ))}
           </div>
           <ul className="mt-6 flex flex-wrap gap-2">
-            {[r.bed, r.view, `Sleeps ${r.maxGuests}`, ...r.little].map((x) => (
+            {[r.bed, r.view, `${t("Sleeps")} ${r.maxGuests}`, ...r.little].map((x) => (
               <li key={x} className="rounded-full bg-tpl-surface px-3 py-1.5 text-sm ring-1 ring-tpl-line">
                 {x}
               </li>
@@ -45,12 +49,11 @@ export function RoomPage({ slug }: { slug: string }) {
           </ul>
           <div className="mt-10 flex items-center gap-6">
             <Stamp className="-rotate-3">
-              <span className="block text-[11px] font-semibold">per night</span>
+              <span className="block text-[11px] font-semibold">{t("per night")}</span>
               <span className="block font-tpl-display text-2xl">{formatMoney(r.price)}</span>
             </Stamp>
             <Link href={`${href("/book")}?room=${r.slug}`} className="rounded-full bg-tpl-accent px-6 py-3 font-bold text-tpl-on-accent">
-              Check dates for this room
-            </Link>
+              {t("Check dates for this room")}</Link>
           </div>
         </div>
       </div>

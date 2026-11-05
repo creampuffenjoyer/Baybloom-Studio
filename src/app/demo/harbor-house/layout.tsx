@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Shell } from "@/templates/harbor-house/shell";
-import { DemoBar } from "../demo-bar";
+import { Suspense } from "react";
+import { PreviewChrome } from "./preview-chrome";
 
 export const metadata: Metadata = {
   title: { default: "Harbor House \u00b7 Bed and breakfast by the harbour, Batanes", template: "%s · Harbor House" },
@@ -9,9 +10,11 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
+    <>
+    <Suspense fallback={null}><PreviewChrome /></Suspense>
     <Shell>
       {children}
-      <DemoBar slug="harbor-house" title="Harbor House" />
     </Shell>
+    </>
   );
 }

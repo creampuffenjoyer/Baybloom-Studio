@@ -31,12 +31,12 @@ export function isDay(value: string | null | undefined): value is Day {
   return !!value && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(fromDay(value).getTime());
 }
 
-export function formatDay(day: Day, opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "short" }) {
-  return new Intl.DateTimeFormat("en-GB", opts).format(fromDay(day));
+export function formatDay(day: Day, opts: Intl.DateTimeFormatOptions = { day: "numeric", month: "short" }, locale = "en-GB") {
+  return new Intl.DateTimeFormat(locale, opts).format(fromDay(day));
 }
 
-export function formatLong(day: Day) {
-  return formatDay(day, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+export function formatLong(day: Day, locale = "en-GB") {
+  return formatDay(day, { weekday: "long", day: "numeric", month: "long", year: "numeric" }, locale);
 }
 
 /** Days of a month view, padded with nulls so the grid starts on Monday. */

@@ -1,11 +1,14 @@
+"use client";
+import { useCoral, LocalLink as Link } from "../language";
 import Image from "next/image";
-import Link from "next/link";
+
 import { formatMoney } from "../../_kit/dates";
 import { BookingTicket } from "../components/booking-ticket";
-import { experiences, offers, photo, reviews, villas } from "../content";
-import { href, site } from "../site";
+
+import { href } from "../site";
 
 export function HomePage() {
+  const { t, experiences, offers, photo, reviews, villas, site } = useCoral();
   const hero = photo("hero");
   const offer = offers[0];
 
@@ -38,23 +41,15 @@ export function HomePage() {
       {/* Intro + getting here */}
       <section className="mx-auto grid max-w-7xl gap-14 px-5 pt-20 pb-24 sm:px-8 md:pt-36 lg:grid-cols-[1.4fr_1fr] lg:gap-24">
         <div>
-          <h2 className="font-tpl-display text-4xl leading-[1.02] font-bold tracking-[-0.035em] text-balance sm:text-6xl">
-            Forty minutes by boat from El Nido, and a long way from anywhere.
-          </h2>
-          <p className="mt-6 max-w-[60ch] text-lg leading-relaxed text-tpl-muted">
-            Twenty-two villas share a white-sand cove on Isla Calma, with a house reef thirty metres
-            offshore and nothing on the horizon but limestone islands. Days run on the tide: snorkel at
-            high water, walk to the sandbar at low, and eat whatever came in on the boats.
-          </p>
+          <h2 className="font-tpl-display text-4xl leading-[1.02] font-bold tracking-[-0.035em] text-balance sm:text-6xl">{t("Forty minutes by boat from El Nido, and a long way from anywhere.")}</h2>
+          <p className="mt-6 max-w-[60ch] text-lg leading-relaxed text-tpl-muted">{t("Twenty-two villas share a white-sand cove on Isla Calma, with a house reef thirty metres offshore and nothing on the horizon but limestone islands. Days run on the tide: snorkel at high water, walk to the sandbar at low, and eat whatever came in on the boats.")}</p>
           <Link
             href={href("/villas")}
             className="mt-8 inline-block rounded-full border-2 border-tpl-ink px-6 py-3 font-semibold transition-colors hover:bg-tpl-ink hover:text-white"
-          >
-            Meet the villas
-          </Link>
+          >{t("Meet the villas")}</Link>
         </div>
         <div className="self-end rounded-3xl bg-tpl-soft p-7 sm:p-9">
-          <h3 className="font-tpl-display text-2xl font-bold tracking-tight">Getting here</h3>
+          <h3 className="font-tpl-display text-2xl font-bold tracking-tight">{t("Getting here")}</h3>
           <ol className="mt-5 space-y-5">
             {[
               ["Fly to El Nido", "Daily flights from Manila take 1 hour 15 minutes."],
@@ -66,8 +61,8 @@ export function HomePage() {
                   {i + 1}
                 </span>
                 <span>
-                  <span className="block font-semibold">{title}</span>
-                  <span className="text-tpl-muted">{text}</span>
+                  <span className="block font-semibold">{t(title)}</span>
+                  <span className="text-tpl-muted">{t(text)}</span>
                 </span>
               </li>
             ))}
@@ -77,13 +72,9 @@ export function HomePage() {
 
       {/* Villas */}
       <section aria-labelledby="villas" className="pb-24">
-        <div className="mx-auto flex max-w-7xl items-end justify-between gap-6 px-5 sm:px-8">
-          <h2 id="villas" className="font-tpl-display text-4xl font-bold tracking-[-0.035em] sm:text-5xl">
-            Four ways to stay
-          </h2>
-          <Link href={href("/villas")} className="shrink-0 font-semibold underline underline-offset-4">
-            Compare villas
-          </Link>
+        <div className="mx-auto flex max-w-7xl flex-wrap items-end justify-between gap-6 px-5 sm:px-8">
+          <h2 id="villas" className="font-tpl-display text-4xl font-bold tracking-[-0.035em] sm:text-5xl">{t("Four ways to stay")}</h2>
+          <Link href={`${href("/villas")}#compare`} className="shrink-0 font-semibold underline underline-offset-4">{t("Compare villas")}</Link>
         </div>
         <ul className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 [scrollbar-width:none] sm:px-8 xl:px-[max(2rem,calc((100vw_-_80rem)/2_+_2rem))]">
           {villas.map((v) => {
@@ -99,16 +90,14 @@ export function HomePage() {
                       sizes="380px"
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <span className="absolute top-4 left-4 rounded-full bg-white/95 px-3 py-1 text-sm font-semibold">
-                      from {formatMoney(v.price)}
+                    <span className="absolute top-4 left-4 rounded-full bg-white/95 px-3 py-1 text-sm font-semibold">{t("from")}{" "}{formatMoney(v.price)}
                     </span>
                   </div>
                   <h3 className="mt-4 font-tpl-display text-2xl font-bold tracking-tight group-hover:underline">
                     {v.name}
                   </h3>
                   <p className="mt-1 text-tpl-muted">
-                    {v.size} m², up to {v.maxGuests} guests
-                  </p>
+                    {v.size}{" "}{t("m², up to")}{" "}{v.maxGuests}{" "}{t("guests")}</p>
                 </Link>
               </li>
             );
@@ -122,13 +111,8 @@ export function HomePage() {
           <Image src={photo("snorkeler").src} alt={photo("snorkeler").alt} fill sizes="(min-width: 1024px) 55vw, 100vw" className="object-cover" />
         </div>
         <div className="px-5 py-16 sm:px-12 lg:py-24">
-          <h2 className="font-tpl-display text-4xl leading-[1.02] font-bold tracking-[-0.035em] sm:text-5xl">
-            The reef starts where the sand ends.
-          </h2>
-          <p className="mt-5 max-w-[48ch] text-lg leading-relaxed text-white/80">
-            Borrow a mask at the beach hut and swim out over table corals and turtle grass. Further out,
-            the dive centre runs two boats a day to the walls.
-          </p>
+          <h2 className="font-tpl-display text-4xl leading-[1.02] font-bold tracking-[-0.035em] sm:text-5xl">{t("The reef starts where the sand ends.")}</h2>
+          <p className="mt-5 max-w-[48ch] text-lg leading-relaxed text-white/80">{t("Borrow a mask at the beach hut and swim out over table corals and turtle grass. Further out, the dive centre runs two boats a day to the walls.")}</p>
           <ul className="mt-10 divide-y divide-white/15 border-y border-white/15">
             {experiences.slice(0, 4).map((x) => (
               <li key={x.slug}>
@@ -142,9 +126,7 @@ export function HomePage() {
               </li>
             ))}
           </ul>
-          <Link href={href("/experiences")} className="mt-8 inline-block font-semibold text-tpl-alt underline underline-offset-4">
-            All experiences
-          </Link>
+          <Link href={href("/experiences")} className="mt-8 inline-block font-semibold text-tpl-alt underline underline-offset-4">{t("All experiences")}</Link>
         </div>
       </section>
 
@@ -159,14 +141,10 @@ export function HomePage() {
             <p className="mt-5 max-w-[46ch] text-lg leading-relaxed text-tpl-muted">{offer.body}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href={href("/book")}
+                href={`${href("/book")}?offer=${offer.slug}`}
                 className="rounded-full bg-tpl-accent px-6 py-3 font-semibold text-tpl-on-accent"
-              >
-                Book this offer
-              </Link>
-              <Link href={href("/offers")} className="rounded-full px-6 py-3 font-semibold underline underline-offset-4">
-                See all offers
-              </Link>
+              >{t("Explore this sample offer")}</Link>
+              <Link href={href("/offers")} className="rounded-full px-6 py-3 font-semibold underline underline-offset-4">{t("See all offers")}</Link>
             </div>
           </div>
           <div className="relative min-h-[300px]">
@@ -177,9 +155,7 @@ export function HomePage() {
 
       {/* Reviews */}
       <section aria-labelledby="reviews" className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
-        <h2 id="reviews" className="sr-only">
-          Guest reviews
-        </h2>
+        <h2 id="reviews" className="sr-only">{t("Guest reviews")}</h2>
         <div className="grid gap-12 md:grid-cols-3">
           {reviews.map((r, i) => (
             <figure key={r.name} className={i === 1 ? "md:mt-16" : undefined}>
@@ -205,9 +181,7 @@ export function HomePage() {
           ))}
         </div>
         <p className="mt-6 text-center">
-          <Link href={href("/gallery")} className="font-semibold underline underline-offset-4">
-            Open the gallery
-          </Link>
+          <Link href={href("/gallery")} className="font-semibold underline underline-offset-4">{t("Open the gallery")}</Link>
         </p>
       </section>
     </>

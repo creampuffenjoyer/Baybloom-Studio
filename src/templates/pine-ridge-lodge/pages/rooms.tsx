@@ -1,38 +1,29 @@
+"use client";
+import { usePine, LocalLink as Link } from "../language";
 import Image from "next/image";
-import Link from "next/link";
+
 import { notFound } from "next/navigation";
 import { formatMoney } from "../../_kit/dates";
-import { photo, rooms } from "../content";
-import { CURRENCY, href, site } from "../site";
+
+import { CURRENCY, href } from "../site";
 
 export function RoomsPage() {
+  const { t, photo, rooms, site, season, seasons } = usePine();
   return (
     <div className="mx-auto max-w-7xl px-5 pt-14 sm:px-8">
-      <h1 className="font-tpl-display text-5xl font-bold sm:text-6xl">Rooms</h1>
-      <p className="mt-4 max-w-[56ch] text-lg text-tpl-muted">
-        Fourteen rooms in the lodge and one chalet in the pines. Breakfast, the sauna and the boot room are
-        included in every stay.
-      </p>
-      <div className="mt-12 overflow-x-auto rounded-md ring-1 ring-tpl-line">
+      <h1 className="font-tpl-display text-5xl font-bold sm:text-6xl">{t("Rooms")}</h1>
+      <p className="mt-4 max-w-[56ch] text-lg text-tpl-muted">{t("Fourteen rooms in the lodge and one chalet in the pines. Breakfast, the sauna and the boot room are included in every stay.")}</p>
+      <p className="mt-5">{t("Planning season:")} {seasons[season].label}. <Link href={href("/activities")} className="font-semibold underline">{t("Change trip plan")}</Link></p>
+      <div role="region" aria-label={t("Compare rooms")} tabIndex={0} className="mt-12 overflow-x-auto rounded-md ring-1 ring-tpl-line">
         <table className="w-full min-w-[720px] bg-tpl-surface text-left">
-          <caption className="sr-only">Compare rooms</caption>
+          <caption className="sr-only">{t("Compare rooms")}</caption>
           <thead className="bg-tpl-deep text-tpl-on-deep">
             <tr>
-              <th scope="col" className="p-4 font-medium">
-                Room
-              </th>
-              <th scope="col" className="p-4 font-medium">
-                Sleeps
-              </th>
-              <th scope="col" className="p-4 font-medium">
-                Beds
-              </th>
-              <th scope="col" className="p-4 font-medium">
-                Size
-              </th>
-              <th scope="col" className="p-4 font-medium">
-                From
-              </th>
+              <th scope="col" className="p-4 font-medium">{t("Room")}</th>
+              <th scope="col" className="p-4 font-medium">{t("Sleeps")}</th>
+              <th scope="col" className="p-4 font-medium">{t("Beds")}</th>
+              <th scope="col" className="p-4 font-medium">{t("Size")}</th>
+              <th scope="col" className="p-4 font-medium">{t("From")}</th>
             </tr>
           </thead>
           <tbody>
@@ -55,14 +46,13 @@ export function RoomsPage() {
           </tbody>
         </table>
       </div>
-      <p className="mt-4 text-sm text-tpl-muted">
-        Check-in from {site.checkIn}, check-out by {site.checkOut}. Prices per night in Canadian dollars, before tax.
-      </p>
+      <p className="mt-4 text-sm text-tpl-muted">{t("Check-in from")}{" "}{site.checkIn}{t(", check-out by")}{" "}{site.checkOut}{t(". Prices per night in Canadian dollars, before tax.")}</p>
     </div>
   );
 }
 
 export function RoomPage({ slug }: { slug: string }) {
+  const { t, photo, rooms, season, seasons } = usePine();
   const r = rooms.find((x) => x.slug === slug);
   if (!r) notFound();
   const [a, b, c] = r.photos.map(photo);
@@ -75,10 +65,9 @@ export function RoomPage({ slug }: { slug: string }) {
       </section>
       <div className="mx-auto grid max-w-7xl gap-12 px-5 pt-12 sm:px-8 lg:grid-cols-[1.4fr_1fr]">
         <div>
-          <Link href={href("/rooms")} className="font-medium text-tpl-alt hover:underline">
-            All rooms
-          </Link>
+          <Link href={href("/rooms")} className="font-medium text-tpl-alt hover:underline">{t("All rooms")}</Link>
           <h1 className="mt-2 font-tpl-display text-5xl font-bold sm:text-6xl">{r.name}</h1>
+          <p className="mt-4">{t("Planning season:")} {seasons[season].label}. <Link href={href("/activities")} className="font-semibold underline">{t("Change trip plan")}</Link></p>
           <div className="mt-6 space-y-4 text-lg leading-relaxed">
             {r.description.map((d) => (
               <p key={d.slice(0, 16)}>{d}</p>
@@ -94,17 +83,15 @@ export function RoomPage({ slug }: { slug: string }) {
         </div>
         <aside className="lg:sticky lg:top-8 lg:self-start">
           <div className="rounded-md bg-tpl-deep p-7 text-tpl-on-deep">
-            <p className="text-tpl-on-deep/70">From</p>
+            <p className="text-tpl-on-deep/70">{t("From")}</p>
             <p className="font-tpl-display text-5xl font-bold">{formatMoney(r.price, CURRENCY)}</p>
-            <p className="text-tpl-on-deep/70">a night, breakfast included</p>
+            <p className="text-tpl-on-deep/70">{t("a night, breakfast included")}</p>
             <ul className="mt-6 space-y-2 border-t border-white/15 pt-5">
-              {[`Sleeps ${r.maxGuests}`, r.beds, `${r.size} m²`, ...r.features].map((f) => (
+              {[`${t("Sleeps")} ${r.maxGuests}`, r.beds, `${r.size} m²`, ...r.features].map((f) => (
                 <li key={f}>{f}</li>
               ))}
             </ul>
-            <Link href={`${href("/book")}?room=${r.slug}`} className="mt-7 block rounded-md bg-tpl-accent px-6 py-3.5 text-center font-bold text-tpl-on-accent">
-              Check dates
-            </Link>
+            <Link href={`${href("/book")}?room=${r.slug}`} className="mt-7 block rounded-md bg-tpl-accent px-6 py-3.5 text-center font-bold text-tpl-on-accent">{t("Check dates")}</Link>
           </div>
         </aside>
       </div>

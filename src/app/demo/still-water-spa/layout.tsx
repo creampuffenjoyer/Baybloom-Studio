@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Shell } from "@/templates/still-water-spa/shell";
-import { DemoBar } from "../demo-bar";
+import { Suspense } from "react";
+import { PreviewChrome } from "./preview-chrome";
 
 export const metadata: Metadata = {
   title: { default: "Still Water \u00b7 Day spa and bathhouse, Baguio", template: "%s · Still Water" },
@@ -9,9 +10,8 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <Shell>
+    <><Suspense><PreviewChrome /></Suspense><Shell>
       {children}
-      <DemoBar slug="still-water-spa" title="Still Water" />
-    </Shell>
+    </Shell></>
   );
 }

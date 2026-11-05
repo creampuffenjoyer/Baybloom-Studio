@@ -1,9 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatMoney } from "../../_kit/dates";
 import { photo, villas, type Villa } from "../content";
 import { CURRENCY, href, site } from "../site";
+import { VillaFinder } from "../components/villa-finder";
+import { LocalLink } from "../language";
 
 const ROWS: [string, (v: Villa) => string][] = [
   ["From, per night", (v) => formatMoney(v.price, CURRENCY)],
@@ -24,6 +25,8 @@ export function VillasPage() {
         all of them.
       </p>
 
+      <VillaFinder />
+
       <div className="mt-20 overflow-x-auto">
         <table className="w-full min-w-[760px] text-left text-sm">
           <caption className="sr-only">Compare the villas</caption>
@@ -32,12 +35,12 @@ export function VillasPage() {
               <td />
               {villas.map((v) => (
                 <th key={v.slug} scope="col" className="px-4 pb-6 align-bottom font-normal">
-                  <Link href={href(`/villas/${v.slug}`)} className="group block">
+                  <LocalLink href={href(`/villas/${v.slug}`)} className="group block">
                     <span className="relative block aspect-[4/3] overflow-hidden">
                       <Image src={photo(v.photos[0]).src} alt="" fill sizes="20vw" className="object-cover" />
                     </span>
                     <span className="mt-4 block font-tpl-display text-2xl group-hover:underline">{v.name}</span>
-                  </Link>
+                  </LocalLink>
                 </th>
               ))}
             </tr>
@@ -59,9 +62,7 @@ export function VillasPage() {
               <td />
               {villas.map((v) => (
                 <td key={v.slug} className="px-4 py-6">
-                  <Link href={`${href("/book")}?room=${v.slug}`} className="border-b border-tpl-ink pb-0.5">
-                    Check dates
-                  </Link>
+                  <LocalLink href={`${href("/book")}?room=${v.slug}`} className="border-b border-tpl-ink pb-0.5">Check dates</LocalLink>
                 </td>
               ))}
             </tr>
@@ -78,9 +79,9 @@ export function VillaPage({ slug }: { slug: string }) {
   const [a, b, c] = v.photos.map(photo);
   return (
     <div className="mx-auto max-w-[1400px] px-6 pt-10 sm:px-10">
-      <Link href={href("/villas")} className="text-sm text-tpl-muted hover:text-tpl-ink">
+      <LocalLink href={href("/villas")} className="text-sm text-tpl-muted hover:text-tpl-ink">
         All villas
-      </Link>
+      </LocalLink>
       <h1 className="mt-4 font-tpl-display text-7xl sm:text-8xl">{v.name}</h1>
       <p className="mt-4 font-tpl-display text-2xl text-tpl-muted italic">{v.line}</p>
       <div className="relative mt-14 aspect-[16/9] overflow-hidden sm:aspect-[21/9]">
@@ -105,9 +106,9 @@ export function VillaPage({ slug }: { slug: string }) {
               <p key={d.slice(0, 16)}>{d}</p>
             ))}
           </div>
-          <Link href={`${href("/book")}?room=${v.slug}`} className="mt-10 inline-block bg-tpl-accent px-7 py-4 text-sm text-tpl-on-accent">
+          <LocalLink href={`${href("/book")}?room=${v.slug}`} className="mt-10 inline-block bg-tpl-accent px-7 py-4 text-sm text-tpl-on-accent">
             Check availability
-          </Link>
+          </LocalLink>
         </div>
       </div>
       <div className="mt-24 grid gap-6 md:grid-cols-[1fr_1.5fr]">

@@ -21,6 +21,8 @@ const peso = (amount: number) => amount * 100;
 const TIER_ORDER: TierLevel[] = ["STARTER", "STANDARD", "PREMIUM"];
 
 type Credit = {
+  /** "cover" marks the composed catalog cover (scripts/compose-covers.mjs). */
+  role?: "cover";
   file: string;
   thumb: string;
   alt: string;
@@ -184,7 +186,8 @@ async function main() {
       console.warn(`! Skipped ${d.title}: no catalog images in public/images/designs/${d.slug}`);
       continue;
     }
-    const [hero] = credits;
+    const hero = credits.find((c) => c.role === "cover") ?? credits[0];
+    const gallery = credits.filter((c) => c.role !== "cover");
     const publishedAt = new Date(Date.now() - d.publishedDaysAgo * 86_400_000);
 
     const base = {
@@ -210,7 +213,7 @@ async function main() {
     await db.$transaction([
       db.designImage.deleteMany({ where: { designId: design.id } }),
       db.designImage.createMany({
-        data: credits.map((c, position) => ({
+        data: gallery.map((c, position) => ({
           designId: design.id,
           url: c.file,
           thumbUrl: c.thumb,
@@ -262,7 +265,7 @@ async function main() {
       }),
     ]);
     await seedDeliverables(design.id, d.slug, d.title);
-    console.log(`✓ ${d.title} (${credits.length} images, ${d.tiers.length} tiers)`);
+    console.log(`✓ ${d.title} (${gallery.length} images, ${d.tiers.length} tiers)`);
   }
 
   // Drop taxonomy that is no longer listed (and no longer used).

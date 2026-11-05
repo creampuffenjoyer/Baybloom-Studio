@@ -1,7 +1,12 @@
-import Link from "next/link";
-import { href, nav, site } from "../site";
+"use client";
+
+import { useHarbor } from "../language";
+
+import { LocalLink as Link } from "../language";
+import { href } from "../site";
 
 export function Footer() {
+  const { t, nav, site } = useHarbor();
   return (
     <footer className="mt-24 bg-tpl-accent text-tpl-on-accent">
       <svg viewBox="0 0 1440 40" preserveAspectRatio="none" aria-hidden className="block h-8 w-full -translate-y-px fill-tpl-bg">
@@ -9,9 +14,9 @@ export function Footer() {
       </svg>
       <div className="mx-auto grid max-w-6xl gap-10 px-5 pt-10 pb-14 sm:px-8 md:grid-cols-3">
         <div>
-          <p className="font-tpl-display text-3xl">Harbor House</p>
+          <p className="font-tpl-display text-3xl">{site.name}</p>
           <p className="mt-2 text-white/80">{site.tagline}.</p>
-          <p className="mt-4 font-[family-name:var(--hh-hand)] text-3xl text-tpl-soft">Mila &amp; Joel</p>
+          <p className="mt-4 font-[family-name:var(--hh-hand)] text-3xl text-tpl-soft">{site.hosts}</p>
         </div>
         <div className="text-[15px] text-white/85">
           <address className="not-italic">
@@ -29,12 +34,12 @@ export function Footer() {
             <a href={`mailto:${site.email}`}>{site.email}</a>
           </p>
         </div>
-        <nav aria-label="Footer" className="text-[15px]">
+        <nav aria-label={t("Footer")} className="text-[15px]">
           <ul className="grid grid-cols-2 gap-y-2 text-white/85">
             {[...nav, { href: "/book", label: "Book a room" }, { href: "/credits", label: "Photo credits" }].map((i) => (
               <li key={i.href}>
                 <Link href={href(i.href)} className="hover:text-white hover:underline">
-                  {i.label}
+                  {t(i.label)}
                 </Link>
               </li>
             ))}

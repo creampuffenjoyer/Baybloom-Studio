@@ -3,10 +3,12 @@ import { Footer } from "./components/footer";
 import { Header } from "./components/header";
 import { body, display } from "./fonts";
 import { theme } from "./site";
+import { LanguageProvider } from "./language";
 
 /** Wraps every Lumen page: theme, fonts, header and footer. */
 export function Shell({ children }: { children: React.ReactNode }) {
   return (
+    <LanguageProvider>
     <div
       data-template="lumen-lake-villas"
       className={`${display.variable} ${body.variable} flex min-h-dvh flex-col bg-tpl-bg font-tpl-body text-tpl-ink antialiased`}
@@ -21,5 +23,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
       </main>
       <Footer />
     </div>
+    </LanguageProvider>
   );
 }

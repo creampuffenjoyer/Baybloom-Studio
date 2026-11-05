@@ -8,9 +8,12 @@ const FROM = process.env.EMAIL_FROM ?? "Baybloom Studio <onboarding@resend.dev>"
  * Sends through Resend when RESEND_API_KEY is set; otherwise logs the email to
  * the server console so links can be followed in development (spec §2).
  */
-export async function sendEmail(email: Email) {
+export async function sendEmail(email: Email, idempotencyKey?: string) {
   const key = process.env.RESEND_API_KEY;
   if (!key) {
+    if (process.env.NODE_ENV !== "development") {
+      throw new Error("RESEND_API_KEY is required outside development");
+    }
     console.info(
       `\n[email] To: ${email.to}\n[email] Subject: ${email.subject}\n${email.text}\n`,
     );
@@ -18,11 +21,12 @@ export async function sendEmail(email: Email) {
   }
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json", ...(idempotencyKey && { "Idempotency-Key": idempotencyKey }) },
+    signal: AbortSignal.timeout(15_000),
     body: JSON.stringify({ from: FROM, ...email }),
   });
   if (!res.ok) {
-    console.error("[email] Resend failed", res.status, await res.text().catch(() => ""));
+    console.error("[email] Resend failed", res.status);
     throw new Error("Email could not be sent");
   }
 }

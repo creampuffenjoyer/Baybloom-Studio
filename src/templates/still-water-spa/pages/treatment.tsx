@@ -1,11 +1,16 @@
+"use client";
+
+import { useStillWater } from "../language";
+
 import Image from "next/image";
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { notFound } from "next/navigation";
 import { formatMoney } from "../../_kit/dates";
-import { RITUALS, photo, treatments } from "../content";
+import { RITUALS, photo } from "../content";
 import { href, pebbles } from "../site";
 
 export function TreatmentPage({ slug }: { slug: string }) {
+  const { treatments } = useStillWater();
   const t = treatments.find((x) => x.slug === slug);
   if (!t) notFound();
   const p = photo(t.photo);

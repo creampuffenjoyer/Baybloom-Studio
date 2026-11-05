@@ -52,7 +52,6 @@ export function DesignCard({
           priority={priority}
           className="object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/35 via-transparent to-transparent" />
 
         <div className="absolute top-3 left-3 flex gap-2">
           {design.topTier && <TierBadge level={design.topTier} />}

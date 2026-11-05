@@ -1,12 +1,17 @@
+"use client";
+
+import { useBloomfield } from "../language";
+
 import Image from "next/image";
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { notFound } from "next/navigation";
 import { Sprig } from "../components/sprig";
-import { photo, spaces } from "../content";
+
 import { href } from "../site";
 import { Capacities } from "./spaces";
 
 export function SpacePage({ slug }: { slug: string }) {
+  const { photo, spaces } = useBloomfield();
   const s = spaces.find((x) => x.slug === slug);
   if (!s) notFound();
   const [hero, ...rest] = s.photos.map(photo);

@@ -1,28 +1,21 @@
 import "server-only";
+import { createHash } from "node:crypto";
+import type { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 
-/**
- * Fixed-window rate limiter kept in process memory.
- *
- * Good enough for a single dev server and as a first line of defence, but on
- * Vercel each function instance has its own memory, so swap this for a shared
- * store (e.g. Upstash Redis) before launch.
- */
-const buckets = new Map<string, { count: number; resetAt: number }>();
-
-export function rateLimit(key: string, limit: number, windowMs: number) {
-  const now = Date.now();
-  const bucket = buckets.get(key);
-
-  if (!bucket || bucket.resetAt <= now) {
-    buckets.set(key, { count: 1, resetAt: now + windowMs });
-    if (buckets.size > 10_000) {
-      for (const [k, b] of buckets) if (b.resetAt <= now) buckets.delete(k);
-    }
-    return { ok: true, retryAfterMs: 0 };
-  }
-
-  bucket.count += 1;
-  return bucket.count <= limit
-    ? { ok: true, retryAfterMs: 0 }
-    : { ok: false, retryAfterMs: bucket.resetAt - now };
+/** Shared fixed windows. Database failures propagate: never fail open. */
+export async function rateLimit(key: string, limit: number, windowMs: number, client: PrismaClient = db) {
+  const digest = createHash("sha256").update(key).digest("hex");
+  const [bucket] = await client.$queryRaw<{ count: number; retryAfterMs: number }[]>`
+    INSERT INTO "RateLimitBucket" ("key", "count", "resetAt")
+    VALUES (${digest}, 1, clock_timestamp() + ${windowMs} * interval '1 millisecond')
+    ON CONFLICT ("key") DO UPDATE SET
+      "count" = CASE WHEN "RateLimitBucket"."resetAt" <= clock_timestamp() THEN 1
+        ELSE LEAST("RateLimitBucket"."count" + 1, ${limit + 1}) END,
+      "resetAt" = CASE WHEN "RateLimitBucket"."resetAt" <= clock_timestamp()
+        THEN clock_timestamp() + ${windowMs} * interval '1 millisecond'
+        ELSE "RateLimitBucket"."resetAt" END
+    RETURNING "count", GREATEST(0, EXTRACT(EPOCH FROM ("resetAt" - clock_timestamp())) * 1000)::int AS "retryAfterMs"
+  `;
+  return { ok: bucket.count <= limit, retryAfterMs: bucket.count <= limit ? 0 : bucket.retryAfterMs };
 }

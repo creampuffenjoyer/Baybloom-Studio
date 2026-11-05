@@ -1,11 +1,14 @@
+"use client";
+import { usePine } from "../language";
 import { RentalForm } from "../components/rental-form";
-import { site } from "../site";
+
 
 export function ContactPage() {
+  const { t, site } = usePine();
   return (
     <div className="mx-auto grid max-w-7xl gap-14 px-5 pt-14 sm:px-8 lg:grid-cols-[1fr_1.5fr]">
       <div>
-        <h1 className="font-tpl-display text-5xl font-bold sm:text-6xl">Contact</h1>
+        <h1 className="font-tpl-display text-5xl font-bold sm:text-6xl">{t("Contact")}</h1>
         <address className="mt-6 text-lg leading-relaxed not-italic">
           {site.address.map((l) => (
             <span key={l} className="block">
@@ -22,19 +25,14 @@ export function ContactPage() {
         </p>
         <div className="mt-8 space-y-3 text-tpl-muted">
           <p>
-            <strong className="text-tpl-ink">Driving:</strong> 2 hours from Kelowna airport. Winter tyres or chains are required
-            on the valley road from October to April.
-          </p>
+            <strong className="text-tpl-ink">{t("Driving:")}</strong>{" "}{t("2 hours from Kelowna airport. Winter tyres or chains are required on the valley road from October to April.")}</p>
           <p>
-            <strong className="text-tpl-ink">Shuttle:</strong> we collect from the Whitebark village bus stop twice a day.
-          </p>
+            <strong className="text-tpl-ink">{t("Shuttle:")}</strong>{" "}{t("we collect from the Whitebark village bus stop twice a day.")}</p>
         </div>
       </div>
       <section aria-labelledby="rent">
-        <h2 id="rent" className="font-tpl-display text-3xl font-bold">
-          Gear rental and guides
-        </h2>
-        <p className="mt-2 mb-6 text-tpl-muted">Tell us what you need and we’ll have it ready when you arrive.</p>
+        <h2 id="rent" className="font-tpl-display text-3xl font-bold">{t("Gear rental and guides")}</h2>
+        <p className="mt-2 mb-6 text-tpl-muted">{t("Try a sample request for gear or a guide. Contact details and travel information are illustrative.")}</p>
         <RentalForm />
       </section>
     </div>

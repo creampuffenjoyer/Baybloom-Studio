@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { useState } from "react";
 import { Calendar } from "../../_kit/calendar";
 import { formatLong, type Day } from "../../_kit/dates";
@@ -29,19 +29,19 @@ export function DateCheck({ dark = false }: { dark?: boolean }) {
       <div aria-live="polite">
         {day ? (
           <>
-            <p className="font-tpl-display text-4xl italic leading-tight">{formatLong(day)} is free.</p>
+            <p className="font-tpl-display text-4xl italic leading-tight">Sample date: {formatLong(day)}.</p>
             <p className={`mt-3 max-w-[40ch] ${dark ? "text-tpl-on-deep/75" : "text-tpl-muted"}`}>
-              We can hold it for you for seven days, no deposit needed, while you come and see the estate.
+              This calendar shows sample availability. It does not check or hold a real date.
             </p>
             <Link href={`${href("/inquire")}?date=${day}`} className="mt-6 inline-block rounded-full bg-tpl-accent px-6 py-3 text-tpl-on-accent">
-              Hold this date
+              Plan a sample inquiry
             </Link>
           </>
         ) : (
           <>
             <p className="font-tpl-display text-4xl italic leading-tight">Is your date free?</p>
             <p className={`mt-3 max-w-[40ch] ${dark ? "text-tpl-on-deep/75" : "text-tpl-muted"}`}>
-              Pick a day to check. Crossed-out days are already taken; Saturdays in the dry season go first.
+              Pick a day to explore sample availability. Crossed-out dates are illustrative.
             </p>
           </>
         )}

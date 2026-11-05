@@ -1,9 +1,15 @@
+"use client";
+
+import { useBloomfield } from "../language";
+
 import Image from "next/image";
-import Link from "next/link";
-import { photo, spaces } from "../content";
+import { LocalLink as Link } from "../language";
+
 import { href } from "../site";
+import { SpaceFinder } from "../components/space-finder";
 
 export function SpacesPage() {
+  const { photo, spaces } = useBloomfield();
   return (
     <>
       <section className="mx-auto max-w-7xl px-5 pt-14 pb-10 text-center sm:px-8">
@@ -13,6 +19,7 @@ export function SpacesPage() {
           one for dancing.
         </p>
       </section>
+      <SpaceFinder />
       <div className="mx-auto max-w-7xl space-y-24 px-5 py-12 sm:px-8">
         {spaces.map((s, i) => {
           const [a, b] = s.photos.map(photo);
@@ -46,7 +53,7 @@ export function SpacesPage() {
   );
 }
 
-export function Capacities({ space }: { space: (typeof spaces)[number] }) {
+export function Capacities({ space }: { space: import("../content").Space }) {
   const rows = [
     ["Ceremony", space.ceremony],
     ["Seated dinner", space.dinner],

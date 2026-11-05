@@ -1,5 +1,8 @@
+"use client";
+
+import { useIsla } from "../language";
+
 import Image from "next/image";
-import { photo } from "../content";
 import { arch } from "../site";
 
 const chapters = [
@@ -11,26 +14,24 @@ const chapters = [
 ];
 
 export function StoryPage() {
+  const { t, photo } = useIsla();
   return (
     <>
       <section className="mx-auto grid max-w-7xl gap-12 px-5 pt-16 sm:px-8 lg:grid-cols-[1.2fr_1fr] lg:items-end">
         <div className="lg:pb-12">
-          <h1 className="font-tpl-display text-6xl leading-[0.98] italic sm:text-8xl">The story of the house</h1>
-          <p className="mt-8 max-w-[52ch] text-lg leading-relaxed text-tpl-muted">
-            Vigan’s old houses are built in two halves: stone below to stand up to earthquakes, wood above to
-            breathe in the heat. Ours has stood for more than 130 years.
-          </p>
+          <h1 className="font-tpl-display text-6xl leading-[0.98] italic sm:text-8xl">{t("The story of the house")}</h1>
+          <p className="mt-8 max-w-[52ch] text-lg leading-relaxed text-tpl-muted">{t("Vigan’s old houses are built in two halves: stone below to stand up to earthquakes, wood above to breathe in the heat. Ours has stood for more than 130 years.")}</p>
         </div>
         <div className={`relative aspect-[3/4] overflow-hidden ${arch}`}>
           <Image src={photo("facade").src} alt={photo("facade").alt} fill priority sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
         </div>
       </section>
-      <section aria-label="Timeline" className="mx-auto max-w-4xl px-5 py-24 sm:px-8">
+      <section aria-label={t("Timeline")} className="mx-auto max-w-4xl px-5 py-24 sm:px-8">
         <ol className="space-y-14">
           {chapters.map((c) => (
             <li key={c.year} className="grid gap-4 sm:grid-cols-[180px_1fr]">
               <span className="font-tpl-display text-6xl text-tpl-alt italic">{c.year}</span>
-              <p className="pt-2 font-tpl-display text-2xl leading-snug">{c.text}</p>
+              <p className="pt-2 font-tpl-display text-2xl leading-snug">{t(c.text)}</p>
             </li>
           ))}
         </ol>
@@ -42,6 +43,8 @@ export function StoryPage() {
           </div>
         ))}
       </div>
+      <StayFinder />
     </>
   );
 }
+import { StayFinder } from "../components/stay-finder";

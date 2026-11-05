@@ -12,6 +12,7 @@ export type Villa = {
   price: number;
   size: number;
   maxGuests: number;
+  pool: "private" | "shared" | "none";
   beds: string;
   view: string;
   photos: PhotoKey[];
@@ -30,6 +31,7 @@ export const villas: Villa[] = [
     price: 32000,
     size: 110,
     maxGuests: 2,
+    pool: "private",
     beds: "1 king bed",
     view: "Open lagoon",
     photos: ["overwater-row", "boardwalk", "plunge-pool", "jetty"],
@@ -46,6 +48,7 @@ export const villas: Villa[] = [
     price: 18500,
     size: 85,
     maxGuests: 3,
+    pool: "private",
     beds: "1 king bed + day bed",
     view: "Private garden",
     photos: ["bedroom", "pool-edge", "palms-dusk"],
@@ -62,6 +65,7 @@ export const villas: Villa[] = [
     price: 14800,
     size: 48,
     maxGuests: 2,
+    pool: "none",
     beds: "1 queen bed",
     view: "Beach and sunset",
     photos: ["villas-row", "bedroom-2", "sunset"],
@@ -78,6 +82,7 @@ export const villas: Villa[] = [
     price: 26500,
     size: 140,
     maxGuests: 5,
+    pool: "shared",
     beds: "1 king + 2 singles",
     view: "Pool and lagoon",
     photos: ["pool", "aerial-villa", "pool-edge"],

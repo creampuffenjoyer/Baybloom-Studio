@@ -1,9 +1,10 @@
 "use client";
+import { usePine, LocalLink as Link } from "../language";
 
-import Link from "next/link";
+
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { href, nav } from "../site";
+import { href } from "../site";
 
 /** Three pine peaks. */
 function Mark() {
@@ -17,17 +18,18 @@ function Mark() {
 }
 
 export function Header() {
+  const { t, nav } = usePine();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   return (
     <header className="relative z-40 bg-tpl-deep text-tpl-on-deep">
-      <div className="mx-auto flex h-18 max-w-7xl items-center gap-8 px-5 sm:px-8">
+      <div className="mx-auto flex h-18 max-w-7xl items-center gap-3 sm:gap-8 px-5 sm:px-8">
         <Link href={href("/")} onClick={() => setOpen(false)} className="flex items-center gap-3">
           <Mark />
           <span className="font-tpl-display text-2xl font-bold">Pine Ridge</span>
         </Link>
-        <nav aria-label="Main" className="ml-auto hidden items-center gap-7 lg:flex">
+        <nav aria-label={t("Main")} className="ml-auto hidden items-center gap-7 lg:flex">
           {nav.map((item) => {
             const active = pathname.startsWith(href(item.href));
             return (
@@ -37,25 +39,23 @@ export function Header() {
                 aria-current={active ? "page" : undefined}
                 className={`font-medium ${active ? "text-tpl-accent" : "text-tpl-on-deep/85 hover:text-tpl-on-deep"}`}
               >
-                {item.label}
+                {t(item.label)}
               </Link>
             );
           })}
         </nav>
-        <Link href={href("/book")} className="ml-auto rounded-md bg-tpl-accent px-5 py-2.5 font-bold text-tpl-on-accent lg:ml-0">
-          Book
-        </Link>
-        <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="pr-menu" className="font-medium lg:hidden">
-          {open ? "Close" : "Menu"}
+        <Link href={href("/book")} className="ml-auto hidden sm:block rounded-md bg-tpl-accent px-5 py-2.5 font-bold text-tpl-on-accent lg:ml-0">{t("Book")}</Link>
+        <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="pr-menu" className="ml-auto min-h-11 px-2 font-medium lg:hidden">
+          {open ? t("Close") : t("Menu")}
         </button>
       </div>
       {open && (
-        <nav id="pr-menu" aria-label="Mobile" className="absolute inset-x-0 top-18 bg-tpl-deep px-5 pb-8 lg:hidden">
+        <nav id="pr-menu" aria-label={t("Mobile")} className="absolute inset-x-0 top-18 bg-tpl-deep px-5 pb-8 lg:hidden">
           <ul className="border-t border-white/15">
-            {[{ href: "/", label: "Home" }, ...nav].map((i) => (
+            {[{ href: "/", label: "Home" }, ...nav, { href: "/book", label: "Plan a stay" }].map((i) => (
               <li key={i.href}>
                 <Link href={href(i.href)} onClick={() => setOpen(false)} className="block border-b border-white/10 py-3 font-tpl-display text-2xl">
-                  {i.label}
+                  {t(i.label)}
                 </Link>
               </li>
             ))}

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { LocalLink as Link } from "../language";
 import { formatMoney } from "../../_kit/dates";
 import { memberships, packages, photo } from "../content";
 import { href, pebbles } from "../site";

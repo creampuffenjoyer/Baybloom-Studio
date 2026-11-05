@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Shell } from "@/templates/coral-cove/shell";
-import { DemoBar } from "../demo-bar";
+import { Suspense } from "react";
+import { PreviewChrome } from "./preview-chrome";
 
 export const metadata: Metadata = {
   title: { default: "Coral Cove · Barefoot island resort, Palawan", template: "%s · Coral Cove" },
@@ -9,9 +10,11 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
+    <>
+    <Suspense><PreviewChrome /></Suspense>
     <Shell>
       {children}
-      <DemoBar slug="coral-cove" title="Coral Cove" />
     </Shell>
+    </>
   );
 }

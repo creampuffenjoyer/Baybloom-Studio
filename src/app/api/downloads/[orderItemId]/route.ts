@@ -11,7 +11,7 @@ import { signedDownloadUrl } from "@/lib/storage";
 export async function GET(request: Request, { params }: RouteContext<"/api/downloads/[orderItemId]">) {
   const user = await getCurrentUser();
   if (!user) return Response.json({ error: "Please log in." }, { status: 401 });
-  if (!rateLimit(`download:${user.id}`, 60, 60 * 60_000).ok) {
+  if (!(await rateLimit(`download:${user.id}`, 60, 60 * 60_000)).ok) {
     return Response.json({ error: "Too many downloads. Please try again later." }, { status: 429 });
   }
 

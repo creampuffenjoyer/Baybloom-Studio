@@ -105,9 +105,9 @@ export const experiences: Experience[] = [
   { slug: "sauna", name: "Sauna and swim", when: "Daily, 16:00–22:00", price: "SEK 450 per session", text: "Heat in the cedar sauna, then a slow walk down the steps into the lake. Repeat until it’s time for dinner.", photo: "sauna-modern" },
 ];
 
-export const tourScenes: { id: string; name: string; photo: PhotoKey }[] = [
-  { id: "jetty", name: "The jetties", photo: "jetties" },
-  { id: "shore", name: "The shore", photo: "town" },
-  { id: "sauna", name: "The sauna", photo: "sauna-modern" },
-  { id: "boathouse", name: "The Boathouse", photo: "bathhouse" },
+export const tourScenes: { id: string; name: string; photo: PhotoKey; villa: string }[] = [
+  { id: "jetty", name: "The jetties", photo: "jetties", villa: "shore-villa" },
+  { id: "shore", name: "The shore", photo: "town", villa: "garden-villa" },
+  { id: "sauna", name: "The sauna", photo: "sauna-modern", villa: "family-villa" },
+  { id: "boathouse", name: "The Boathouse", photo: "bathhouse", villa: "boathouse" },
 ];

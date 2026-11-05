@@ -14,7 +14,7 @@ export function InquiryForm() {
       <div role="status" className="border border-tpl-accent p-8">
         <p className="font-tpl-display text-4xl">Thank you.</p>
         <p className="mt-3 text-tpl-muted">
-          Our events manager will reply within one working day with menus and a quote.
+          This was a sample inquiry. No message was sent and no reply is scheduled.
         </p>
         <button type="button" onClick={reset} className="mt-6 text-tpl-accent underline underline-offset-4">
           Send another inquiry
@@ -25,6 +25,7 @@ export function InquiryForm() {
 
   return (
     <form onSubmit={formHandler(submit)} className="grid gap-5 sm:grid-cols-2">
+      <p className="text-sm text-tpl-muted sm:col-span-2">Sample inquiry only. Nothing will be sent.</p>
       <label className="block">
         Name
         <input name="name" required autoComplete="name" className={input} />

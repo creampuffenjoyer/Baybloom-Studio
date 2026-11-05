@@ -1,3 +1,6 @@
+"use client";
+import { Suspense } from "react";
+import { LanguageProvider, LanguagePicker, useCoral } from "./language";
 import { themeStyle } from "../_kit/theme";
 import { body, display } from "./fonts";
 import { theme } from "./site";
@@ -6,6 +9,10 @@ import { Footer } from "./components/footer";
 
 /** Wraps every Coral Cove page: theme, fonts, header and footer. */
 export function Shell({ children }: { children: React.ReactNode }) {
+  return <Suspense fallback={<p role="status">Loading / Naglo-load…</p>}><LanguageProvider><ShellContent>{children}</ShellContent></LanguageProvider></Suspense>;
+}
+function ShellContent({ children }: { children: React.ReactNode }) {
+  const { t } = useCoral();
   return (
     <div
       data-template="coral-cove"
@@ -16,8 +23,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
         href="#content"
         className="sr-only z-[60] rounded-full bg-tpl-ink px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
       >
-        Skip to content
+        {t("Skip to content")}
       </a>
+      <LanguagePicker />
       <Header />
       <main id="content" className="flex-1">
         {children}

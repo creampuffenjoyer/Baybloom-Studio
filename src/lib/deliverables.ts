@@ -1,5 +1,5 @@
 import "server-only";
-import type { TierLevel } from "@prisma/client";
+import type { PrismaClient, TierLevel } from "@prisma/client";
 import { db } from "@/lib/db";
 import { tierRank } from "@/lib/cart";
 
@@ -41,13 +41,13 @@ export async function getDownloadsForOrder(userId: string, orderId: string) {
 }
 
 /** Ownership + payment + tier check for a single download. */
-export async function authorizeDownload(userId: string, orderItemId: string, fileId: string) {
-  const item = await db.orderItem.findFirst({
+export async function authorizeDownload(userId: string, orderItemId: string, fileId: string, client: PrismaClient = db) {
+  const item = await client.orderItem.findFirst({
     where: { id: orderItemId, order: { userId, status: "PAID" } },
     select: { designId: true, tier: { select: { level: true } } },
   });
   if (!item) return null;
-  const file = await db.deliverableFile.findFirst({
+  const file = await client.deliverableFile.findFirst({
     where: { id: fileId, designId: item.designId },
     select: { id: true, name: true, storageKey: true, sizeBytes: true, minTier: { select: { level: true } } },
   });
