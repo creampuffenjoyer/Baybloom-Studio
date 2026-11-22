@@ -13,12 +13,6 @@ enum Role {
   ADMIN
 }
 
-enum ProductType {
-  WEBSITE
-  ARCHITECTURE
-  INTERIOR
-}
-
 enum DesignStatus {
   DRAFT
   PUBLISHED
@@ -32,10 +26,9 @@ enum TierLevel {
 }
 
 enum ImageKind {
-  PHOTO // exterior, room, pool, dining, detail
-  RENDER // illustrative render-style sample
-  PLAN // floor / site plan preview
-  MOCKUP // shown inside a device frame for website designs
+  PHOTO // photography used by the template
+  MOCKUP // shown inside a device frame
+  SCREENSHOT // captured from the live demo
 }
 
 enum OrderStatus {
@@ -53,21 +46,75 @@ enum TokenType {
 // ─── Users & auth ────────────────────────────────────────────────────────────
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  image         String?
-  passwordHash  String?
-  role          Role      @default(CLIENT)
-  emailVerified DateTime?
-  disabled      Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  name               String?
+  image              String?
+  passwordHash       String?
+  role               Role      @default(CLIENT)
+  emailVerified      DateTime?
+  disabled           Boolean   @default(false)
+  /// Sessions issued before this moment are rejected (set on password change/reset).
+  sessionsValidAfter DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  // Billing details, used to pre-fill checkout and on invoices
+  phone        String?
+  company      String?
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  region       String?
+  postalCode   String?
+  country      String  @default("PH")
 
   accounts  Account[]
   favorites Favorite[]
   cartItems CartItem[]
   orders    Order[]
+  personalizationDrafts PersonalizationDraft[]
+  mfa MfaCredential?
+}
+
+model MfaCredential {
+  userId String @id
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  secret String?
+  enabledAt DateTime?
+  pendingSecret String?
+  pendingExpiresAt DateTime?
+  recoveryHashes String[] @default([])
+  lastStep Int @default(-1)
+  version Int @default(0)
+}
+
+/// One saved pilot draft per account and template.
+model PersonalizationDraft {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  template  String
+  content   Json
+  /// One normalized pilot hero image, private to the owning account.
+  heroImage Bytes?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  images    PersonalizationDraftImage[]
+
+  @@unique([userId, template])
+}
+
+/// Private, normalized images attached to named slots in a draft.
+model PersonalizationDraftImage {
+  id        String   @id @default(cuid())
+  draft     PersonalizationDraft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  draftId   String
+  slot      String
+  image     Bytes
+  updatedAt DateTime @updatedAt
+
+  @@unique([draftId, slot])
 }
 
 /// OAuth identities (e.g. Google) linked to a user.
@@ -119,7 +166,6 @@ model Design {
   title        String
   summary      String
   description  String
-  type         ProductType
   status       DesignStatus @default(DRAFT)
   featured     Boolean      @default(false)
   category     Category     @relation(fields: [categoryId], references: [id])
@@ -145,7 +191,7 @@ model Design {
   orderItems OrderItem[]
   files      DeliverableFile[]
 
-  @@index([status, type])
+  @@index([status])
   @@index([categoryId])
 }
 
@@ -189,28 +235,24 @@ model Tier {
 
 /// An add-on with no designId applies to every design (e.g. hosting setup).
 model Addon {
-  id           String        @id @default(cuid())
-  design       Design?       @relation(fields: [designId], references: [id], onDelete: Cascade)
-  designId     String?
-  name         String
-  description  String?
-  priceCents   Int
-  currency     String        @default("PHP")
-  active       Boolean       @default(true)
-  /// Only offered for these product types (empty = all).
-  productTypes ProductType[]
+  id          String  @id @default(cuid())
+  design      Design? @relation(fields: [designId], references: [id], onDelete: Cascade)
+  designId    String?
+  name        String
+  description String?
+  priceCents  Int
+  currency    String  @default("PHP")
+  active      Boolean @default(true)
 
   @@index([designId])
 }
 
 model Feature {
-  id        String          @id @default(cuid())
-  name      String          @unique
-  slug      String          @unique
-  group     String // e.g. "Booking", "Marketing", "Drawings"
-  /// Which product types this feature applies to.
-  appliesTo ProductType[]
-  designs   DesignFeature[]
+  id      String          @id @default(cuid())
+  name    String          @unique
+  slug    String          @unique
+  group   String // e.g. "Booking", "Content", "Marketing"
+  designs DesignFeature[]
 }
 
 model DesignFeature {
@@ -268,23 +310,55 @@ model CartItem {
 // ─── Commerce ────────────────────────────────────────────────────────────────
 
 model Order {
-  id            String      @id @default(cuid())
-  user          User        @relation(fields: [userId], references: [id])
-  userId        String
-  status        OrderStatus @default(PENDING)
-  subtotalCents Int
-  discountCents Int         @default(0)
-  totalCents    Int
-  currency      String
-  paymentRef    String?     @unique // Stripe Checkout session id
-  couponCode    String?
-  paidAt        DateTime?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  items         OrderItem[]
+  id                 String      @id @default(cuid())
+  user               User        @relation(fields: [userId], references: [id])
+  userId             String
+  status             OrderStatus @default(PENDING)
+  subtotalCents      Int
+  discountCents      Int         @default(0)
+  totalCents         Int
+  currency           String
+  paymentRef         String?     @unique // Stripe Checkout session id
+  /// Stable cart snapshot key; cleared only after a confirmed terminal failure.
+  checkoutKey        String?     @unique
+  checkoutExpiresAt  DateTime?
+  /// Immutable Stripe request, reused after network/process failures.
+  checkoutParameters Json?
+  couponReserved     Boolean     @default(false)
+  couponCode         String?
+  paidAt             DateTime?
+  /// Stripe-hosted receipt for the charge
+  receiptUrl         String?
+  /// Billing details as they were at checkout
+  billing            Json?
+  /// Set once the confirmation email has gone out (webhook retries are idempotent)
+  confirmationSentAt DateTime?
+  confirmationNextAt DateTime?
+  confirmationAttempts Int @default(0)
+  confirmationLeaseUntil DateTime?
+  confirmationLeaseToken String?
+  confirmationPayload Json?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  items              OrderItem[]
+  checkoutRequests   CheckoutRequest[]
 
   @@index([userId, createdAt])
   @@index([status])
+  @@index([couponCode, couponReserved])
+  @@index([status, checkoutExpiresAt])
+  @@index([status, confirmationNextAt])
+}
+
+/// Client retry keys are scoped to the authenticated buyer, never trusted as ownership.
+model CheckoutRequest {
+  userId    String
+  key       String
+  orderId   String
+  order     Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  @@id([userId, key])
+  @@index([orderId])
 }
 
 model OrderItem {
@@ -301,8 +375,72 @@ model OrderItem {
   priceCents  Int
   /// [{ id, name, priceCents }]
   addons      Json   @default("[]")
+  personalization OrderPersonalization?
+  delivery OrderDelivery?
 
   @@index([orderId])
+}
+
+/// A copy of the saved design at checkout, independent of later draft edits.
+model OrderPersonalization {
+  orderItemId String @id
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  template String
+  content Json
+  heroImage Bytes?
+  /// Null only for pre-Phase-2 prototype snapshots; never infer a release for them.
+  sourceReleaseId String?
+  sourceRelease TemplateRelease? @relation(fields: [sourceReleaseId], references: [sha256], onDelete: Restrict)
+  formatVersion Int?
+  snapshotSha256 String?
+  mode String @default("SAVED_DRAFT")
+  imageRightsConfirmedAt DateTime?
+  images OrderPersonalizationImage[]
+}
+
+/// Trusted source bytes retained independently of catalog files and active releases.
+model TemplateRelease {
+  sha256 String @id
+  template String
+  templateVersion String
+  contentVersion Int
+  archive Bytes
+  createdAt DateTime @default(now())
+  purchases OrderPersonalization[]
+  active ActiveTemplateRelease[]
+}
+
+model ActiveTemplateRelease {
+  template String @id
+  releaseId String
+  release TemplateRelease @relation(fields: [releaseId], references: [sha256], onDelete: Restrict)
+}
+
+/// Checkout creates this job; workers can claim it only after payment is confirmed.
+model OrderDelivery {
+  orderItemId String @id
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  artifact Bytes?
+  artifactStorageKey String?
+  artifactSha256 String?
+  readyAt DateTime?
+  attempts Int @default(0)
+  nextAt DateTime? @default(now())
+  leaseUntil DateTime?
+  leaseToken String?
+  lastError String?
+
+  @@index([nextAt])
+}
+
+model OrderPersonalizationImage {
+  id String @id @default(cuid())
+  orderItemId String
+  personalization OrderPersonalization @relation(fields: [orderItemId], references: [orderItemId], onDelete: Cascade)
+  slot String
+  image Bytes
+
+  @@unique([orderItemId, slot])
 }
 
 model Coupon {
@@ -316,4 +454,12 @@ model Coupon {
   expiresAt        DateTime?
   active           Boolean   @default(true)
   createdAt        DateTime  @default(now())
+}
+
+model RateLimitBucket {
+  key String @id
+  count Int
+  resetAt DateTime
+
+  @@index([resetAt])
 }

@@ -7,6 +7,8 @@ import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { loginSchema } from "@/lib/validators";
 import { rateLimit } from "@/lib/rate-limit";
+import { authorizeGoogleAccount } from "@/lib/google-account";
+import { consumeMfaCode, MfaError } from "@/lib/mfa";
 
 class RateLimited extends CredentialsSignin {
   code = "rate_limited";
@@ -24,11 +26,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   // Credentials sign-in requires JWT sessions; the jwt callback below still
   // re-checks the database so disabling a client takes effect immediately.
   session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 },
-  pages: { signIn: "/login" },
+  pages: { signIn: "/login", error: "/login" },
   providers: [
     Credentials({
       credentials: { email: {}, password: {} },
       async authorize(raw) {
+        const authStartedAt = Date.now();
         const parsed = loginSchema.safeParse(raw);
         if (!parsed.success) return null;
         const { email, password } = parsed.data;
@@ -37,8 +40,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ??
           "local";
         if (
-          !rateLimit(`login:ip:${ip}`, 20, 15 * 60_000).ok ||
-          !rateLimit(`login:email:${email}`, 8, 15 * 60_000).ok
+          !(await rateLimit(`login:ip:${ip}`, 20, 15 * 60_000)).ok ||
+          !(await rateLimit(`login:email:${email}`, 8, 15 * 60_000)).ok
         ) {
           throw new RateLimited();
         }
@@ -46,8 +49,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const user = await db.user.findUnique({ where: { email } });
         const ok = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
         if (!user || !user.passwordHash || !ok || user.disabled) return null;
-
-        return { id: user.id, email: user.email, name: user.name, role: user.role };
+        let mfaVersion: number | undefined;
+        if (user.role === "ADMIN") {
+          const factor = await db.mfaCredential.findUnique({ where: { userId: user.id } });
+          if (factor?.enabledAt) {
+            try { mfaVersion = await consumeMfaCode(user.id, parsed.data.code ?? "", db, authStartedAt); }
+            catch (error) { if (error instanceof MfaError) return null; throw error; }
+          }
+        }
+        return { id: user.id, email: user.email, name: user.name, role: user.role, mfaVersion, authStartedAt };
       },
     }),
     ...(googleEnabled ? [Google] : []),
@@ -56,41 +66,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async signIn({ account, profile }) {
       if (account?.provider !== "google") return true;
       if (!profile?.email || profile.email_verified !== true) return false;
+      // Administrative sessions use password + our enrolled factor. Provider
+      // claims alone cannot establish that this application's MFA was completed.
+      const administrative = await db.user.findUnique({ where: { email: profile.email.trim().toLowerCase() }, select: { role: true } });
+      if (administrative?.role === "ADMIN") return false;
 
-      const email = profile.email.toLowerCase();
-      const existing = await db.user.findUnique({
-        where: { email },
-        include: { accounts: true },
+      return authorizeGoogleAccount({
+        subject: account.providerAccountId, email: profile.email, name: profile.name,
+        image: typeof profile.picture === "string" ? profile.picture : null,
+      }, db, async () => {
+        const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
+        const email = profile.email!.trim().toLowerCase();
+        return (await rateLimit(`register:${ip}`, 5, 60 * 60_000)).ok &&
+          (await rateLimit(`register:email:${email}`, 3, 60 * 60_000)).ok &&
+          (await rateLimit("register:global", 100, 60 * 60_000)).ok;
       });
-      if (existing?.disabled) return false;
-
-      const linked = existing?.accounts.some(
-        (a) =>
-          a.provider === "google" && a.providerAccountId === account.providerAccountId,
-      );
-      if (existing && !linked) {
-        // Google has verified this address, so linking is safe.
-        await db.account.create({
-          data: {
-            userId: existing.id,
-            provider: "google",
-            providerAccountId: account.providerAccountId,
-          },
-        });
-      } else if (!existing) {
-        await db.user.create({
-          data: {
-            email,
-            name: profile.name ?? null,
-            image: typeof profile.picture === "string" ? profile.picture : null,
-            emailVerified: new Date(),
-            accounts: {
-              create: { provider: "google", providerAccountId: account.providerAccountId },
-            },
-          },
-        });
-      }
-      return true;
     },
 
     async jwt({ token, user, account }) {
@@ -99,30 +89,50 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const dbUser =
           account.provider === "credentials"
             ? { id: user.id!, role: user.role ?? "CLIENT" }
-            : await db.user.findUnique({
-                where: { email: user.email!.toLowerCase() },
-                select: { id: true, role: true },
-              });
+            : (await db.account.findUnique({
+                where: { provider_providerAccountId: {
+                  provider: "google", providerAccountId: account.providerAccountId,
+                } },
+                select: { user: { select: { id: true, role: true } } },
+              }))?.user;
         if (!dbUser) return null;
         token.uid = dbUser.id;
         token.role = dbUser.role;
-        return token;
+        token.authAt = account.provider === "credentials" ? user.authStartedAt : Date.now();
+        token.mfaVersion = account.provider === "credentials" ? user.mfaVersion : undefined;
       }
 
       if (!token.uid) return null;
       const current = await db.user.findUnique({
         where: { id: token.uid },
-        select: { role: true, disabled: true, name: true },
+        select: { role: true, disabled: true, name: true, email: true, sessionsValidAfter: true },
       });
       if (!current || current.disabled) return null;
+      // A password change or reset signs out sessions that started before it.
+      if (current.sessionsValidAfter && (token.authAt ?? 0) < current.sessionsValidAfter.getTime()) {
+        return null;
+      }
+      token.email = current.email;
       token.role = current.role;
       token.name = current.name;
+      token.mfaPending = false;
+      if (current.role === "ADMIN") {
+        const factor = await db.mfaCredential.findUnique({ where: { userId: token.uid } });
+        if (factor?.enabledAt) {
+          if (!token.mfaVersion || token.mfaVersion !== factor.version) return null;
+        } else {
+          token.role = "CLIENT";
+          token.mfaPending = true;
+        }
+      } else { delete token.mfaVersion; }
       return token;
     },
 
     session({ session, token }) {
       session.user.id = token.uid;
       session.user.role = token.role;
+      session.user.mfaPending = token.mfaPending;
+      session.user.authAt = token.authAt;
       return session;
     },
   },

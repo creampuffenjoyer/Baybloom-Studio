@@ -1,4 +1,5 @@
 import { getDesignBySlug, getDesignPricing } from "@/lib/catalog";
+import { privateResponseHeaders } from "@/lib/request-security";
 
 /** Design detail. Price fields are only added when the request has a session. */
 export async function GET(_request: Request, { params }: RouteContext<"/api/designs/[slug]">) {
@@ -7,5 +8,5 @@ export async function GET(_request: Request, { params }: RouteContext<"/api/desi
   if (!design) return Response.json({ error: "Not found" }, { status: 404 });
 
   const pricing = await getDesignPricing(design.id);
-  return Response.json({ ...design, ...(pricing && { pricing }) });
+  return Response.json({ ...design, ...(pricing && { pricing }) }, { headers: privateResponseHeaders });
 }

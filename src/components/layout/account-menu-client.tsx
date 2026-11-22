@@ -2,8 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOutIcon, UserRoundIcon } from "lucide-react";
-import { signOutAction } from "@/app/(auth)/actions";
+import {
+  GitCompareArrowsIcon,
+  HeartIcon,
+  LogOutIcon,
+  ReceiptTextIcon,
+  UserRoundIcon,
+} from "lucide-react";
+import { signOutAction } from "@/app/(store)/(auth)/actions";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -22,10 +28,10 @@ export function AuthButtons() {
     : pathname;
   return (
     <>
-      <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+      <Button asChild variant="ghost" size="sm" className="h-11 px-4">
         <Link href={loginHref(callback)}>Log in</Link>
       </Button>
-      <Button asChild size="sm" className="rounded-full px-4">
+      <Button asChild size="sm" className="hidden h-11 rounded-lg px-4 sm:inline-flex">
         <Link href={callback ? `/register?callbackUrl=${encodeURIComponent(callback)}` : "/register"}>
           Create account
         </Link>
@@ -47,7 +53,7 @@ export function UserMenu({ name, email }: { name: string | null; email: string |
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="h-9 gap-2 rounded-full pr-3 pl-1"
+          className="h-11 gap-2 rounded-full pr-3 pl-1"
           aria-label="Account menu"
         >
           <span className="grid size-7 place-items-center rounded-full bg-bay text-[11px] font-semibold text-white">
@@ -64,11 +70,19 @@ export function UserMenu({ name, email }: { name: string | null; email: string |
           <span className="block truncate text-xs text-muted-foreground">{email}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/designs">
-            <UserRoundIcon /> Browse designs
-          </Link>
-        </DropdownMenuItem>
+        {[
+          { href: "/account", label: "My account", icon: UserRoundIcon },
+          { href: "/favorites", label: "Favorites", icon: HeartIcon },
+          { href: "/compare", label: "Compare", icon: GitCompareArrowsIcon },
+          { href: "/account/orders", label: "Orders & downloads", icon: ReceiptTextIcon },
+        ].map(({ href, label, icon: Icon }) => (
+          <DropdownMenuItem key={href} asChild>
+            <Link href={href}>
+              <Icon aria-hidden /> {label}
+            </Link>
+          </DropdownMenuItem>
+        ))}
+        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <form action={signOutAction} className="w-full">
             <button type="submit" className="flex w-full items-center gap-2">

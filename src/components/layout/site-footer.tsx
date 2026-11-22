@@ -10,11 +10,13 @@ async function CopyrightYear() {
 
 const COLUMNS = [
   {
-    title: "Catalog",
+    title: "Templates",
     links: [
-      { href: "/designs?type=website", label: "Website designs" },
-      { href: "/designs?type=architecture", label: "Architecture" },
-      { href: "/designs?type=interior", label: "Interior concepts" },
+      { href: "/designs?category=resort", label: "Resorts" },
+      { href: "/designs?category=hotel", label: "Hotels & B&Bs" },
+      { href: "/designs?category=restaurant", label: "Restaurants & cafés" },
+      { href: "/designs?category=spa", label: "Spas & wellness" },
+      { href: "/designs?category=venue", label: "Wedding & event venues" },
     ],
   },
   {
@@ -29,29 +31,29 @@ const COLUMNS = [
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 bg-bay-deep text-white/80">
-      <div className="container-page grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr]">
-        <div className="max-w-sm">
+    <footer className="mt-16 bg-bay-deep text-white/80 sm:mt-24">
+      <div className="container-page grid grid-cols-2 gap-x-6 gap-y-10 py-12 sm:gap-12 sm:py-16 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="col-span-2 max-w-sm md:col-span-1">
           <Logo tone="light" className="text-[15px]" />
           <p className="mt-5 font-serif text-2xl leading-snug text-white">
-            Designs for resorts that bloom.
+            Websites for hospitality brands that bloom.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-white/70">
-            Website templates, villa plans and interior concepts for beach, mountain,
-            lake and eco resorts.
+            Ready-made, fully responsive website templates for resorts, hotels,
+            restaurants, spas and event venues.
           </p>
         </div>
         {COLUMNS.map((col) => (
           <div key={col.title}>
-            <h2 className="font-sans text-xs font-semibold tracking-[0.2em] text-seaglass uppercase">
+            <h2 className="font-sans text-base font-medium tracking-normal text-seaglass">
               {col.title}
             </h2>
-            <ul className="mt-4 space-y-2.5">
+            <ul className="mt-3">
               {col.links.map((l) => (
                 <li key={l.href}>
                   <Link
                     href={l.href}
-                    className="text-sm text-white/80 underline-offset-4 transition-colors hover:text-white hover:underline"
+                    className="inline-flex min-h-11 items-center rounded-sm text-sm text-white/80 underline-offset-4 transition-colors hover:text-white hover:underline"
                   >
                     {l.label}
                   </Link>

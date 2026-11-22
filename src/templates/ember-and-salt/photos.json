@@ -1,0 +1,162 @@
+{
+  "room": {
+    "src": "/templates/ember-and-salt/room.webp",
+    "alt": "Dimly lit dining room with brick walls, warm downlights and timber tables",
+    "width": 1920,
+    "height": 1277,
+    "author": "PattayaPatrol",
+    "source": "https://commons.wikimedia.org/wiki/File:DZ6_0566_A_cozy_dimly_lit_modern_caf%C3%A9_with_wooden_tables_ambient_spotlights_and_leafy_greenery_creating_an_intimate_evening_atmosphere.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "fire-dish": {
+    "src": "/templates/ember-and-salt/fire-dish.webp",
+    "alt": "Roast chicken in a pan beside glowing embers in a wood oven",
+    "width": 1920,
+    "height": 1440,
+    "author": "Zacatillo1",
+    "source": "https://commons.wikimedia.org/wiki/File:Chicken_Wings_made_in_a_Wood-fired_pizza_oven.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "oven": {
+    "src": "/templates/ember-and-salt/oven.webp",
+    "alt": "Chefs working beside a domed brick wood-fired oven",
+    "width": 1920,
+    "height": 1277,
+    "author": "Aaron Landry from Honolulu, HI, USA",
+    "source": "https://commons.wikimedia.org/wiki/File:Oven_at_Punch_Pizza,_Highland_Park,_Saint_Paul_(2198176403).jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "flame": {
+    "src": "/templates/ember-and-salt/flame.webp",
+    "alt": "A single line of flame burning inside a dark domed oven",
+    "width": 1920,
+    "height": 1272,
+    "author": "Imjustmatthew",
+    "source": "https://commons.wikimedia.org/wiki/File:GasPizzaOven.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "flatbread": {
+    "src": "/templates/ember-and-salt/flatbread.webp",
+    "alt": "Blistered flatbread on the oven floor, with coals glowing behind",
+    "width": 1920,
+    "height": 870,
+    "author": "U.S. Department of Agriculture",
+    "source": "https://commons.wikimedia.org/wiki/File:20160805-AMS-LSC-0402.jpg",
+    "license": "Public domain",
+    "licenseUrl": null
+  },
+  "logs": {
+    "src": "/templates/ember-and-salt/logs.webp",
+    "alt": "Logs burning hard in the mouth of a wood-fired oven",
+    "width": 1920,
+    "height": 1280,
+    "author": "Cpl. Royce Dorman",
+    "source": "https://commons.wikimedia.org/wiki/File:Business_as_Usual,_the_English_Networking_Dinner_150327-M-AO893-029.jpg",
+    "license": "Public domain",
+    "licenseUrl": null
+  },
+  "tomahawk": {
+    "src": "/templates/ember-and-salt/tomahawk.webp",
+    "alt": "Charred bone-in ribeye on a plate with grilled courgette",
+    "width": 1920,
+    "height": 1277,
+    "author": "Shixart1985",
+    "source": "https://commons.wikimedia.org/wiki/File:Grilled_steak_served_on_a_plate_with_avocado_and_sauce.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "t-bone": {
+    "src": "/templates/ember-and-salt/t-bone.webp",
+    "alt": "Sliced T-bone steak on a slate with berry sauce and herbs",
+    "width": 1920,
+    "height": 1277,
+    "author": "Shixart1985",
+    "source": "https://commons.wikimedia.org/wiki/File:Steak_served_with_sauce_greens_and_garnishes_on_a_dark_plate.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "fish-plate": {
+    "src": "/templates/ember-and-salt/fish-plate.webp",
+    "alt": "Butterflied grilled fish with lemon, potato and dressed leaves",
+    "width": 1920,
+    "height": 1440,
+    "author": "E4024",
+    "source": "https://commons.wikimedia.org/wiki/File:Seabass_(levrek)_and_a_grilled_potato.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "fish-coals": {
+    "src": "/templates/ember-and-salt/fish-coals.webp",
+    "alt": "Whole fish crisping on a grill over glowing coals",
+    "width": 1920,
+    "height": 1280,
+    "author": "PattayaPatrol",
+    "source": "https://commons.wikimedia.org/wiki/File:DFC_4185_Three_whole_fish_sizzling_over_hot_coals_charred_skin_and_smoky_grill_marks_ready_to_be_served.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "bar": {
+    "src": "/templates/ember-and-salt/bar.webp",
+    "alt": "Long bar with red stools, backlit shelves of bottles and warm lamps",
+    "width": 1920,
+    "height": 1280,
+    "author": "Unknown",
+    "source": "https://commons.wikimedia.org/wiki/File:Casa_Classic_Cocktail_Bar_%26_Jazz_Club_by_Roland_Barrera.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "cocktail": {
+    "src": "/templates/ember-and-salt/cocktail.webp",
+    "alt": "Close-up of a berry cocktail with crushed ice, lime and mint",
+    "width": 1920,
+    "height": 1272,
+    "author": "Shixart1985",
+    "source": "https://commons.wikimedia.org/wiki/File:Colorful_cocktails_with_fresh_ingredients_displayed_on_a_bar_counter.jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "back-room": {
+    "src": "/templates/ember-and-salt/back-room.webp",
+    "alt": "Dark back room with bare filament bulbs and shelves of wine",
+    "width": 1920,
+    "height": 1280,
+    "author": "Wiki Loves Cocktails",
+    "source": "https://commons.wikimedia.org/wiki/File:Velvet_Bar,_Berlin.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "tables": {
+    "src": "/templates/ember-and-salt/tables.webp",
+    "alt": "Two dark wood tables laid with glasses and napkins",
+    "width": 1920,
+    "height": 1080,
+    "author": "George Ho",
+    "source": "https://commons.wikimedia.org/wiki/File:Bistro_Nas_restaurant_one_dining_table_of_four.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "dessert": {
+    "src": "/templates/ember-and-salt/dessert.webp",
+    "alt": "Layered chocolate dessert with ice cream on a slate",
+    "width": 1920,
+    "height": 1440,
+    "author": "Gzen92",
+    "source": "https://commons.wikimedia.org/wiki/File:Restaurant_-_Dessert_(millefeuilles).jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "dessert-2": {
+    "src": "/templates/ember-and-salt/dessert-2.webp",
+    "alt": "Plated dessert with a chocolate tuile and berry coulis on a dark table",
+    "width": 1920,
+    "height": 1280,
+    "author": "Prayitno / Thank you for (12 millions +) view from Los Angeles, USA",
+    "source": "https://commons.wikimedia.org/wiki/File:Dessert_Mango_Sorbet_%26_Chocolate_Musse_Timbal_(8695093975).jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  }
+}

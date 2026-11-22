@@ -1,0 +1,162 @@
+{
+  "pastries": {
+    "src": "/templates/harbor-house/pastries.webp",
+    "alt": "Pastries and a bottle of juice on a round wooden café table",
+    "width": 1920,
+    "height": 1281,
+    "author": "Bahnfrend",
+    "source": "https://commons.wikimedia.org/wiki/File:Pastries_with_coffee,_Roti%27O,_Surabaya_Pasarturi,_2025_(01).jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "breakfast": {
+    "src": "/templates/harbor-house/breakfast.webp",
+    "alt": "Breakfast of croissants, milky coffee and orange juice on a dark table",
+    "width": 1920,
+    "height": 1446,
+    "author": "Andy Li",
+    "source": "https://commons.wikimedia.org/wiki/File:Breakfast_in_Le_Grand_St_Marc,_Rouen_2025-03-23.jpg",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  },
+  "harbour": {
+    "src": "/templates/harbor-house/harbour.webp",
+    "alt": "Small fishing boats moored in a stone harbour",
+    "width": 1600,
+    "height": 1067,
+    "author": "Kim Fyson",
+    "source": "https://commons.wikimedia.org/wiki/File:Fishing_Boats_in_Seahouses_Harbour_-_geograph.org.uk_-_4138519.jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "cove": {
+    "src": "/templates/harbor-house/cove.webp",
+    "alt": "Colourful rowing boats drawn up on a shingle cove below a grassy hill",
+    "width": 1600,
+    "height": 1202,
+    "author": "Bill Harrison",
+    "source": "https://commons.wikimedia.org/wiki/File:Fishing_boats,_Cove_Bay_harbour_-_geograph.org.uk_-_3516350.jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "harbour-wall": {
+    "src": "/templates/harbor-house/harbour-wall.webp",
+    "alt": "Red and white fishing boats inside a curved harbour wall",
+    "width": 1920,
+    "height": 1433,
+    "author": "Martin Dawes",
+    "source": "https://commons.wikimedia.org/wiki/File:Inshore_fishing_boats_in_St_Abbs_harbour_-_geograph.org.uk_-_6250069.jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "yellow-boat": {
+    "src": "/templates/harbor-house/yellow-boat.webp",
+    "alt": "Yellow fishing boat on the grass above a calm bay",
+    "width": 1920,
+    "height": 1440,
+    "author": "Gordon Hatton",
+    "source": "https://commons.wikimedia.org/wiki/File:Fishing_boat,_Craster_harbour_-_geograph.org.uk_-_4222503.jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "beach": {
+    "src": "/templates/harbor-house/beach.webp",
+    "alt": "Wide sandy beach with gentle waves and wooded hills",
+    "width": 1920,
+    "height": 1275,
+    "author": "Dennis G. Jarvis",
+    "source": "https://commons.wikimedia.org/wiki/File:DGJ_4712_-_Ingonish_Beach_(6333164332).jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "coast-path": {
+    "src": "/templates/harbor-house/coast-path.webp",
+    "alt": "Coastline curving away below a wooded headland",
+    "width": 1920,
+    "height": 1280,
+    "author": "Dennis G. Jarvis",
+    "source": "https://commons.wikimedia.org/wiki/File:Ingonish_Beach_(35744232522).jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "lighthouse": {
+    "src": "/templates/harbor-house/lighthouse.webp",
+    "alt": "White lighthouse and keeper's cottage with a red roof at dusk",
+    "width": 1920,
+    "height": 1372,
+    "author": "Frank Schulenburg",
+    "source": "https://commons.wikimedia.org/wiki/File:Point_Cabrillo_Lighthouse,_on_an_early_morning_in_February.jpg",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "headland": {
+    "src": "/templates/harbor-house/headland.webp",
+    "alt": "Green fields running to the edge of sea cliffs, with a white farmhouse",
+    "width": 1920,
+    "height": 1279,
+    "author": "Superbass",
+    "source": "https://commons.wikimedia.org/wiki/File:2019-07-20-Dingle_Lighthouse-0673.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "cliff-walk": {
+    "src": "/templates/harbor-house/cliff-walk.webp",
+    "alt": "Footpath through grass on a cliff top towards a small lighthouse",
+    "width": 1920,
+    "height": 1280,
+    "author": "Dr Neil Clifton",
+    "source": "https://commons.wikimedia.org/wiki/File:Lizard,_South_West_Coast_Path_and_lighthouse_-_geograph.org.uk_-_1826283.jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  },
+  "room-white": {
+    "src": "/templates/harbor-house/room-white.webp",
+    "alt": "Simple white bedroom with a grey quilt, two bedside tables and floral prints",
+    "width": 1920,
+    "height": 1440,
+    "author": "Mossleegrange",
+    "source": "https://commons.wikimedia.org/wiki/File:Moss_Lee_Grange_Bed_%26_Breakfast_-_Deluxe_Double_En-Suite_Bedroom_1.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "room-beams": {
+    "src": "/templates/harbor-house/room-beams.webp",
+    "alt": "Timber four-poster bed with red drapes under old oak beams",
+    "width": 1920,
+    "height": 1440,
+    "author": "Selmoval",
+    "source": "https://commons.wikimedia.org/wiki/File:Cordes_sur_Ciel_-_Escuelle_des_chevaliers.jpg",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "room-floral": {
+    "src": "/templates/harbor-house/room-floral.webp",
+    "alt": "Bedroom with a rose-print quilt, armchair and red walls",
+    "width": 1920,
+    "height": 1440,
+    "author": "Stefan Krasowski from New York, NY, USA",
+    "source": "https://commons.wikimedia.org/wiki/File:Prince_Edward_Island_004_(7893579634).jpg",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "tray": {
+    "src": "/templates/harbor-house/tray.webp",
+    "alt": "Breakfast tray with toast, eggs and orange juice on a patterned duvet",
+    "width": 1920,
+    "height": 1280,
+    "author": "Toa Heftiba heftiba",
+    "source": "https://commons.wikimedia.org/wiki/File:Barcelona,_Spain_(Unsplash_cVAEJL4rq8Y).jpg",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  },
+  "pillows": {
+    "src": "/templates/harbor-house/pillows.webp",
+    "alt": "Crisp white pillows on a freshly made bed",
+    "width": 1920,
+    "height": 1440,
+    "author": "Counselman Collection from McClure",
+    "source": "https://commons.wikimedia.org/wiki/File:Hotel_%E2%80%93_They_sure_wanted_us_comfortable_(4824811383).jpg",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+  }
+}

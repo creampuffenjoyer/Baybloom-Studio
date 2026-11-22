@@ -1,0 +1,180 @@
+{
+  "harbor-house": {
+    "templateVersion": "1.1.0",
+    "previousVersions": [
+      "1.0.0"
+    ],
+    "contentVersion": 1,
+    "photoCatalog": "house",
+    "photoProperty": "websitePhotos",
+    "additionalImageGroups": [
+      {
+        "prefix": "placement:",
+        "catalog": "harborPlacements",
+        "property": "placementPhotos",
+        "directory": "placements",
+        "templateVersions": [
+          "1.1.0"
+        ]
+      },
+      {
+        "prefix": "",
+        "catalog": "harborRooms",
+        "property": "roomPhotos",
+        "directory": "rooms"
+      }
+    ]
+  },
+  "bloomfield-gardens": {
+    "templateVersion": "1.1.0",
+    "contentVersion": 1,
+    "photoCatalog": "bloom",
+    "photoProperty": "bloomPhotos",
+    "additionalImageGroups": [
+      {
+        "prefix": "placement:",
+        "catalog": "bloomPlacements",
+        "property": "placementPhotos",
+        "directory": "placements",
+        "templateVersions": [
+          "1.1.0"
+        ]
+      }
+    ],
+    "previousVersions": [
+      "1.0.0"
+    ]
+  },
+  "coral-cove": {
+    "templateVersion": "1.1.0",
+    "previousVersions": [
+      "1.0.0"
+    ],
+    "contentVersion": 1,
+    "photoCatalog": "coral",
+    "photoProperty": "websitePhotos",
+    "additionalImageGroups": [
+      {
+        "prefix": "placement:",
+        "catalog": "coralPlacements",
+        "property": "placementPhotos",
+        "directory": "placements",
+        "templateVersions": [
+          "1.1.0"
+        ]
+      },
+      {
+        "prefix": "gallery:",
+        "catalog": "coralGallery",
+        "property": "galleryPhotos",
+        "directory": "gallery"
+      },
+      {
+        "prefix": "",
+        "catalog": "coralVillas",
+        "property": "villaPhotos",
+        "directory": "villas"
+      }
+    ]
+  },
+  "pine-ridge-lodge": {
+    "templateVersion": "1.1.0",
+    "contentVersion": 1,
+    "photoCatalog": "pine",
+    "photoProperty": "pinePhotos",
+    "additionalImageGroups": [
+      {
+        "prefix": "placement:",
+        "catalog": "pinePlacements",
+        "property": "placementPhotos",
+        "directory": "placements",
+        "templateVersions": [
+          "1.1.0"
+        ]
+      }
+    ],
+    "previousVersions": [
+      "1.0.0"
+    ]
+  },
+  "lumen-lake-villas": {
+    "templateVersion": "1.1.0",
+    "contentVersion": 1,
+    "photoCatalog": "lumen",
+    "photoProperty": "lumenPhotos",
+    "additionalImageGroups": [
+      {
+        "prefix": "placement:",
+        "catalog": "lumenPlacements",
+        "property": "placementPhotos",
+        "directory": "placements",
+        "templateVersions": [
+          "1.1.0"
+        ]
+      }
+    ],
+    "previousVersions": [
+      "1.0.0"
+    ]
+  },
+  "isla-verde-boutique": {
+    "templateVersion": "1.1.0",
+    "contentVersion": 1,
+    "photoCatalog": "isla",
+    "photoProperty": "islaPhotos",
+    "additionalImageGroups": [
+      {
+        "prefix": "placement:",
+        "catalog": "islaPlacements",
+        "property": "placementPhotos",
+        "directory": "placements",
+        "templateVersions": [
+          "1.1.0"
+        ]
+      }
+    ],
+    "previousVersions": [
+      "1.0.0"
+    ]
+  },
+  "ember-and-salt": {
+    "templateVersion": "1.1.0",
+    "contentVersion": 1,
+    "photoCatalog": "ember",
+    "photoProperty": "emberPhotos",
+    "additionalImageGroups": [
+      {
+        "prefix": "placement:",
+        "catalog": "emberPlacements",
+        "property": "placementPhotos",
+        "directory": "placements",
+        "templateVersions": [
+          "1.1.0"
+        ]
+      }
+    ],
+    "previousVersions": [
+      "1.0.0"
+    ]
+  },
+  "still-water-spa": {
+    "templateVersion": "1.1.0",
+    "contentVersion": 1,
+    "photoCatalog": "spa",
+    "photoProperty": "spaPhotos",
+    "additionalImageGroups": [
+      {
+        "prefix": "placement:",
+        "catalog": "spaPlacements",
+        "property": "placementPhotos",
+        "directory": "placements",
+        "templateVersions": [
+          "1.1.0"
+        ]
+      }
+    ],
+    "previousVersions": [
+      "1.0.0"
+    ]
+  }
+}

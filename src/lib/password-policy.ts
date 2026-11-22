@@ -1,0 +1,2 @@
+export const MIN_PASSWORD_CHARACTERS = 15;
+export const MAX_PASSWORD_BYTES = 72;
