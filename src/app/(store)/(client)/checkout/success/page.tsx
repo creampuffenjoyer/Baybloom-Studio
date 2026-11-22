@@ -87,6 +87,7 @@ async function Result({ searchParams }: Pick<PageProps<"/checkout/success">, "se
       <p className="mt-3 text-muted-foreground">
         Order {orderRef(order.id)} is confirmed. A receipt is on its way to your inbox.
       </p>
+      <p className="mt-2 text-sm text-muted-foreground">Open your order for downloads and package preparation. Your website content was saved when checkout started.</p>
       <ul className="mx-auto mt-8 max-w-sm divide-y divide-border/70 text-left text-sm">
         {order.items.map((i) => (
           <li key={i.id} className="flex justify-between py-3">
@@ -101,7 +102,7 @@ async function Result({ searchParams }: Pick<PageProps<"/checkout/success">, "se
       </ul>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Button asChild className="rounded-full bg-hibiscus-strong px-6 text-white hover:bg-hibiscus-strong/90">
-          <Link href={`/account/orders/${order.id}`}>Download your files</Link>
+          <Link href={`/account/orders/${order.id}`}>View order &amp; downloads</Link>
         </Button>
         <Button asChild variant="outline" className="rounded-full bg-white">
           <Link href="/designs">Keep browsing</Link>

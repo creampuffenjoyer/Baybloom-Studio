@@ -1,6 +1,6 @@
 "use client";
 import { useCoral, LocalLink as Link } from "../language";
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 
 import { PageIntro } from "../components/page-intro";
 
@@ -26,7 +26,7 @@ export function OffersPage() {
               }`}
             >
               <div className="relative min-h-[280px]">
-                <Image src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 45vw, 100vw" className="object-cover" />
+                <Image placement={`offers.${o.slug}`} src={p.src} unoptimized={(p.src).startsWith("blob:") || (p.src).startsWith("/api/personalization/")} alt={p.alt} fill sizes="(min-width: 768px) 45vw, 100vw" className="object-cover" />
               </div>
               <div className="p-8 sm:p-12">
                 <p className={`font-semibold ${i === 0 ? "text-white/85" : "text-tpl-accent"}`}>{o.name}</p>

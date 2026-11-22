@@ -63,7 +63,7 @@ export function FavoriteButton({
       aria-pressed={optimistic}
       aria-label={optimistic ? `Remove ${title} from favorites` : `Save ${title} to favorites`}
       className={cn(
-        "grid size-10 place-items-center rounded-full bg-white/90 text-ink shadow-sm backdrop-blur transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+        "grid size-11 place-items-center rounded-full bg-white text-ink shadow-sm transition-colors hover:bg-sand focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
         className,
       )}
     >

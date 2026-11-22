@@ -43,8 +43,9 @@ been restored automatically.
 
 ## Dependency patches and remaining advisory triage
 
-Next.js and its ESLint configuration are pinned to 16.4.3, and the application's
-Zod is pinned to 4.6.6. Next.js 16.4.0 is affected by the October 2026 Cache
+Next.js and its ESLint configuration are pinned to 16.4.6, and the application's
+Zod is pinned to 4.6.6. The [November 2026 security release](https://nextjs.org/blog/november-2026-security-release)
+starts at 16.4.5. Next.js 16.4.0 is affected by the October 2026 Cache
 Components RCE and Server Actions DoS advisories; the vendor's patched floor is
 16.4.1. See https://nextjs.org/blog/nextjs-security-update-october-14-2026.
 

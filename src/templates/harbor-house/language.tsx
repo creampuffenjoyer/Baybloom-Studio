@@ -69,10 +69,26 @@ export function useHarbor() {
   return useMemo(() => ({
     language, locale: language === "en" ? "en-PH" : "fil-PH",
     t: (text: string) => translated(text, language),
-    rooms: translateData(content.rooms, language), extras: translateData(content.extras, language),
-    breakfast: translateData(content.breakfast, language), places: translateData(content.places, language),
-    guestbook: translateData(content.guestbook, language), site: { ...translateData(site, language), ...personalization.business }, nav: translateData(nav, language),
-    photo: (key: content.PhotoKey) => ({ ...content.photo(key), alt: translated(content.photo(key).alt, language) }),
+    rooms: translateData(content.rooms, language).map((room) => {
+      const override = personalization.rooms?.[room.slug];
+      return override ? {
+        ...room, name: override.name || room.name, postcard: override.postcard || room.postcard,
+        description: override.description ? [override.description] : room.description,
+        bed: override.bed || room.bed, view: override.view || room.view,
+        little: override.features?.trim() ? override.features.split(/\r?\n/).map((item) => item.trim()).filter(Boolean) : room.little,
+        price: override.price ?? room.price, maxGuests: override.maxGuests ?? room.maxGuests,
+      } : room;
+    }), extras: translateData(content.extras, language),
+    breakfast: translateData(content.breakfast, language).map((section, index) => {
+      const override = index === 0 ? personalization.breakfast?.morning : personalization.breakfast?.advance;
+      return override ? { ...section, title: override.title || section.title, items: override.items ? override.items.split(/\r?\n/).map((item) => item.trim()).filter(Boolean) : section.items } : section;
+    }),
+    places: translateData(content.places, language).map((place) => {
+      const override = personalization.guide?.places?.[place.id];
+      return override ? { ...place, name: override.name || place.name, distance: override.distance || place.distance, note: override.note || place.note } : place;
+    }),
+    guestbook: translateData(content.guestbook, language), site: { ...translateData(site, language), ...Object.fromEntries(Object.entries(personalization.business ?? {}).filter(([, value]) => value !== undefined)) }, nav: translateData(nav, language),
+    photo: (key: content.PhotoKey) => ({ ...content.photo(key), src: personalization.websitePhotos?.[key] || content.photo(key).src, alt: personalization.housePhotoAlt?.[key] || translated(content.photo(key).alt, language) }),
   }), [language, personalization]);
 }
 

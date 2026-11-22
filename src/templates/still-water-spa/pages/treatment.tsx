@@ -1,15 +1,18 @@
 "use client";
-
+import { useSpaCopy } from "../copy";
+import { useSpaPhoto } from "../photos";
 import { useStillWater } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 import { LocalLink as Link } from "../language";
 import { notFound } from "next/navigation";
 import { formatMoney } from "../../_kit/dates";
-import { RITUALS, photo } from "../content";
+import { RITUALS } from "../content";
 import { href, pebbles } from "../site";
 
 export function TreatmentPage({ slug }: { slug: string }) {
+  const copy = useSpaCopy();
+  const photo = useSpaPhoto();
   const { treatments } = useStillWater();
   const t = treatments.find((x) => x.slug === slug);
   if (!t) notFound();
@@ -20,9 +23,7 @@ export function TreatmentPage({ slug }: { slug: string }) {
   return (
     <div className="mx-auto max-w-7xl px-5 pt-10 pb-16 sm:px-8">
       <nav aria-label="Breadcrumb" className="text-[15px] text-tpl-muted">
-        <Link href={href("/treatments")} className="hover:text-tpl-ink">
-          Treatments
-        </Link>
+        <Link href={href("/treatments")} className="hover:text-tpl-ink">{copy("Treatments")}</Link>
         {" / "}
         <Link href={`${href("/treatments")}#${ritual.id}`} className="hover:text-tpl-ink">
           {ritual.label}
@@ -30,7 +31,7 @@ export function TreatmentPage({ slug }: { slug: string }) {
       </nav>
       <div className="mt-8 grid gap-14 lg:grid-cols-[1fr_1fr] lg:items-start">
         <div className={`relative aspect-square overflow-hidden ${pebbles[1]}`}>
-          <Image src={p.src} alt={p.alt} fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+          <Image placement={`treatment.${t.slug}`} src={p.src} unoptimized={p.src.startsWith("blob:") || p.src.startsWith("/api/personalization/")} alt={p.alt} fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
         </div>
         <div>
           <h1 className="font-tpl-display text-5xl leading-tight sm:text-6xl">{t.name}</h1>
@@ -47,8 +48,8 @@ export function TreatmentPage({ slug }: { slug: string }) {
                   className="flex items-center justify-between rounded-2xl bg-tpl-surface px-5 py-4 ring-1 ring-tpl-line hover:ring-tpl-accent"
                 >
                   <span>
-                    <span className="block font-tpl-display text-xl">{o.minutes} minutes</span>
-                    <span className="text-sm text-tpl-muted">Book this length</span>
+                    <span className="block font-tpl-display text-xl">{o.minutes} {copy("minutes")}</span>
+                    <span className="text-sm text-tpl-muted">{copy("Book this length")}</span>
                   </span>
                   <span className="font-semibold">{formatMoney(o.price)}</span>
                 </Link>
@@ -57,7 +58,7 @@ export function TreatmentPage({ slug }: { slug: string }) {
           </ul>
           <div className="mt-10 grid gap-8 sm:grid-cols-2">
             <div>
-              <h2 className="font-tpl-display text-xl">Included</h2>
+              <h2 className="font-tpl-display text-xl">{copy("Included")}</h2>
               <ul className="mt-3 space-y-2">
                 {t.includes.map((i) => (
                   <li key={i} className="flex gap-3">
@@ -68,7 +69,7 @@ export function TreatmentPage({ slug }: { slug: string }) {
               </ul>
             </div>
             <div>
-              <h2 className="font-tpl-display text-xl">Good for</h2>
+              <h2 className="font-tpl-display text-xl">{copy("Good for")}</h2>
               <p className="mt-3 text-tpl-muted">{t.goodFor}</p>
             </div>
           </div>
@@ -76,8 +77,7 @@ export function TreatmentPage({ slug }: { slug: string }) {
       </div>
       {more.length > 0 && (
         <section aria-labelledby="also" className="mt-24">
-          <h2 id="also" className="font-tpl-display text-3xl">
-            Also in {ritual.label.toLowerCase()}
+          <h2 id="also" className="font-tpl-display text-3xl">{copy("Also in")} {ritual.label.toLowerCase()}
           </h2>
           <ul className="mt-6 grid gap-6 sm:grid-cols-2">
             {more.map((m) => (

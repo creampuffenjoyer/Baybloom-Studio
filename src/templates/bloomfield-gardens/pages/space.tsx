@@ -1,8 +1,8 @@
 "use client";
-
+import { useBloomCopy } from "../copy";
 import { useBloomfield } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 import { LocalLink as Link } from "../language";
 import { notFound } from "next/navigation";
 import { Sprig } from "../components/sprig";
@@ -11,6 +11,7 @@ import { href } from "../site";
 import { Capacities } from "./spaces";
 
 export function SpacePage({ slug }: { slug: string }) {
+  const copy = useBloomCopy();
   const { photo, spaces } = useBloomfield();
   const s = spaces.find((x) => x.slug === slug);
   if (!s) notFound();
@@ -21,9 +22,7 @@ export function SpacePage({ slug }: { slug: string }) {
     <>
       <section className="mx-auto max-w-7xl px-5 pt-12 sm:px-8">
         <nav aria-label="Breadcrumb" className="text-[15px] text-tpl-muted">
-          <Link href={href("/spaces")} className="hover:text-tpl-ink">
-            The estate
-          </Link>
+          <Link href={href("/spaces")} className="hover:text-tpl-ink">{copy("The estate")}</Link>
           {" / "}
           {s.name}
         </nav>
@@ -35,7 +34,7 @@ export function SpacePage({ slug }: { slug: string }) {
           <Capacities space={s} />
         </div>
         <div className="relative mt-10 aspect-[16/9] overflow-hidden rounded-[2rem]">
-          <Image src={hero.src} alt={hero.alt} fill priority sizes="100vw" className="object-cover" />
+          <Image placement={`space.${s.slug}.photo.1`} src={hero.src} unoptimized={hero.src.startsWith("blob:") || hero.src.startsWith("/api/personalization/")} alt={hero.alt} fill priority sizes="100vw" className="object-cover" />
         </div>
       </section>
       <section className="mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[1.3fr_1fr]">
@@ -46,7 +45,7 @@ export function SpacePage({ slug }: { slug: string }) {
           <Sprig className="w-24 pt-4 text-tpl-alt" />
         </div>
         <div className="rounded-[2rem] bg-tpl-soft p-8">
-          <h2 className="font-tpl-display text-3xl italic">Lovely for</h2>
+          <h2 className="font-tpl-display text-3xl italic">{copy("Lovely for")}</h2>
           <ul className="mt-4 space-y-2">
             {s.bestFor.map((b) => (
               <li key={b} className="flex gap-3">
@@ -55,22 +54,19 @@ export function SpacePage({ slug }: { slug: string }) {
               </li>
             ))}
           </ul>
-          <Link href={`${href("/inquire")}?space=${s.slug}`} className="mt-8 inline-block rounded-full bg-tpl-accent px-6 py-3 text-tpl-on-accent">
-            Ask about {s.name}
+          <Link href={`${href("/inquire")}?space=${s.slug}`} className="mt-8 inline-block rounded-full bg-tpl-accent px-6 py-3 text-tpl-on-accent">{copy("Ask about")} {s.name}
           </Link>
         </div>
       </section>
       <div className="mx-auto grid max-w-7xl gap-4 px-5 sm:grid-cols-2 sm:px-8">
-        {rest.map((p) => (
+        {rest.map((p, index) => (
           <div key={p.src} className="relative aspect-[4/3] overflow-hidden rounded-[2rem]">
-            <Image src={p.src} alt={p.alt} fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover" />
+            <Image placement={`space.${s.slug}.photo.${index + 2}`} src={p.src} unoptimized={p.src.startsWith("blob:") || p.src.startsWith("/api/personalization/")} alt={p.alt} fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover" />
           </div>
         ))}
       </div>
       <section aria-labelledby="others" className="mx-auto max-w-7xl px-5 pt-20 sm:px-8">
-        <h2 id="others" className="font-tpl-display text-4xl italic">
-          Elsewhere on the estate
-        </h2>
+        <h2 id="others" className="font-tpl-display text-4xl italic">{copy("Elsewhere on the estate")}</h2>
         <ul className="mt-6 flex flex-wrap gap-3">
           {others.map((o) => (
             <li key={o.slug}>

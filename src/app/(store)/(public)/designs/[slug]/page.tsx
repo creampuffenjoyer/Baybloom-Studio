@@ -7,6 +7,7 @@ import {
   ChevronRightIcon,
   FileTextIcon,
   MonitorSmartphoneIcon,
+  PencilIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +36,7 @@ const previewFacts: Record<string, { fit: string; explore: string; languages?: s
   "pine-ridge-lodge": { fit: "seasonal mountain lodges with rooms, cabins, and outdoor activities.", explore: "winter and summer trip planning, activities by level, rooms that fit your group, and sample stay estimates." },
   "lumen-lake-villas": { fit: "quiet lakeside retreats with several distinct villa styles and nature led experiences.", explore: "villa matching by group size, side by side amenity comparisons, a guided lake tour, and sample stay planning." },
 };
+const personalizableTemplates = new Set(["harbor-house", "coral-cove", "pine-ridge-lodge", "lumen-lake-villas", "isla-verde-boutique", "ember-and-salt", "still-water-spa", "bloomfield-gardens"]);
 
 export async function generateStaticParams() {
   const slugs = await getPublishedSlugs();
@@ -106,16 +108,16 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
       <ViewTracker slug={design.slug} />
 
       <div className="container-page pt-8">
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-muted-foreground">
-          <Link href="/designs" className="hover:text-bay">
+        <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
+          <Link href="/designs" className="inline-flex min-h-11 items-center hover:text-bay">
             Designs
           </Link>
           <ChevronRightIcon className="size-3.5" aria-hidden />
-          <Link href={`/designs?category=${design.category.slug}`} className="hover:text-bay">
+          <Link href={`/designs?category=${design.category.slug}`} className="inline-flex min-h-11 items-center hover:text-bay">
             {design.category.name}
           </Link>
           <ChevronRightIcon className="size-3.5" aria-hidden />
-          <span aria-current="page" className="truncate text-ink">
+          <span aria-current="page" className="min-w-0 break-words text-ink">
             {design.title}
           </span>
         </nav>
@@ -123,7 +125,7 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
 
       <div className="container-page mt-6 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-14">
         <div className="min-w-0">
-          <p className="text-xs font-semibold tracking-[0.2em] text-hibiscus-strong uppercase">
+          <p className="text-sm font-medium text-hibiscus-strong">
             Website template · {design.category.name}
             {design.style && ` · ${design.style.name}`}
           </p>
@@ -132,14 +134,19 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
             {design.summary}
           </p>
 
-          {design.demoUrl && (
+          {(design.demoUrl || personalizableTemplates.has(design.slug)) && (
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
-              <Button asChild size="lg" className="h-12 rounded-full px-6 text-base">
+              {personalizableTemplates.has(design.slug) && <Button asChild size="lg" className="h-12 rounded-lg px-6 text-base">
+                <Link href={`/personalize/${design.slug}`}>
+                  <PencilIcon /> Personalize this template
+                </Link>
+              </Button>}
+              {design.demoUrl && <Button asChild size="lg" variant={personalizableTemplates.has(design.slug) ? "outline" : "default"} className="h-12 rounded-lg px-6 text-base">
                 <Link href={previewUrl!}>
                   <MonitorSmartphoneIcon /> Try the live demo
                 </Link>
-              </Button>
-              <p className="text-sm text-muted-foreground">Explore the pages and sample interactions. No reservations are made.</p>
+              </Button>}
+              <p className="basis-full text-sm text-muted-foreground">{personalizableTemplates.has(design.slug) ? "Try your text, colors and photos in a preview. Sign in to save your draft." : "Explore the pages and sample interactions. No reservations are made."}</p>
             </div>
           )}
 
@@ -159,7 +166,7 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
 
         {/* Price panel: static shell shows a skeleton; the gated part streams in. */}
         <aside className="lg:pt-20" aria-label="Pricing">
-          <div className="rounded-3xl bg-white p-6 shadow-[0_24px_60px_-30px_rgb(15_76_92/0.35)] ring-1 ring-border/70 lg:sticky lg:top-24">
+          <div className="rounded-2xl border border-border bg-white p-6 lg:sticky lg:top-24">
             <h2 className="font-serif text-2xl font-medium">Pricing</h2>
             <p className="mt-1 mb-5 text-sm text-muted-foreground">
               {design.tiers.length} {design.tiers.length === 1 ? "tier" : "tiers"} ·{" "}
@@ -174,7 +181,7 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
             {design.demoUrl && (
               <Link
                 href={previewUrl!}
-                className="mt-5 flex items-center justify-center gap-2 text-sm font-medium text-bay underline-offset-4 hover:underline"
+                className="mt-5 flex min-h-11 items-center justify-center gap-2 text-sm font-medium text-bay underline-offset-4 hover:underline"
               >
                 <MonitorSmartphoneIcon className="size-4" /> Open the live demo
               </Link>

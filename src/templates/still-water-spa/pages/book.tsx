@@ -1,10 +1,13 @@
+"use client";
+import { useSpaCopy } from "../copy";
 import { Suspense } from "react";
 import { BookFlow } from "../components/book-flow";
 
 export function BookPage() {
+  const copy = useSpaCopy();
   return (
     <div className="mx-auto max-w-7xl px-5 pt-12 pb-16 sm:px-8">
-      <h1 className="font-tpl-display text-6xl sm:text-7xl">Book a treatment</h1>
+      <h1 className="font-tpl-display text-6xl sm:text-7xl">{copy("Book a treatment")}</h1>
       <p className="mt-4 max-w-[52ch] text-lg text-tpl-muted">
         Explore a sample booking in three steps. Availability is illustrative and no appointment is made.
       </p>

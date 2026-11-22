@@ -1,25 +1,27 @@
 "use client";
 import { usePine, LocalLink as Link } from "../language";
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 
 import { notFound } from "next/navigation";
 import { fromDay } from "../../_kit/dates";
 
 import { href } from "../site";
+import { usePersonalization } from "../personalization";
 
 
 export function JournalPage() {
   const { t, photo, posts, locale } = usePine();
+  const page = usePersonalization().pinePages?.journal;
   return (
     <div className="mx-auto max-w-5xl px-5 pt-14 sm:px-8">
-      <h1 className="font-tpl-display text-5xl font-bold sm:text-6xl">{t("Lodge journal")}</h1>
-      <p className="mt-4 text-lg text-tpl-muted">{t("Conditions, tips and stories from the valley.")}</p>
+      <h1 className="font-tpl-display text-5xl font-bold sm:text-6xl">{page?.heading || t("Lodge journal")}</h1>
+      <p className="mt-4 text-lg text-tpl-muted">{page?.intro || t("Conditions, tips and stories from the valley.")}</p>
       <ul className="mt-12 space-y-12">
         {posts.map((p) => (
           <li key={p.slug}>
             <Link href={href(`/journal/${p.slug}`)} className="group grid gap-6 md:grid-cols-[1fr_1.2fr] md:items-center">
               <span className="relative aspect-[3/2] overflow-hidden rounded-md">
-                <Image src={photo(p.photo).src} alt={photo(p.photo).alt} fill sizes="(min-width: 768px) 40vw, 100vw" className="object-cover" />
+                <Image placement={`journal.${p.slug}`} src={photo(p.photo).src} alt={photo(p.photo).alt} unoptimized={photo(p.photo).src.startsWith("blob:") || photo(p.photo).src.startsWith("/api/personalization/")} fill sizes="(min-width: 768px) 40vw, 100vw" className="object-cover" />
               </span>
               <span>
                 <span className="text-sm text-tpl-muted">{new Intl.DateTimeFormat(locale, {day: "numeric", month: "long", year: "numeric"}).format(fromDay(p.date))}</span>
@@ -45,7 +47,7 @@ export function PostPage({ slug }: { slug: string }) {
       <p className="mt-3 text-xl text-tpl-muted">{p.dek}</p>
       <p className="mt-2 text-sm text-tpl-muted">{new Intl.DateTimeFormat(locale, {day: "numeric", month: "long", year: "numeric"}).format(fromDay(p.date))}</p>
       <div className="relative mt-10 aspect-[3/2] overflow-hidden rounded-md">
-        <Image src={photo(p.photo).src} alt={photo(p.photo).alt} fill priority sizes="(min-width: 768px) 768px, 100vw" className="object-cover" />
+        <Image placement={`post.${p.slug}`} src={photo(p.photo).src} alt={photo(p.photo).alt} unoptimized={photo(p.photo).src.startsWith("blob:") || photo(p.photo).src.startsWith("/api/personalization/")} fill priority sizes="(min-width: 768px) 768px, 100vw" className="object-cover" />
       </div>
       <div className="mt-10 space-y-5 text-lg leading-relaxed">
         {p.body.map((para) => (

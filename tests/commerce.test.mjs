@@ -5,6 +5,7 @@ import { continueCheckout, ExpiredCheckoutError, reconcileExpiredCheckouts } fro
 import { fulfillOrder, markOrderFailed, markOrderRefunded } from "../src/lib/orders.ts";
 import { syncCheckoutSession } from "../src/lib/stripe-orders.ts";
 import { commerceFixture, stripeFixture } from "./helpers/commerce.mjs";
+import { activeRelease } from "./helpers/template-release.mjs";
 
 test("competing buyers cannot both claim the last coupon slot", async () => {
   const f = commerceFixture();
@@ -26,6 +27,22 @@ test("retries and independent tabs share one reservation and frozen order", asyn
   assert.equal(original.id, tab.id);
   assert.equal(f.state().orders.length, 1);
   assert.equal(f.state().requests.length, 2);
+});
+
+test("checkout freezes the saved Harbor House draft and retries keep the original", async () => {
+  const f = commerceFixture();
+  f.state().cart[0].design.slug = "harbor-house";
+  let draft = { content: { version: 1, template: "harbor-house", business: { name: "First" }, home: {}, theme: {} }, heroImage: null, images: [] };
+  f.client.personalizationDraft = { findUnique: async () => structuredClone(draft) };
+  f.client.activeTemplateRelease = { findUnique: async () => activeRelease("harbor-house") };
+  const first = await prepareCheckout("alice", "first", null, true, f.client, ["harbor-house"], true);
+  draft.content.business.name = "Changed";
+  const retry = await prepareCheckout("alice", "first", null, true, f.client, ["harbor-house"], true);
+  const second = await prepareCheckout("alice", "second", null, true, f.client, ["harbor-house"], true);
+  assert.equal(retry.id, first.id);
+  assert.notEqual(second.id, first.id);
+  assert.equal(f.state().orders[0].items[0].personalization.create.content.business.name, "First");
+  assert.equal(f.state().orders[1].items[0].personalization.create.content.business.name, "Changed");
 });
 
 test("zero-total retries work after the cart is cleared and redeem exactly once", async () => {

@@ -18,12 +18,12 @@ export function Newsletter() {
         type="email"
         required
         placeholder="you@example.com"
-        className="h-12 min-w-0 flex-1 rounded-full border border-white/30 bg-white/10 px-5 text-white placeholder:text-white/55 focus:border-white focus:outline-none"
+        className="h-12 min-w-0 flex-1 rounded-lg border border-white/30 bg-transparent px-4 text-white placeholder:text-white/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       />
       <button
         type="submit"
         disabled={status === "sending"}
-        className="h-12 rounded-full bg-white px-6 font-semibold text-tpl-deep disabled:opacity-70"
+        className="h-12 rounded-lg bg-white px-6 font-medium text-tpl-deep transition-colors hover:bg-tpl-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:opacity-70"
       >
         {status === "sending" ? t("Trying…") : t("Try signup")}
       </button>

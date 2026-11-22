@@ -2,22 +2,27 @@
 import { useCoral } from "../language";
 import { ContactForm } from "../components/contact-form";
 import { PageIntro } from "../components/page-intro";
+import { usePersonalization } from "../personalization";
 
 
 const faqs = [
   {
+    id: "gettingHere",
     q: "How do we get to Isla Calma?",
     a: "Fly to El Nido (1 h 15 min from Manila). Our driver meets you at arrivals and takes you to the pier, where our speedboat crosses in about 40 minutes. Transfers run from 7 am to 5 pm.",
   },
   {
+    id: "breakfast",
     q: "Is breakfast included?",
     a: "Yes, every rate includes breakfast at the beach restaurant or in your villa, plus snorkel gear, kayaks and paddleboards.",
   },
   {
+    id: "cancellation",
     q: "What is your cancellation policy?",
     a: "Cancel free of charge up to 14 days before arrival. After that, the first night is charged. Offers may have their own terms.",
   },
   {
+    id: "children",
     q: "Is the resort good for children?",
     a: "Very. The Lagoon Family Villas have a shallow pool ledge, and our kids’ club runs every morning for ages 4 to 12.",
   },
@@ -25,6 +30,7 @@ const faqs = [
 
 export function ContactPage() {
   const { t, site } = useCoral();
+  const { contactFaqs } = usePersonalization();
   return (
     <>
       <PageIntro
@@ -65,14 +71,14 @@ export function ContactPage() {
         <h2 id="faq" className="font-tpl-display text-4xl font-bold tracking-[-0.035em]">{t("Good questions")}</h2>
         <div className="mt-8 divide-y divide-tpl-line border-y border-tpl-line">
           {faqs.map((f) => (
-            <details key={t(f.q)} className="group py-5">
+            <details key={f.id} className="group py-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-semibold">
-                {f.q}
+                {contactFaqs?.[f.id]?.question || t(f.q)}
                 <span aria-hidden className="text-2xl transition-transform group-open:rotate-45">
                   +
                 </span>
               </summary>
-              <p className="mt-3 leading-relaxed text-tpl-muted">{t(f.a)}</p>
+              <p className="mt-3 leading-relaxed text-tpl-muted">{contactFaqs?.[f.id]?.answer || t(f.a)}</p>
             </details>
           ))}
         </div>

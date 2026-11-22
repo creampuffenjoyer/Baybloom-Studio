@@ -9,6 +9,7 @@ import { MobileFilters } from "@/components/catalog/catalog-filters";
 import { SortSelect } from "@/components/catalog/sort-select";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "@/components/layout/empty-state";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -32,7 +33,7 @@ export async function CatalogResults({
   return (
     <>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-muted-foreground" aria-live="polite">
+        <p className="min-w-0 text-sm break-words text-muted-foreground" aria-live="polite" aria-atomic="true">
           <span className="font-semibold text-ink">{result.total}</span>{" "}
           {result.total === 1 ? "design" : "designs"}
           {query.q && (
@@ -42,23 +43,18 @@ export async function CatalogResults({
             </>
           )}
         </p>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <MobileFilters options={options} />
           <SortSelect current={result.sort} canSortByPrice={Boolean(user)} />
         </div>
       </div>
 
       {result.items.length === 0 ? (
-        <div className="flex flex-col items-center rounded-3xl border border-dashed border-border bg-white/60 px-6 py-20 text-center">
-          <SearchXIcon className="size-10 text-seaglass" aria-hidden />
-          <h2 className="mt-4 text-2xl font-medium">No designs match those filters</h2>
-          <p className="mt-2 max-w-sm text-muted-foreground">
-            Try removing a feature or two, or search for something broader.
-          </p>
-          <Button asChild variant="outline" className="mt-6 rounded-full bg-white">
+        <EmptyState icon={SearchXIcon} title="No designs match just yet" action={<Button asChild variant="outline" className="h-12 rounded-lg bg-white px-6">
             <Link href="/designs">Clear all filters</Link>
-          </Button>
-        </div>
+          </Button>}>
+          <p>Try a different search or remove a filter to see more of the collection.</p>
+        </EmptyState>
       ) : (
         <CatalogGrid
           items={result.items}
@@ -103,7 +99,7 @@ function Pagination({
           href={href(p)}
           aria-current={p === page ? "page" : undefined}
           className={cn(
-            "grid size-10 place-items-center rounded-full text-sm font-medium transition-colors",
+            "grid size-11 place-items-center rounded-lg text-sm font-medium transition-colors",
             p === page ? "bg-bay text-white" : "bg-white text-ink hover:bg-secondary",
           )}
         >

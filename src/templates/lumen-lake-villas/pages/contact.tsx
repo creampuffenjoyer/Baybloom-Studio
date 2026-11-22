@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 import { ExperienceInquiry } from "../components/experience-inquiry";
 import { useLumen } from "../language";
 
@@ -36,7 +36,7 @@ export function ContactPage() {
         </div>
       </div>
       <div className="relative min-h-[480px] overflow-hidden">
-        <Image src={photo("mist").src} alt={photo("mist").alt} fill priority sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+        <Image placement={"contact.mist"} src={photo("mist").src} alt={photo("mist").alt} unoptimized={photo("mist").src.startsWith("blob:") || photo("mist").src.startsWith("/api/personalization/")} fill priority sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const ITEMS = [
   { href: "/account", label: "Profile & billing", icon: UserRoundIcon },
   { href: "/account/orders", label: "Orders & downloads", icon: ReceiptTextIcon },
-  { href: "/account/security", label: "Password", icon: KeyRoundIcon },
+  { href: "/account/security", label: "Security", icon: KeyRoundIcon },
 ];
 
 export function AccountNav() {
@@ -19,17 +19,17 @@ export function AccountNav() {
 export function AccountNavList({ pathname }: { pathname: string | null }) {
   return (
     <nav aria-label="Account" className="lg:sticky lg:top-24 lg:self-start">
-      <ul className="flex gap-1 overflow-x-auto pb-2 [scrollbar-width:none] lg:flex-col lg:overflow-visible lg:pb-0">
+      <ul className="flex flex-wrap gap-2 lg:flex-col">
         {ITEMS.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href;
+          const active = href === "/account" ? pathname === href : Boolean(pathname?.startsWith(href));
           return (
             <li key={href} className="shrink-0">
               <Link
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
-                  active ? "bg-white text-bay shadow-sm ring-1 ring-border/70" : "text-ink/75 hover:bg-white/70 hover:text-bay",
+                  "flex min-h-12 items-center gap-2.5 rounded-lg px-3 py-3 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                  active ? "bg-secondary text-bay ring-1 ring-bay/20" : "text-muted-foreground hover:bg-white hover:text-bay",
                 )}
               >
                 <Icon className={cn("size-4", active ? "text-hibiscus-strong" : "text-muted-foreground")} aria-hidden />

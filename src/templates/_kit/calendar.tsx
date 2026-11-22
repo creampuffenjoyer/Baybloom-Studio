@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { addDays, fromDay, monthGrid, WEEKDAYS, type Day } from "./dates";
 import { useToday } from "./use-today";
 
@@ -34,6 +34,10 @@ type Props = {
   labels?: { previous: string; next: string; to: string };
 };
 
+const subscribe = () => () => {};
+const isClient = () => true;
+const isServer = () => false;
+
 export function Calendar({
   mode,
   start = null,
@@ -51,8 +55,11 @@ export function Calendar({
   locale = "en-GB",
   labels = { previous: "Previous month", next: "Next month", to: "to" },
 }: Props) {
-  const labelMonth = (y: number, m: number) => new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(new Date(y, m, 1));
-  const weekdays = locale === "en-GB" ? WEEKDAYS : Array.from({ length: 7 }, (_, i) => new Intl.DateTimeFormat(locale, { weekday: "short" }).format(new Date(2024, 0, 1 + i)));
+  // Server and browser ICU versions can disagree about punctuation and words.
+  // Hydrate using deterministic labels, then format in the visitor's locale.
+  const hydrated = useSyncExternalStore(subscribe, isClient, isServer);
+  const labelMonth = (y: number, m: number) => hydrated ? new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(new Date(y, m, 1)) : `${y}-${String(m + 1).padStart(2, "0")}`;
+  const weekdays = !hydrated || locale === "en-GB" ? WEEKDAYS : Array.from({ length: 7 }, (_, i) => new Intl.DateTimeFormat(locale, { weekday: "short" }).format(new Date(2024, 0, 1 + i)));
   const now = useToday();
   const first = fromDay(start ?? now);
   const [cursor, setCursor] = useState({ y: first.getFullYear(), m: first.getMonth() });
@@ -125,7 +132,7 @@ export function Calendar({
                     className={dayClassName}
                     disabled={!selectable}
                     aria-selected={selected}
-                    aria-label={new Intl.DateTimeFormat(locale, { weekday: "long", year: "numeric", month: "long", day: "numeric" }).format(fromDay(day))}
+                    aria-label={hydrated ? new Intl.DateTimeFormat(locale, { weekday: "long", year: "numeric", month: "long", day: "numeric" }).format(fromDay(day)) : day}
                     data-selected={selected}
                     data-in-range={inRange}
                     data-disabled={!selectable}

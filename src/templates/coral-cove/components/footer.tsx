@@ -8,9 +8,9 @@ export function Footer() {
   const { t, nav, site } = useCoral();
   return (
     <footer className="bg-tpl-deep text-white">
-      <div className="mx-auto grid max-w-7xl gap-14 px-5 pt-20 pb-10 sm:px-8 lg:grid-cols-[1.3fr_1fr_1fr]">
+      <div className="mx-auto grid max-w-7xl gap-12 px-5 pt-20 pb-12 sm:px-8 lg:grid-cols-[1.3fr_1fr_1fr]">
         <div>
-          <p className="font-tpl-display text-5xl leading-[0.95] font-bold tracking-[-0.04em] sm:text-6xl">{t("See you on")}<br />{t("the sand.")}</p>
+          <p className="font-tpl-display text-5xl leading-[1.02] font-semibold tracking-[-0.03em] sm:text-6xl">{t("See you on")}<br />{t("the sand.")}</p>
           <p className="mt-6 max-w-sm text-white/75">{t("Try the sample newsletter form. No subscription is created.")}</p>
           <div className="mt-5">
             <Newsletter />
@@ -57,7 +57,7 @@ export function Footer() {
         aria-hidden
         className="overflow-hidden px-5 font-tpl-display leading-[0.72] font-extrabold tracking-[-0.06em] text-white/10 select-none [font-size:clamp(5rem,22vw,20rem)] [font-stretch:80%] sm:px-8"
       >
-        coral cove
+        {site.name}
       </div>
       <div className="border-t border-white/15">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-6 text-sm text-white/60 sm:flex-row sm:justify-between sm:px-8">

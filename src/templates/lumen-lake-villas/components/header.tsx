@@ -4,9 +4,11 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { href } from "../site";
 import { LanguagePicker, LocalLink, useLumen } from "../language";
+import { usePersonalization } from "../personalization";
 
-export function Header() {
+export function Header({ languagePicker = true }: { languagePicker?: boolean }) {
   const { t, nav: localizedNav } = useLumen();
+  const { business } = usePersonalization();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -14,9 +16,9 @@ export function Header() {
     <header className="relative z-40">
       <div className="mx-auto flex h-24 max-w-[1400px] items-center gap-10 px-6 sm:px-10">
         <LocalLink href={href("/")} onClick={() => setOpen(false)} className="font-tpl-display text-3xl">
-          Lumen
+          {business?.name || "Lumen"}
         </LocalLink>
-        <div className="hidden md:block"><LanguagePicker /></div>
+        {languagePicker && <div className="hidden md:block"><LanguagePicker /></div>}
         <nav aria-label="Main" className="ml-auto hidden items-center gap-10 text-sm md:flex">
           {localizedNav.map((item) => {
             const active = pathname.startsWith(href(item.href));
@@ -50,7 +52,7 @@ export function Header() {
           </ul>
         </nav>
       )}
-      <div className="px-6 pb-4 md:hidden"><LanguagePicker /></div>
+      {languagePicker && <div className="px-6 pb-4 md:hidden"><LanguagePicker /></div>}
     </header>
   );
 }

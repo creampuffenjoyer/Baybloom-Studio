@@ -7,8 +7,9 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { MIN_PASSWORD_CHARACTERS } from "@/lib/password-policy";
 
-type Result = { ok?: boolean; message?: string; fieldErrors?: Record<string, string> };
+type Result = { ok?: boolean; reauthenticate?: boolean; message?: string; fieldErrors?: Record<string, string> };
 
 export function PasswordForm({ hasPassword, email }: { hasPassword: boolean; email: string }) {
   const router = useRouter();
@@ -32,6 +33,7 @@ export function PasswordForm({ hasPassword, email }: { hasPassword: boolean; ema
       const body: Result = await res.json().catch(() => ({ message: "Something went wrong." }));
       setErrors(body.fieldErrors ?? {});
       if (body.ok) {
+        if (body.reauthenticate) { router.push("/login?reset=1"); return; }
         toast.success(body.message);
         formRef.current?.reset();
         // Re-render with the new session cookie (e.g. "Set" becomes "Change").
@@ -59,6 +61,7 @@ export function PasswordForm({ hasPassword, email }: { hasPassword: boolean; ema
             id={f.name}
             name={f.name}
             type="password"
+            minLength={f.name === "current" ? undefined : MIN_PASSWORD_CHARACTERS}
             autoComplete={f.auto}
             aria-invalid={errors[f.name] ? true : undefined}
             aria-describedby={errors[f.name] ? `${f.name}-error` : undefined}
@@ -71,7 +74,7 @@ export function PasswordForm({ hasPassword, email }: { hasPassword: boolean; ema
             </p>
           )}
           {f.name === "password" && !errors.password && (
-            <p className="text-xs text-muted-foreground">At least 8 characters.</p>
+            <p className="text-xs text-muted-foreground">At least {MIN_PASSWORD_CHARACTERS} characters.</p>
           )}
         </div>
       ))}

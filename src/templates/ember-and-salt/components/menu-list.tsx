@@ -10,8 +10,8 @@ export function MenuList({ section, headingLevel = 3 }: { section: MenuSection; 
       <H className="font-tpl-display text-3xl sm:text-4xl">{section.title}</H>
       {section.intro && <p className="mt-2 max-w-[52ch] text-tpl-muted">{section.intro}</p>}
       <ul className="mt-6 space-y-5">
-        {section.dishes.map((d) => (
-          <li key={d.name}>
+        {section.dishes.map((d, index) => (
+          <li key={index}>
             <div className="flex items-baseline gap-3">
               <span className="text-lg font-semibold">
                 {d.name}

@@ -2,7 +2,7 @@
 
 import { useHarbor } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "./placement-image";
 import { LocalLink as Link } from "../language";
 import { bookingRef } from "../../_kit/availability";
 import { Calendar } from "../../_kit/calendar";
@@ -11,6 +11,7 @@ import { useStayBooking } from "../../_kit/use-stay-booking";
 
 import { href } from "../site";
 import { Stamp } from "./postcard";
+import { usePersonalization } from "../personalization";
 
 const input =
   "mt-2 w-full rounded-xl bg-tpl-surface px-4 py-3 ring-1 ring-tpl-line focus:ring-2 focus:ring-tpl-accent focus:outline-none";
@@ -19,12 +20,14 @@ const STEPS = ["When", "Which room", "Who"];
 
 export function BookFlow() {
   const { t, extras, photo, rooms, locale } = useHarbor();
+  const { roomPhotos, websitePhotos, photoEditing } = usePersonalization();
   const b = useStayBooking(rooms, extras);
+  const guestLimit = Math.min(12, Math.max(2, ...rooms.map((room) => room.maxGuests)));
   // Three steps here: dates, room (with extras), details. Review happens on the postcard.
-  const step = Math.min(b.step, 2);
+  const step = photoEditing ? 1 : Math.min(b.step, 2);
   const d = (x: string | null) => (x ? new Intl.DateTimeFormat(locale, { weekday: "short", day: "numeric", month: "short" }).format(fromDay(x)) : "…");
 
-  if (b.step === 4) {
+  if (!photoEditing && b.step === 4) {
     return (
       <div className="mx-auto max-w-xl text-center">
         <p className="font-[family-name:var(--hh-hand)] text-6xl text-tpl-accent" role="status">{t("Sample booking complete")}</p>
@@ -73,8 +76,7 @@ export function BookFlow() {
             <div className="mt-6 flex flex-wrap items-center gap-6">
               <label className="flex items-center gap-3 font-semibold">
                 {t("Guests")}<select value={b.guests} onChange={(e) => b.setGuests(Number(e.target.value))} className="rounded-xl bg-tpl-surface px-3 py-2 ring-1 ring-tpl-line">
-                  <option value={1}>1</option>
-                  <option value={2}>2</option>
+                  {Array.from({ length: guestLimit }, (_, index) => <option key={index + 1} value={index + 1}>{index + 1}</option>)}
                 </select>
               </label>
               <button type="button" className={primary} disabled={b.nights < 1} onClick={() => b.goTo(1)}>
@@ -88,7 +90,7 @@ export function BookFlow() {
             <h2 className="font-tpl-display text-3xl">{t("Pick your room")}</h2>
             <ul className="mt-6 space-y-3">
               {rooms.map((r) => {
-                const free = b.availability[r.slug];
+                const free = photoEditing || b.availability[r.slug];
                 const p = photo(r.photos[0]);
                 return (
                   <li key={r.slug}>
@@ -97,7 +99,7 @@ export function BookFlow() {
                     >
                       <input type="radio" name="room" className="sr-only" disabled={!free} checked={b.room?.slug === r.slug} onChange={() => b.selectRoom(r.slug)} />
                       <span className="relative size-20 shrink-0 overflow-hidden rounded-xl">
-                        <Image src={p.src} alt="" fill sizes="80px" className="object-cover" />
+                        <Image placement={`book.room.${r.slug}`} src={websitePhotos?.[r.photos[0]] || roomPhotos?.[r.slug] || p.src} alt="" unoptimized={(websitePhotos?.[r.photos[0]] || roomPhotos?.[r.slug] || p.src).startsWith("blob:") || (websitePhotos?.[r.photos[0]] || roomPhotos?.[r.slug] || p.src).startsWith("/api/personalization/")} fill sizes="80px" className="object-cover" />
                       </span>
                       <span className="flex-1">
                         <span className="block font-tpl-display text-xl">{r.name}</span>

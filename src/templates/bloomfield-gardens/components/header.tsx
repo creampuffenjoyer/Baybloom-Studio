@@ -4,8 +4,10 @@ import { LocalLink as Link } from "../language";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { href, nav } from "../site";
+import { usePersonalization } from "../personalization";
 
 export function Header() {
+  const { business } = usePersonalization();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -13,8 +15,8 @@ export function Header() {
     <header className="relative border-b border-tpl-line bg-tpl-bg">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 pt-6 pb-3 sm:px-8 md:flex-col md:pb-0">
         <Link href={href("/")} className="text-center leading-none" onClick={() => setOpen(false)}>
-          <span className="block font-tpl-display text-4xl italic sm:text-5xl">Bloomfield</span>
-          <span className="mt-1 block text-[11px] tracking-[0.35em] text-tpl-muted">GARDENS · TAGAYTAY</span>
+          <span className="block font-tpl-display text-4xl italic sm:text-5xl">{business?.name || "Bloomfield"}</span>
+          {!business?.name && <span className="mt-1 block text-[11px] tracking-[0.35em] text-tpl-muted">GARDENS · TAGAYTAY</span>}
         </Link>
         <button
           type="button"

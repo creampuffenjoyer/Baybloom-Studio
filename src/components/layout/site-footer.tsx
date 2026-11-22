@@ -31,9 +31,9 @@ const COLUMNS = [
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 bg-bay-deep text-white/80">
-      <div className="container-page grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr]">
-        <div className="max-w-sm">
+    <footer className="mt-16 bg-bay-deep text-white/80 sm:mt-24">
+      <div className="container-page grid grid-cols-2 gap-x-6 gap-y-10 py-12 sm:gap-12 sm:py-16 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="col-span-2 max-w-sm md:col-span-1">
           <Logo tone="light" className="text-[15px]" />
           <p className="mt-5 font-serif text-2xl leading-snug text-white">
             Websites for hospitality brands that bloom.
@@ -45,15 +45,15 @@ export function SiteFooter() {
         </div>
         {COLUMNS.map((col) => (
           <div key={col.title}>
-            <h2 className="font-sans text-xs font-semibold tracking-[0.2em] text-seaglass uppercase">
+            <h2 className="font-sans text-base font-medium tracking-normal text-seaglass">
               {col.title}
             </h2>
-            <ul className="mt-4 space-y-2.5">
+            <ul className="mt-3">
               {col.links.map((l) => (
                 <li key={l.href}>
                   <Link
                     href={l.href}
-                    className="text-sm text-white/80 underline-offset-4 transition-colors hover:text-white hover:underline"
+                    className="inline-flex min-h-11 items-center rounded-sm text-sm text-white/80 underline-offset-4 transition-colors hover:text-white hover:underline"
                   >
                     {l.label}
                   </Link>

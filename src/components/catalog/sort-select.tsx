@@ -24,7 +24,7 @@ export function SortSelect({ current, canSortByPrice }: { current: string; canSo
   const options = canSortByPrice ? [...BASE, ...PRICE] : BASE;
   return (
     <Select value={current} onValueChange={(v) => set("sort", v === "newest" ? null : v)}>
-      <SelectTrigger aria-label="Sort designs" className="h-10 min-w-44 rounded-full bg-white">
+      <SelectTrigger aria-label="Sort designs" className="h-11 min-w-36 rounded-lg bg-white sm:min-w-44">
         <SelectValue />
       </SelectTrigger>
       <SelectContent align="end">

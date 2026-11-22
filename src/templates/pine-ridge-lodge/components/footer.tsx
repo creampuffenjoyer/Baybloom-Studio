@@ -11,7 +11,7 @@ export function Footer() {
       <Contours className="absolute inset-0 size-full text-white/[0.06]" />
       <div className="relative mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-8 md:grid-cols-3">
         <div>
-          <p className="font-tpl-display text-4xl font-bold">Pine Ridge Lodge</p>
+          <p className="font-tpl-display text-4xl font-bold">{site.name}</p>
           <p className="mt-3 max-w-xs text-tpl-on-deep/75">{site.tagline}{t(". Elevation 1,640 m.")}</p>
         </div>
         <div className="text-tpl-on-deep/80">

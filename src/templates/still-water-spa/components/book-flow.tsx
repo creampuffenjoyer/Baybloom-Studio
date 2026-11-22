@@ -10,6 +10,7 @@ import { Calendar } from "../../_kit/calendar";
 import { formatLong, formatMoney, fromDay, type Day } from "../../_kit/dates";
 import { RITUALS } from "../content";
 import { href, site } from "../site";
+import { usePersonalization } from "../personalization";
 
 const THERAPIST = [
   { id: "any", label: "No preference" },
@@ -28,6 +29,7 @@ function slotsFor(day: Day) {
 }
 
 export function BookFlow() {
+  const { business } = usePersonalization();
   const { treatments, t, locale } = useStillWater();
   const params = useSearchParams();
   const initial = treatments.find((t) => t.slug === params.get("treatment"));
@@ -62,7 +64,7 @@ export function BookFlow() {
           <ul className="mt-4 space-y-2 text-tpl-muted">
             <li>{t("Arrive 20 minutes early to change and settle in.")}</li>
             <li>{t("Robes, slippers and towels are waiting for you.")}</li>
-            <li>{t("For actual availability and cancellation terms, contact the spa at")}{" "}{site.phone}.</li>
+            <li>{t("For actual availability and cancellation terms, contact the spa at")}{" "}{business?.phone || site.phone}.</li>
           </ul>
         </div>
         <Link href={href("/")} className={`${primary} mt-10 inline-block`}>{t("Back to Still Water")}</Link>

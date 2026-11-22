@@ -5,8 +5,10 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { href, nav } from "../site";
 import { Logo } from "./logo";
+import { usePersonalization } from "../personalization";
 
 export function Header() {
+  const { business } = usePersonalization();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -21,7 +23,7 @@ export function Header() {
     <header className="sticky top-0 z-50 bg-tpl-bg/90 backdrop-blur">
       <div className="mx-auto flex h-20 max-w-7xl items-center gap-8 px-5 sm:px-8">
         <Link href={href("/")} onClick={() => setOpen(false)}>
-          <Logo />
+          <Logo name={business?.name} />
         </Link>
         <nav aria-label="Main" className="ml-auto hidden items-center gap-1 rounded-full bg-tpl-surface/80 p-1 lg:flex">
           {nav.map((item) => {

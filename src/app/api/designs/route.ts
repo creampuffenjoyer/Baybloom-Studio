@@ -1,6 +1,7 @@
 import { getFromPrices, searchDesigns } from "@/lib/catalog";
 import { getCurrentUser } from "@/lib/session";
 import { parseCatalogQuery } from "@/lib/validators";
+import { privateResponseHeaders } from "@/lib/request-security";
 
 /**
  * GET /api/designs?type=&category=&style=&tier=&features=&q=&sort=&page=
@@ -8,7 +9,7 @@ import { parseCatalogQuery } from "@/lib/validators";
  */
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const raw: Record<string, string[]> = {};
+  const raw: Record<string, string[]> = Object.create(null);
   for (const [k, v] of url.searchParams) (raw[k] ??= []).push(v);
 
   const query = parseCatalogQuery(raw);
@@ -22,5 +23,5 @@ export async function GET(request: Request) {
       ...d,
       ...(prices && { fromPrice: prices[d.id] ?? null }),
     })),
-  });
+  }, { headers: privateResponseHeaders });
 }

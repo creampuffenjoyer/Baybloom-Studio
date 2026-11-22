@@ -10,11 +10,11 @@ import { theme } from "./site";
 import { usePersonalization } from "./personalization";
 
 /** Wraps every Harbor House page: theme, fonts, header and footer. */
-export function Shell({ children }: { children: React.ReactNode }) {
-  return <Suspense fallback={<p role="status">Loading / Naglo-load…</p>}><LanguageProvider><ShellContent>{children}</ShellContent></LanguageProvider></Suspense>;
+export function Shell({ children, languagePicker = true }: { children: React.ReactNode; languagePicker?: boolean }) {
+  return <Suspense fallback={<p role="status">Loading / Naglo-load…</p>}><LanguageProvider><ShellContent languagePicker={languagePicker}>{children}</ShellContent></LanguageProvider></Suspense>;
 }
 
-function ShellContent({ children }: { children: React.ReactNode }) {
+function ShellContent({ children, languagePicker }: { children: React.ReactNode; languagePicker: boolean }) {
   const { t } = useHarbor();
   const { accent } = usePersonalization();
   return (
@@ -26,7 +26,7 @@ function ShellContent({ children }: { children: React.ReactNode }) {
       <a href="#content" className="sr-only z-[60] rounded-full bg-tpl-accent px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
         {t("Skip to content")}
       </a>
-      <LanguagePicker />
+      {languagePicker && <LanguagePicker />}
       <Header />
       <main id="content" className="flex-1">
         {children}

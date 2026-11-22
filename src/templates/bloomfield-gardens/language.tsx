@@ -8,6 +8,7 @@ import photos from "./photos.json";
 import { planningTranslations } from "./planning-translations";
 import { photoTranslations } from "./photo-translations";
 import { finderTranslations, spaceTranslations } from "./space-translations";
+import { usePersonalization } from "./personalization";
 
 const Context = createContext<Language>("en");
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
@@ -24,19 +25,20 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 }
 export function useBloomfield() {
   const language = useContext(Context);
+  const draft = usePersonalization();
   return useMemo(() => {
     const translate = (value: string) => language === "en" ? value : planningTranslations[value]?.[language === "tl" ? 0 : 1] ?? value;
-    const photo = (key: content.PhotoKey) => { const item = content.photo(key); return { ...item, alt: language === "en" ? item.alt : photoTranslations[item.alt]?.[language === "tl" ? 0 : 1] ?? item.alt }; };
+    const photo = (key: content.PhotoKey) => { const item = content.photo(key); return { ...item, src: draft.bloomPhotos?.[key] || item.src, alt: draft.bloomPhotoAlt?.[key] || (language === "en" ? item.alt : photoTranslations[item.alt]?.[language === "tl" ? 0 : 1] ?? item.alt) }; };
     return { language, translate, finder: language === "en" ? null : finderTranslations[language],
-      spaces: content.spaces.map((space) => language === "en" ? space : { ...space, ...spaceTranslations[space.slug][language] }),
-      packages: content.packages.map((pkg) => ({ ...pkg, guests: translate(pkg.guests), blurb: translate(pkg.blurb), includes: pkg.includes.map(translate) })),
-      faqs: content.faqs.map(([q, a]) => [translate(q), translate(a)]),
-      timeline: content.timeline.map((item) => ({ when: translate(item.when), what: translate(item.what) })),
-      reviews: content.reviews.map((review) => ({ ...review, quote: translate(review.quote), when: translate(review.when) })),
+      spaces: content.spaces.map((space) => { const original = language === "en" ? space : { ...space, ...spaceTranslations[space.slug][language] }; const override = draft.bloomSpaces?.[space.slug]; if (!override) return original; const { description, bestFor, ...fields } = override; return { ...original, ...fields, ...(description ? { description: description.split(/\n+/).map(s => s.trim()).filter(Boolean) } : {}), ...(bestFor ? { bestFor: bestFor.split(/\n+/).map(s => s.trim()).filter(Boolean) } : {}) }; }),
+      packages: content.packages.map((pkg, index) => { const override = draft.bloomPackages?.[(["first", "second", "third"] as const)[index]]; return { ...pkg, guests: override?.guests || translate(pkg.guests), blurb: override?.blurb || translate(pkg.blurb), name: override?.name || pkg.name, price: override?.price ?? pkg.price, includes: override?.includes ? override.includes.split(/\n+/).map(s => s.trim()).filter(Boolean) : pkg.includes.map(translate) }; }),
+      faqs: content.faqs.map(([q, a], index) => { const override = draft.bloomFaqs?.[(["first", "second", "third", "fourth", "fifth", "sixth"] as const)[index]]; return [override?.question || translate(q), override?.answer || translate(a)]; }),
+      timeline: content.timeline.map((item, index) => { const override = draft.bloomTimeline?.[(["first", "second", "third", "fourth"] as const)[index]]; return { when: override?.when || translate(item.when), what: override?.what || translate(item.what) }; }),
+      reviews: draft.bloomReviewsHidden ? [] : content.reviews.map((review, index) => ({ ...review, quote: translate(review.quote), when: translate(review.when), ...draft.bloomReviews?.[index === 0 ? "first" : "second"] })),
       photo, photos: Object.values(photos).map((item) => ({ ...item, alt: language === "en" ? item.alt : photoTranslations[item.alt]?.[language === "tl" ? 0 : 1] ?? item.alt })),
       galleryOrder: content.galleryOrder,
     };
-  }, [language]);
+  }, [language, draft]);
 }
 export function LocalLink({ href, ...props }: React.ComponentProps<typeof NextLink>) {
   const language = useContext(Context);

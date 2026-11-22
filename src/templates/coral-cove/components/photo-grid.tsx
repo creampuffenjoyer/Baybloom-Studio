@@ -1,27 +1,32 @@
 "use client";
 import { useCoral } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image, resolveCoralPhoto } from "./placement-image";
+import { usePersonalization } from "../personalization";
 import { Lightbox, type Photo } from "../../_kit/lightbox";
 
 /** One large photo and up to two smaller ones; any photo opens the viewer. */
-export function PhotoGrid({ photos }: { photos: Photo[] }) {
+export function PhotoGrid({ photos: originals, placements }: { photos: Photo[]; placements: string[] }) {
+  const personalization = usePersonalization();
+  const photos = originals.map((photo, index) => resolveCoralPhoto(placements[index], photo, personalization));
   const { t } = useCoral();
   return (
     <Lightbox labels={{viewer: t("Photo viewer"), close: t("Close"), previous: t("Previous photo"), next: t("Next photo")}} photos={photos} overlayClassName="bg-[#062a28]/96 text-white">
       {(open) => (
         <div className="grid gap-2 sm:grid-cols-4 sm:grid-rows-2">
-          {photos.slice(0, 3).map((p, i) => (
+          {(personalization.photoEditing ? photos : photos.slice(0, 3)).map((p, i) => (
             <button
-              key={p.src}
+              key={placements[i]}
               type="button"
               onClick={() => open(i)}
               className={`group relative overflow-hidden rounded-2xl focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-tpl-accent ${
-                i === 0 ? "aspect-[4/3] sm:col-span-3 sm:row-span-2 sm:aspect-auto sm:min-h-[460px]" : "hidden aspect-[4/3] sm:block"
+                i === 0 ? "aspect-[4/3] sm:col-span-3 sm:row-span-2 sm:aspect-auto sm:min-h-[460px]" : personalization.photoEditing ? "aspect-[4/3]" : "hidden aspect-[4/3] sm:block"
               }`}
             >
               <Image
+                placement={placements[i]}
                 src={p.src}
+                unoptimized={(p.src).startsWith("blob:") || (p.src).startsWith("/api/personalization/")}
                 alt={p.alt}
                 fill
                 sizes={i === 0 ? "(min-width: 640px) 75vw, 100vw" : "25vw"}

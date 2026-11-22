@@ -28,10 +28,10 @@ export function AuthButtons() {
     : pathname;
   return (
     <>
-      <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+      <Button asChild variant="ghost" size="sm" className="h-11 px-4">
         <Link href={loginHref(callback)}>Log in</Link>
       </Button>
-      <Button asChild size="sm" className="rounded-full px-4">
+      <Button asChild size="sm" className="hidden h-11 rounded-lg px-4 sm:inline-flex">
         <Link href={callback ? `/register?callbackUrl=${encodeURIComponent(callback)}` : "/register"}>
           Create account
         </Link>
@@ -53,7 +53,7 @@ export function UserMenu({ name, email }: { name: string | null; email: string |
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="h-9 gap-2 rounded-full pr-3 pl-1"
+          className="h-11 gap-2 rounded-full pr-3 pl-1"
           aria-label="Account menu"
         >
           <span className="grid size-7 place-items-center rounded-full bg-bay text-[11px] font-semibold text-white">
@@ -78,7 +78,7 @@ export function UserMenu({ name, email }: { name: string | null; email: string |
         ].map(({ href, label, icon: Icon }) => (
           <DropdownMenuItem key={href} asChild>
             <Link href={href}>
-              <Icon /> {label}
+              <Icon aria-hidden /> {label}
             </Link>
           </DropdownMenuItem>
         ))}

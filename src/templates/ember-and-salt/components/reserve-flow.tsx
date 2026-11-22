@@ -1,11 +1,13 @@
 "use client";
+import { useEmberCopy } from "../copy";
 
 import Link from "next/link";
 import { useState } from "react";
 import { bookingRef, formatTime, freeSlots, isAvailable, timeSlots } from "../../_kit/availability";
 import { Calendar } from "../../_kit/calendar";
 import { formatLong, fromDay, type Day } from "../../_kit/dates";
-import { href, site } from "../site";
+import { href } from "../site";
+import { useEmberData } from "../data";
 
 const SEATING = [
   { id: "room", label: "Dining room", note: "Tables for two to eight" },
@@ -25,6 +27,8 @@ function slotsFor(day: Day) {
 }
 
 export function ReserveFlow() {
+  const t = useEmberCopy();
+  const { site } = useEmberData();
   const [party, setParty] = useState(2);
   const [day, setDay] = useState<Day | null>(null);
   const [time, setTime] = useState<string | null>(null);
@@ -41,22 +45,18 @@ export function ReserveFlow() {
     return (
       <div className="mx-auto max-w-xl py-6 text-center">
         <p className="font-tpl-display text-6xl leading-none sm:text-7xl">Sample request complete.</p>
-        <p className="mt-6 text-lg text-tpl-muted">
-          A table for {party} on {day && formatLong(day)} at {time && formatTime(time)}, {seatingNote.label.toLowerCase()}.
+        <p className="mt-6 text-lg text-tpl-muted">{t("A table for")}{party}{t("on")}{day && formatLong(day)}{t("at")}{time && formatTime(time)}, {seatingNote.label.toLowerCase()}.
         </p>
         <p className="mt-2 text-tpl-muted">
           Sample reference <span className="font-semibold text-tpl-ink">{ref}</span>. No reservation or email was sent to {guest.email}.
         </p>
-        <p className="mt-8 border-y border-tpl-line py-5 text-[15px] text-tpl-muted">
-          This is a website demonstration. No table has been booked. Contact the restaurant on{" "}
+        <p className="mt-8 border-y border-tpl-line py-5 text-[15px] text-tpl-muted">This is a website demonstration. No table has been booked. Contact the restaurant on{" "}
           <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="text-tpl-accent">
             {site.phone}
           </a>
           .
         </p>
-        <Link href={href("/menu")} className="mt-8 inline-block bg-tpl-accent px-6 py-3.5 font-semibold text-tpl-on-accent">
-          Look at the menu
-        </Link>
+        <Link href={href("/menu")} className="mt-8 inline-block bg-tpl-accent px-6 py-3.5 font-semibold text-tpl-on-accent">{t("Look at the menu")}</Link>
       </div>
     );
   }
@@ -66,7 +66,7 @@ export function ReserveFlow() {
       {stage === "choose" ? (
         <div className="space-y-14">
           <fieldset>
-            <legend className="font-tpl-display text-3xl">How many of you?</legend>
+            <legend className="font-tpl-display text-3xl">{t("How many of you?")}</legend>
             <div className="mt-5 flex flex-wrap gap-2">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
                 <button
@@ -85,17 +85,14 @@ export function ReserveFlow() {
                 </button>
               ))}
             </div>
-            <p className="mt-3 text-[15px] text-tpl-muted">
-              Nine or more?{" "}
-              <Link href={href("/private-dining")} className="text-tpl-accent underline underline-offset-4">
-                Book a private room
-              </Link>
+            <p className="mt-3 text-[15px] text-tpl-muted">{t("Nine or more?")}{" "}
+              <Link href={href("/private-dining")} className="text-tpl-accent underline underline-offset-4">{t("Book a private room")}</Link>
               .
             </p>
           </fieldset>
 
           <fieldset>
-            <legend className="font-tpl-display text-3xl">Which day?</legend>
+            <legend className="font-tpl-display text-3xl">{t("Which day?")}</legend>
             <Calendar
               mode="single"
               start={day}
@@ -110,13 +107,13 @@ export function ReserveFlow() {
               weekdayClassName="pb-2 text-center text-xs text-tpl-muted"
               dayClassName="mx-auto grid aspect-square w-full max-w-11 place-items-center text-[15px] hover:bg-tpl-soft disabled:cursor-not-allowed disabled:text-tpl-line disabled:line-through disabled:hover:bg-transparent data-[selected=true]:bg-tpl-accent data-[selected=true]:text-tpl-on-accent data-[today=true]:underline"
             />
-            <p className="mt-3 text-[15px] text-tpl-muted">Closed on Mondays. Struck-through days are fully booked.</p>
+            <p className="mt-3 text-[15px] text-tpl-muted">{t("Closed on Mondays. Struck-through days are fully booked.")}</p>
           </fieldset>
 
           <fieldset disabled={!day}>
-            <legend className="font-tpl-display text-3xl">What time?</legend>
+            <legend className="font-tpl-display text-3xl">{t("What time?")}</legend>
             {!day ? (
-              <p className="mt-4 text-tpl-muted">Choose a day to see open tables.</p>
+              <p className="mt-4 text-tpl-muted">{t("Choose a day to see open tables.")}</p>
             ) : (
               <>
                 <div className="mt-5 grid grid-cols-3 gap-2 sm:grid-cols-5">
@@ -143,14 +140,14 @@ export function ReserveFlow() {
                   })}
                 </div>
                 {free.length === 0 && (
-                  <p className="mt-4 text-tpl-muted">That day is full for {party}. Try another day, or sit at the bar.</p>
+                  <p className="mt-4 text-tpl-muted">{t("That day is full for")}{party}{t(". Try another day, or sit at the bar.")}</p>
                 )}
               </>
             )}
           </fieldset>
 
           <fieldset>
-            <legend className="font-tpl-display text-3xl">Where would you like to sit?</legend>
+            <legend className="font-tpl-display text-3xl">{t("Where would you like to sit?")}</legend>
             <div className="mt-5 grid gap-2 sm:grid-cols-3">
               {SEATING.map((s) => {
                 const tooBig = s.id !== "room" && party > 4;
@@ -183,9 +180,7 @@ export function ReserveFlow() {
             disabled={!day || !time}
             onClick={() => setStage("details")}
             className="bg-tpl-accent px-7 py-4 text-lg font-semibold text-tpl-on-accent disabled:cursor-not-allowed disabled:opacity-35"
-          >
-            Continue to your details
-          </button>
+          >{t("Continue to your details")}</button>
         </div>
       ) : (
         <form
@@ -198,56 +193,38 @@ export function ReserveFlow() {
           }}
           className="space-y-6"
         >
-          <h2 className="font-tpl-display text-3xl">Who’s the booking for?</h2>
+          <h2 className="font-tpl-display text-3xl">{t("Who’s the booking for?")}</h2>
           <div className="grid gap-5 sm:grid-cols-2">
-            <label className="block">
-              Name
-              <input name="name" required autoComplete="name" className={input} />
+            <label className="block">{t("Name")}<input name="name" required autoComplete="name" className={input} />
             </label>
-            <label className="block">
-              Mobile
-              <input name="phone" type="tel" required autoComplete="tel" className={input} />
+            <label className="block">{t("Mobile")}<input name="phone" type="tel" required autoComplete="tel" className={input} />
             </label>
-            <label className="block sm:col-span-2">
-              Email
-              <input name="email" type="email" required autoComplete="email" className={input} />
+            <label className="block sm:col-span-2">{t("Email")}<input name="email" type="email" required autoComplete="email" className={input} />
             </label>
-            <label className="block">
-              Occasion
-              <select name="occasion" className={input} defaultValue="">
-                <option value="">None</option>
-                <option>Birthday</option>
-                <option>Anniversary</option>
-                <option>Date night</option>
-                <option>Business</option>
+            <label className="block">{t("Occasion")}<select name="occasion" className={input} defaultValue="">
+                <option value="">{t("None")}</option>
+                <option>{t("Birthday")}</option>
+                <option>{t("Anniversary")}</option>
+                <option>{t("Date night")}</option>
+                <option>{t("Business")}</option>
               </select>
             </label>
-            <label className="block">
-              Dietary needs
-              <input name="diet" placeholder="e.g. one vegetarian, nut allergy" className={input} />
+            <label className="block">{t("Dietary needs")}<input name="diet" placeholder="e.g. one vegetarian, nut allergy" className={input} />
             </label>
           </div>
           <label className="flex items-start gap-3 text-[15px] text-tpl-muted">
-            <input type="checkbox" name="news" className="mt-1 size-4 accent-[var(--t-accent)]" />
-            Send me news about guest chefs and wine dinners (about once a month).
-          </label>
+            <input type="checkbox" name="news" className="mt-1 size-4 accent-[var(--t-accent)]" />{t("Send me news about guest chefs and wine dinners (about once a month).")}</label>
           <div className="flex flex-wrap items-center gap-6 pt-2">
-            <button type="submit" className="bg-tpl-accent px-7 py-4 text-lg font-semibold text-tpl-on-accent hover:bg-tpl-alt">
-              Confirm reservation
-            </button>
-            <button type="button" onClick={() => setStage("choose")} className="text-tpl-muted underline underline-offset-4">
-              Change table
-            </button>
+            <button type="submit" className="bg-tpl-accent px-7 py-4 text-lg font-semibold text-tpl-on-accent hover:bg-tpl-alt">{t("Confirm reservation")}</button>
+            <button type="button" onClick={() => setStage("choose")} className="text-tpl-muted underline underline-offset-4">{t("Change table")}</button>
           </div>
-          <p className="text-sm text-tpl-muted">
-            Demo: connect your reservation system (SevenRooms, OpenTable or your own) here. Nothing is booked.
-          </p>
+          <p className="text-sm text-tpl-muted">Sample request only. No table will be booked.</p>
         </form>
       )}
 
       <aside aria-label="Your table" className="lg:sticky lg:top-36 lg:self-start">
         <div className="border border-tpl-line bg-tpl-surface p-6">
-          <h2 className="font-tpl-display text-2xl">Your table</h2>
+          <h2 className="font-tpl-display text-2xl">{t("Your table")}</h2>
           <dl className="mt-5 space-y-3 text-[15px]">
             {[
               ["Guests", String(party)],
@@ -261,7 +238,7 @@ export function ReserveFlow() {
               </div>
             ))}
           </dl>
-          <p className="mt-5 text-sm text-tpl-muted">Tables are held for two hours. No deposit for parties under nine.</p>
+          <p className="mt-5 text-sm text-tpl-muted">{t("Tables are held for two hours. No deposit for parties under nine.")}</p>
         </div>
       </aside>
     </div>

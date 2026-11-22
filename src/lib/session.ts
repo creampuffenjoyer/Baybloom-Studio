@@ -19,7 +19,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   // Auth.js uses crypto before it reads cookies; mark this as request-time first.
   await connection();
   const session = await auth();
-  if (!session?.user?.id) return null;
+  if (!session?.user?.id || session.user.mfaPending) return null;
   return {
     id: session.user.id,
     name: session.user.name ?? null,

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MIN_PASSWORD_CHARACTERS, MAX_PASSWORD_BYTES } from "@/lib/password-policy";
 
 export const TIER_LEVELS = ["STARTER", "STANDARD", "PREMIUM"] as const;
 export const PUBLIC_SORTS = ["newest", "popular", "name"] as const;
@@ -13,12 +14,17 @@ export const emailSchema = z
 
 export const passwordSchema = z
   .string()
-  .min(8, { error: "Use at least 8 characters." })
-  .max(128, { error: "Use at most 128 characters." });
+  .min(MIN_PASSWORD_CHARACTERS, { error: `Use at least ${MIN_PASSWORD_CHARACTERS} characters.` })
+  .max(MAX_PASSWORD_BYTES, { error: "This password is too long. Use a shorter passphrase." })
+  .refine((value) => [...value].length >= MIN_PASSWORD_CHARACTERS, { error: `Use at least ${MIN_PASSWORD_CHARACTERS} characters.` })
+  .refine((value) => new TextEncoder().encode(value).byteLength <= MAX_PASSWORD_BYTES, {
+    error: "This password is too long. Use a shorter passphrase.",
+  });
 
 export const loginSchema = z.object({
   email: emailSchema,
   password: z.string().min(1, { error: "Enter your password." }).max(128),
+  code: z.string().max(40).optional(),
 });
 
 export const registerSchema = z.object({

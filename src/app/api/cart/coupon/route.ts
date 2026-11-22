@@ -3,16 +3,21 @@ import { evaluateCoupon, getCart } from "@/lib/cart";
 import { getCartForRequest, setCouponCookie } from "@/lib/cart-request";
 import { getCurrentUser } from "@/lib/session";
 import { rateLimit } from "@/lib/rate-limit";
+import { guardBrowserWrite, readJsonBody, privateResponseHeaders } from "@/lib/request-security";
 
 /** POST /api/cart/coupon { code }: validate and remember a promo code. */
 export async function POST(request: Request) {
+  const rejected = guardBrowserWrite(request);
+  if (rejected) return rejected;
   const user = await getCurrentUser();
   if (!user) return Response.json({ error: "Please log in." }, { status: 401 });
   if (!(await rateLimit(`coupon:${user.id}`, 10, 10 * 60_000)).ok) {
     return Response.json({ error: "Too many attempts. Please wait a few minutes." }, { status: 429 });
   }
 
-  const parsed = z.object({ code: z.string().max(40) }).safeParse(await request.json().catch(() => null));
+  const body = await readJsonBody(request);
+  if (!body.ok) return body.response;
+  const parsed = z.object({ code: z.string().max(40) }).safeParse(body.value);
   if (!parsed.success) return Response.json({ error: "Enter a code." }, { status: 400 });
 
   const cart = await getCart(user.id);
@@ -20,13 +25,15 @@ export async function POST(request: Request) {
   if (!result.ok) return Response.json({ error: result.error }, { status: 400 });
 
   await setCouponCookie(result.code);
-  return Response.json(await getCart(user.id, result.code));
+  return Response.json(await getCart(user.id, result.code), { headers: privateResponseHeaders });
 }
 
-export async function DELETE() {
+export async function DELETE(request: Request) {
+  const rejected = guardBrowserWrite(request, false);
+  if (rejected) return rejected;
   const user = await getCurrentUser();
   if (!user) return Response.json({ error: "Please log in." }, { status: 401 });
   await setCouponCookie(null);
   const cart = await getCartForRequest(user.id);
-  return Response.json({ ...cart, coupon: null, discountCents: 0, totalCents: cart.subtotalCents });
+  return Response.json({ ...cart, coupon: null, discountCents: 0, totalCents: cart.subtotalCents }, { headers: privateResponseHeaders });
 }

@@ -1,7 +1,7 @@
 "use client";
 import { useCoral, LocalLink as Link } from "../language";
 import { VillaComparison } from "../components/villa-comparison";
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 
 import { formatMoney } from "../../_kit/dates";
 import { PageIntro } from "../components/page-intro";
@@ -9,7 +9,7 @@ import { PageIntro } from "../components/page-intro";
 import { href } from "../site";
 
 export function VillasPage() {
-  const { t, photo, villas } = useCoral();
+  const { t, villaPhoto, villas } = useCoral();
   return (
     <>
       <div className="pb-12"><PageIntro
@@ -20,11 +20,11 @@ export function VillasPage() {
       <VillaComparison />
       <div className="mx-auto mt-16 max-w-7xl space-y-24 px-5 pb-24 sm:px-8">
         {villas.map((v, i) => {
-          const p = photo(v.photos[0]);
+          const p = villaPhoto(v);
           return (
             <article key={v.slug} className="grid items-center gap-8 md:grid-cols-2 md:gap-14">
               <div className={`relative aspect-[4/3] overflow-hidden rounded-[2rem] ${i % 2 ? "md:order-2" : ""}`}>
-                <Image src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+                <Image placement={`villas.${v.slug}`} src={p.src} alt={p.alt} unoptimized={(p.src).startsWith("blob:") || (p.src).startsWith("/api/personalization/")} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
               </div>
               <div>
                 <h2 className="font-tpl-display text-4xl font-bold tracking-[-0.035em] sm:text-5xl">{v.name}</h2>

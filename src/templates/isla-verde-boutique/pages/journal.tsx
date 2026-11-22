@@ -2,7 +2,7 @@
 
 import { useIsla } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 import { LocalLink as Link } from "../language";
 import { notFound } from "next/navigation";
 
@@ -18,7 +18,7 @@ export function JournalPage() {
       <p className="mt-5 max-w-[50ch] text-lg text-tpl-muted">{t("Notes from the house and the old town around it.")}</p>
       <Link href={href(`/journal/${lead.slug}`)} className="group mt-14 grid gap-10 border-t border-tpl-line pt-14 lg:grid-cols-2 lg:items-center">
         <div className="relative aspect-[4/3] overflow-hidden">
-          <Image src={photo(lead.photo).src} alt={photo(lead.photo).alt} fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+          <Image placement={"journal.lead"} src={photo(lead.photo).src} unoptimized={photo(lead.photo).src.startsWith("blob:") || photo(lead.photo).src.startsWith("/api/personalization/")} alt={photo(lead.photo).alt} fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
         </div>
         <div>
           <p className="text-tpl-muted">
@@ -60,7 +60,7 @@ export function PostPage({ slug }: { slug: string }) {
         <p className="mt-5 text-xl text-tpl-muted">{p.dek}</p>
       </header>
       <div className={`relative mx-auto mt-12 aspect-[4/5] max-w-xl overflow-hidden ${arch}`}>
-        <Image src={photo(p.photo).src} alt={photo(p.photo).alt} fill priority sizes="(min-width: 640px) 576px, 100vw" className="object-cover" />
+        <Image placement={`post.${p.slug}`} src={photo(p.photo).src} unoptimized={photo(p.photo).src.startsWith("blob:") || photo(p.photo).src.startsWith("/api/personalization/")} alt={photo(p.photo).alt} fill priority sizes="(min-width: 640px) 576px, 100vw" className="object-cover" />
       </div>
       <div className="mx-auto mt-14 max-w-[62ch] space-y-6 font-tpl-display text-xl leading-[1.7] first-letter:float-left first-letter:mr-3 first-letter:font-tpl-display first-letter:text-7xl first-letter:leading-[0.8] first-letter:text-tpl-alt">
         {p.body.map((para) => (

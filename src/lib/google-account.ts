@@ -1,11 +1,13 @@
 import "server-only";
 import type { PrismaClient } from "@prisma/client";
 import { db } from "@/lib/db";
+import { rateLimit } from "@/lib/rate-limit";
 
 /** A verified provider email must never silently adopt another login credential. */
 export async function authorizeGoogleAccount(
   identity: { subject: string; email: string; name?: string | null; image?: string | null },
   client: PrismaClient = db,
+  allowCreation: () => Promise<boolean> = async () => (await rateLimit("register:global", 100, 60 * 60_000, client)).ok,
 ) {
   const email = identity.email.trim().toLowerCase();
   const linked = await client.account.findUnique({
@@ -14,6 +16,7 @@ export async function authorizeGoogleAccount(
   });
   if (linked) return !linked.user.disabled && linked.user.email === email;
   if (await client.user.findUnique({ where: { email }, select: { id: true } })) return false;
+  if (!(await allowCreation())) return false;
   try {
     await client.user.create({
       data: {

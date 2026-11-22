@@ -76,7 +76,7 @@ export function CartButton() {
       type="button"
       onClick={() => setOpen(true)}
       aria-label={`Open cart, ${count} ${count === 1 ? "item" : "items"}`}
-      className="relative grid size-9 place-items-center rounded-full text-bay transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+      className="relative grid size-11 place-items-center rounded-full text-bay transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
     >
       <ShoppingBagIcon className="size-5" />
       {count > 0 && (

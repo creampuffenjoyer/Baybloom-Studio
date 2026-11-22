@@ -1,5 +1,5 @@
 "use client";
-
+import { useBloomCopy } from "../copy";
 import { useBloomfield } from "../language";
 
 import { LocalLink as Link } from "../language";
@@ -9,19 +9,16 @@ import { DateCheck } from "../components/date-check";
 import { href } from "../site";
 
 export function PlanningPage() {
+  const copy = useBloomCopy();
   const { faqs, timeline } = useBloomfield();
   return (
     <>
       <section className="mx-auto max-w-4xl px-5 pt-14 pb-12 text-center sm:px-8">
-        <h1 className="font-tpl-display text-6xl font-medium italic sm:text-7xl">Planning your day</h1>
-        <p className="mx-auto mt-5 max-w-[56ch] text-lg text-tpl-muted">
-          From the first viewing to the last dance, one coordinator looks after you. Here’s how it usually goes.
-        </p>
+        <h1 className="font-tpl-display text-6xl font-medium italic sm:text-7xl">{copy("Planning your day")}</h1>
+        <p className="mx-auto mt-5 max-w-[56ch] text-lg text-tpl-muted">{copy("From the first viewing to the last dance, one coordinator looks after you. Here’s how it usually goes.")}</p>
       </section>
       <section aria-labelledby="tl" className="mx-auto max-w-4xl px-5 sm:px-8">
-        <h2 id="tl" className="sr-only">
-          Timeline
-        </h2>
+        <h2 id="tl" className="sr-only">{copy("Timeline")}</h2>
         <ol className="relative space-y-10 border-l border-tpl-alt/40 pl-8">
           {timeline.map((t) => (
             <li key={t.when} className="relative">
@@ -33,9 +30,7 @@ export function PlanningPage() {
         </ol>
       </section>
       <section aria-labelledby="faq" className="mx-auto max-w-4xl px-5 py-24 sm:px-8">
-        <h2 id="faq" className="font-tpl-display text-5xl font-medium italic">
-          Questions couples ask
-        </h2>
+        <h2 id="faq" className="font-tpl-display text-5xl font-medium italic">{copy("Questions couples ask")}</h2>
         <div className="mt-8 divide-y divide-tpl-line border-y border-tpl-line">
           {faqs.map(([q, a]) => (
             <details key={q} className="group py-5">
@@ -56,8 +51,7 @@ export function PlanningPage() {
             <DateCheck />
           </Suspense>
         </div>
-        <p className="mt-6 text-center text-tpl-muted">
-          Explore the <Link href={href("/inquire")} className="underline underline-offset-4">sample inquiry</Link>. No message is sent.
+        <p className="mt-6 text-center text-tpl-muted">{copy("Explore the")}<Link href={href("/inquire")} className="underline underline-offset-4">sample inquiry</Link>. No message is sent.
         </p>
       </section>
     </>

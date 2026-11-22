@@ -53,12 +53,12 @@ export function CompareTable({ columns }: { columns: CompareColumn[] }) {
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <Checkbox id={diffId} checked={diffOnly} onCheckedChange={(v) => setDiffOnly(v === true)} className="bg-white" />
-          <label htmlFor={diffId} className="text-sm">
+          <label htmlFor={diffId} className="flex min-h-11 cursor-pointer items-center text-sm">
             Only show features that differ
           </label>
         </div>
         {columns.length < COMPARE_MAX && (
-          <Button asChild variant="outline" className="rounded-full bg-white">
+          <Button asChild variant="outline" className="h-11 rounded-lg bg-white">
             <Link href="/designs">
               <PlusIcon /> Add another design
             </Link>
@@ -66,7 +66,8 @@ export function CompareTable({ columns }: { columns: CompareColumn[] }) {
         )}
       </div>
 
-      <div className="overflow-x-auto pb-4" role="table" aria-label="Design comparison">
+      <p id="comparison-help" className="mb-3 text-sm text-muted-foreground lg:hidden">Scroll sideways to compare every design.</p>
+      <div className="overflow-x-auto rounded-lg pb-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring" role="table" aria-label="Design comparison" aria-describedby="comparison-help" tabIndex={0}>
         <div className="min-w-fit">
           {/* Header row: images and titles */}
           <div role="row" className="grid" style={grid}>
@@ -86,7 +87,7 @@ export function CompareTable({ columns }: { columns: CompareColumn[] }) {
                     type="button"
                     onClick={() => removeColumn(c.slug)}
                     aria-label={`Remove ${c.title} from comparison`}
-                    className="absolute top-2 right-2 grid size-9 place-items-center rounded-full bg-white/90 text-ink shadow-sm hover:bg-white"
+                    className="absolute top-2 right-2 grid size-11 place-items-center rounded-full bg-white text-ink shadow-sm hover:bg-sand"
                   >
                     <XIcon className="size-4" />
                   </button>

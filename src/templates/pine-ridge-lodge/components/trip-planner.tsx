@@ -1,6 +1,7 @@
 "use client";
+import { usePersonalization } from "../personalization";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "./placement-image";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LocalLink, usePine } from "../language";
@@ -8,13 +9,14 @@ import { CURRENCY, href } from "../site";
 import { formatMoney } from "../../_kit/dates";
 
 export function TripPlanner() {
+  const { photoEditing } = usePersonalization();
   const { t, season, setSeason, seasons, activities, rooms, photo } = usePine();
   const params = useSearchParams();
   const [level, setLevel] = useState("any");
   const count = Number(params.get("guests"));
   const guests = Number.isInteger(count) && count >= 1 && count <= 6 ? count : 2;
   const activity = activities.find(a=>a.id===params.get("activity") && a.season===season);
-  const shown = activities.filter(a=>a.season===season && (level==="any" || a.levelId===level));
+  const shown = photoEditing ? activities : activities.filter(a=>a.season===season && (level==="any" || a.levelId===level));
   const matchingRooms = rooms.filter(r=>r.maxGuests>=guests);
   function select(key: string, value: string) {
     const url = new URL(location.href);
@@ -38,7 +40,7 @@ export function TripPlanner() {
     {shown.length===0 ? <div className="my-6 border-y border-tpl-line py-6"><p>{t("No activities match this level in this season.")}</p><button onClick={()=>setLevel("any")} className="mt-3 font-bold underline underline-offset-4">{t("Show all levels")}</button></div> : <ul className="mt-6 divide-y divide-tpl-line">{shown.map(a=>{
       const p=photo(a.photo);
       return <li key={a.id} className="grid gap-6 py-8 md:grid-cols-[280px_1fr]">
-        <div className="relative aspect-[3/2] overflow-hidden rounded-md"><Image src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 280px, 100vw" className="object-cover" /></div>
+        <div className="relative aspect-[3/2] overflow-hidden rounded-md"><Image placement={`activities.${a.id}`} src={p.src} alt={p.alt} unoptimized={p.src.startsWith("blob:") || p.src.startsWith("/api/personalization/")} fill sizes="(min-width: 768px) 280px, 100vw" className="object-cover" /></div>
         <div><h3 className="font-tpl-display text-3xl font-bold">{a.name}</h3><p className="mt-2 max-w-2xl text-tpl-muted">{a.detail}</p><p className="mt-3 font-medium">{a.level} · {a.duration}</p>
           <button aria-pressed={activity?.id===a.id} onClick={()=>select("activity",a.id)} className="mt-5 rounded-md px-4 py-3 font-bold ring-1 ring-tpl-line aria-pressed:bg-tpl-accent aria-pressed:text-tpl-on-accent hover:ring-tpl-ink">{activity?.id===a.id ? t("Added to your plan") : t("Add to trip plan")}</button>
         </div>

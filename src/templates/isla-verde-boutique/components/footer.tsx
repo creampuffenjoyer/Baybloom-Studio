@@ -11,7 +11,7 @@ export function Footer() {
     <footer className="mt-28 bg-tpl-deep text-tpl-on-deep">
       <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
-          <p className="font-tpl-display text-5xl italic">{t("Isla Verde")}</p>
+          <p className="font-tpl-display text-5xl italic">{site.name}</p>
           <p className="mt-3 max-w-xs text-tpl-on-deep/75">{site.tagline}{t(". Twelve rooms in a restored bahay na bato.")}</p>
         </div>
         <div className="text-[15px]">

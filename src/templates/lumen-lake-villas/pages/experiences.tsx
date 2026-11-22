@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 import { ExperienceInquiry } from "../components/experience-inquiry";
 import { useLumen } from "../language";
 
@@ -16,7 +16,7 @@ export function ExperiencesPage() {
           return (
             <li key={x.slug} id={x.slug} className="grid scroll-mt-10 gap-10 md:grid-cols-2 md:items-center md:gap-20">
               <div className={`relative aspect-[4/5] overflow-hidden ${i % 2 ? "md:order-2" : ""}`}>
-                <Image src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+                <Image placement={`experiences.${x.slug}`} src={p.src} alt={p.alt} unoptimized={p.src.startsWith("blob:") || p.src.startsWith("/api/personalization/")} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
               </div>
               <div>
                 <p className="text-sm text-tpl-muted">

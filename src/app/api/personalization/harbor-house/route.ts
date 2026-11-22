@@ -1,9 +1,15 @@
+import { withVerifiedStorageWrite } from "@/lib/personalization/verified-writes";
+import { HOUSE_PHOTO_KEYS } from "@/lib/personalization/house-photos";
 import { getHarborDraft, saveHarborDraft } from "@/lib/personalization/drafts";
 import { parseHarborDraft } from "@/lib/personalization/harbor-draft";
 import { getCurrentUser } from "@/lib/session";
 import { rateLimit } from "@/lib/rate-limit";
+import { isSameOriginJsonRequest } from "@/lib/personalization/request";
 import { normalizeHeroImage, MAX_IMAGE_BYTES } from "@/lib/personalization/image";
 import { z } from "zod";
+import { db } from "@/lib/db";
+import { HARBOR_ROOM_IMAGE_KEYS } from "@/lib/personalization/harbor-room-images";
+import { HARBOR_PLACEMENT_KEYS } from "@/templates/harbor-house/photo-placements";
 
 const headers = { "Cache-Control": "private, no-store" };
 
@@ -14,14 +20,16 @@ export async function GET() {
   if (!draft) return Response.json({ draft: null }, { headers });
   const parsed = parseHarborDraft(draft.content);
   if (!parsed.success) return Response.json({ error: "This draft cannot be opened. Please contact support." }, { status: 500, headers });
-  return Response.json({ draft: parsed.data, hasPhoto: !!draft.heroImage, updatedAt: draft.updatedAt }, { headers });
+  const roomPhotos = await db.personalizationDraftImage.findMany({ where: { draft: { userId: user.id, template: "harbor-house" }, slot: { in: [...HARBOR_ROOM_IMAGE_KEYS] } }, select: { slot: true, updatedAt: true } });
+  const photos = await db.personalizationDraftImage.findMany({ where: { draft: { userId: user.id, template: "harbor-house" }, slot: { in: HOUSE_PHOTO_KEYS.map(key => `photo:${key}`) } }, select: { slot: true, updatedAt: true } });
+  const placementPhotos = await db.personalizationDraftImage.findMany({ where: { draft: { userId: user.id, template: "harbor-house" }, slot: { in: HARBOR_PLACEMENT_KEYS.map(key => `placement:${key}`) } }, select: { slot: true, updatedAt: true } });
+  return Response.json({ placementPhotos: placementPhotos.map(item => ({ ...item, slot: item.slot.slice(10) })), photos: photos.map(item => ({ ...item, slot: item.slot.slice(6) })), draft: parsed.data, hasPhoto: !!draft.heroImage, updatedAt: draft.updatedAt, roomPhotos }, { headers });
 }
 
-export async function PUT(request: Request) {
+async function putPhoto(request: Request) {
   const user = await getCurrentUser();
   if (!user) return Response.json({ error: "Sign in to save your draft." }, { status: 401, headers });
-  const origin = request.headers.get("origin");
-  if (!origin || origin !== new URL(request.url).origin || !request.headers.get("content-type")?.toLowerCase().startsWith("application/json")) {
+  if (!isSameOriginJsonRequest(request)) {
     return Response.json({ error: "Invalid request." }, { status: 403, headers });
   }
   if (!(await rateLimit(`personalization:${user.id}`, 60, 60_000)).ok) return Response.json({ error: "Please wait before saving again." }, { status: 429, headers });
@@ -34,7 +42,7 @@ export async function PUT(request: Request) {
     const { done, value } = await reader.read();
     if (done) break;
     length += value.byteLength;
-    if (length > Math.ceil(MAX_IMAGE_BYTES / 3) * 4 + 16_384) { await reader.cancel(); return Response.json({ error: "Draft is too large." }, { status: 413, headers }); }
+    if (length > Math.ceil(MAX_IMAGE_BYTES / 3) * 4 + 65_536) { await reader.cancel(); return Response.json({ error: "Draft is too large." }, { status: 413, headers }); }
     chunks.push(value);
   }
   let input: unknown;
@@ -52,3 +60,5 @@ export async function PUT(request: Request) {
   const saved = await saveHarborDraft(user.id, parsed.data, image);
   return Response.json({ updatedAt: saved.updatedAt }, { headers });
 }
+
+export const PUT = withVerifiedStorageWrite(putPhoto);

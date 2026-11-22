@@ -5,11 +5,13 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "@/lib/db";
-import { consumeToken } from "@/lib/tokens";
+import { consumeToken, peekToken } from "@/lib/tokens";
+import { checkBreachedPassword, BREACHED_PASSWORD_MESSAGE, PASSWORD_CHECK_UNAVAILABLE } from "@/lib/breached-passwords";
 import { rateLimit } from "@/lib/rate-limit";
 import { emailSchema, passwordSchema } from "@/lib/validators";
 import { sendPasswordResetEmail, sendVerificationEmail } from "@/lib/account-emails";
 import { getCurrentUser } from "@/lib/session";
+import { auth } from "@/lib/auth";
 
 export type RecoveryState = {
   ok?: boolean;
@@ -81,6 +83,14 @@ export async function resetPasswordAction(
       : { error: "This reset link is invalid. Please request a new one." };
   }
 
+  if (!(await rateLimit(`reset-submit:ip:${await clientIp()}`, 10, 15 * 60_000)).ok ||
+      !(await rateLimit(`reset-submit:token:${parsed.data.token}`, 5, 15 * 60_000)).ok) {
+    return { error: "Too many attempts. Please wait a few minutes and try again." };
+  }
+  if (!(await peekToken(parsed.data.token, "RESET_PASSWORD"))) return { error: "This reset link has expired or was already used. Please request a new one." };
+  const screening = await checkBreachedPassword(parsed.data.password);
+  if (screening === "breached") return { fieldErrors: { password: BREACHED_PASSWORD_MESSAGE } };
+  if (screening === "unavailable") return { error: PASSWORD_CHECK_UNAVAILABLE };
   const email = await consumeToken(parsed.data.token, "RESET_PASSWORD");
   if (!email) return { error: "This reset link has expired or was already used. Please request a new one." };
 
@@ -99,7 +109,13 @@ export async function resetPasswordAction(
 }
 
 export async function resendVerificationAction(): Promise<{ ok: boolean; message: string }> {
-  const user = await getCurrentUser();
+  let user = await getCurrentUser();
+  if (!user) {
+    // A password-authenticated admin awaiting enrollment may still verify its
+    // own inbox; it receives no normal account/application privileges.
+    const session = await auth();
+    if (session?.user?.mfaPending) user = { id: session.user.id, email: session.user.email ?? null, name: session.user.name ?? null, role: "CLIENT" };
+  }
   if (!user?.email) return { ok: false, message: "Please log in again." };
   if (!(await rateLimit(`verify:${user.id}`, 3, 60 * 60_000)).ok) {
     return { ok: false, message: "We've sent a few already. Please check your inbox and spam folder." };

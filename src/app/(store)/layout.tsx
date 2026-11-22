@@ -6,11 +6,12 @@ import { Toaster } from "@/components/ui/sonner";
 import { CompareTray } from "@/components/compare/compare-tray";
 import { CartProvider } from "@/components/cart/cart-provider";
 import { CartDrawer } from "@/components/cart/cart-drawer";
+import "./store.css";
 
 /** Storefront chrome. Template demos under /demo render without it. */
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <div className="baybloom-store">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-bay focus:shadow-lg"
@@ -20,7 +21,7 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
         <MotionProvider>
           <CartProvider>
             <SiteHeader />
-            <main id="main" className="flex-1">
+            <main id="main" tabIndex={-1} className="flex-1">
               {children}
             </main>
             <SiteFooter />
@@ -31,6 +32,6 @@ export default function StoreLayout({ children }: { children: React.ReactNode })
           </CartProvider>
         </MotionProvider>
         <Toaster position="bottom-right" />
-    </>
+    </div>
   );
 }

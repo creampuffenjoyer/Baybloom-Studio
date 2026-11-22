@@ -74,9 +74,22 @@ model User {
   cartItems CartItem[]
   orders    Order[]
   personalizationDrafts PersonalizationDraft[]
+  mfa MfaCredential?
 }
 
-/// One saved pilot draft per account and template. Assets are not stored here.
+model MfaCredential {
+  userId String @id
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  secret String?
+  enabledAt DateTime?
+  pendingSecret String?
+  pendingExpiresAt DateTime?
+  recoveryHashes String[] @default([])
+  lastStep Int @default(-1)
+  version Int @default(0)
+}
+
+/// One saved pilot draft per account and template.
 model PersonalizationDraft {
   id        String   @id @default(cuid())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -87,8 +100,21 @@ model PersonalizationDraft {
   heroImage Bytes?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  images    PersonalizationDraftImage[]
 
   @@unique([userId, template])
+}
+
+/// Private, normalized images attached to named slots in a draft.
+model PersonalizationDraftImage {
+  id        String   @id @default(cuid())
+  draft     PersonalizationDraft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  draftId   String
+  slot      String
+  image     Bytes
+  updatedAt DateTime @updatedAt
+
+  @@unique([draftId, slot])
 }
 
 /// OAuth identities (e.g. Google) linked to a user.
@@ -349,8 +375,72 @@ model OrderItem {
   priceCents  Int
   /// [{ id, name, priceCents }]
   addons      Json   @default("[]")
+  personalization OrderPersonalization?
+  delivery OrderDelivery?
 
   @@index([orderId])
+}
+
+/// A copy of the saved design at checkout, independent of later draft edits.
+model OrderPersonalization {
+  orderItemId String @id
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  template String
+  content Json
+  heroImage Bytes?
+  /// Null only for pre-Phase-2 prototype snapshots; never infer a release for them.
+  sourceReleaseId String?
+  sourceRelease TemplateRelease? @relation(fields: [sourceReleaseId], references: [sha256], onDelete: Restrict)
+  formatVersion Int?
+  snapshotSha256 String?
+  mode String @default("SAVED_DRAFT")
+  imageRightsConfirmedAt DateTime?
+  images OrderPersonalizationImage[]
+}
+
+/// Trusted source bytes retained independently of catalog files and active releases.
+model TemplateRelease {
+  sha256 String @id
+  template String
+  templateVersion String
+  contentVersion Int
+  archive Bytes
+  createdAt DateTime @default(now())
+  purchases OrderPersonalization[]
+  active ActiveTemplateRelease[]
+}
+
+model ActiveTemplateRelease {
+  template String @id
+  releaseId String
+  release TemplateRelease @relation(fields: [releaseId], references: [sha256], onDelete: Restrict)
+}
+
+/// Checkout creates this job; workers can claim it only after payment is confirmed.
+model OrderDelivery {
+  orderItemId String @id
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  artifact Bytes?
+  artifactStorageKey String?
+  artifactSha256 String?
+  readyAt DateTime?
+  attempts Int @default(0)
+  nextAt DateTime? @default(now())
+  leaseUntil DateTime?
+  leaseToken String?
+  lastError String?
+
+  @@index([nextAt])
+}
+
+model OrderPersonalizationImage {
+  id String @id @default(cuid())
+  orderItemId String
+  personalization OrderPersonalization @relation(fields: [orderItemId], references: [orderItemId], onDelete: Cascade)
+  slot String
+  image Bytes
+
+  @@unique([orderItemId, slot])
 }
 
 model Coupon {

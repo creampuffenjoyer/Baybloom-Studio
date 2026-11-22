@@ -11,9 +11,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { MIN_PASSWORD_CHARACTERS } from "@/lib/password-policy";
 
 const submitClass =
-  "h-11 w-full rounded-full bg-hibiscus-strong text-white hover:bg-hibiscus-strong/90";
+  "h-12 w-full rounded-lg bg-hibiscus-strong text-base text-white hover:bg-hibiscus-strong/90";
 
 function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
@@ -97,7 +98,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
           name="password"
           type="password"
           autoComplete="new-password"
-          minLength={8}
+          minLength={MIN_PASSWORD_CHARACTERS}
           aria-invalid={state.fieldErrors?.password ? true : undefined}
           aria-describedby="password-help"
           className="h-11 bg-white"
@@ -107,7 +108,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
           <FieldError id="password-help" message={state.fieldErrors.password} />
         ) : (
           <p id="password-help" className="text-xs text-muted-foreground">
-            At least 8 characters.
+            At least {MIN_PASSWORD_CHARACTERS} characters.
           </p>
         )}
       </div>

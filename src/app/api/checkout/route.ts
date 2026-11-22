@@ -7,11 +7,12 @@ import { rateLimit } from "@/lib/rate-limit";
 import { CheckoutError, prepareCheckout } from "@/lib/checkout";
 import { continueCheckout, ExpiredCheckoutError, reconcileExpiredCheckouts } from "@/lib/checkout-payment";
 import { stripeConfigured } from "@/lib/stripe";
+import { checkoutChoiceSchema } from "@/lib/personalization/checkout-choice";
+import { guardBrowserWrite, readJsonBody, privateResponseHeaders } from "@/lib/request-security";
 
 export async function POST(request: Request) {
-  if (!request.headers.get("content-type")?.includes("application/json")) {
-    return Response.json({ error: "Unsupported content type." }, { status: 415 });
-  }
+  const rejected = guardBrowserWrite(request);
+  if (rejected) return rejected;
   const user = await getCurrentUser();
   if (!user?.email) return Response.json({ error: "Please log in." }, { status: 401 });
   if (!(await rateLimit(`checkout:${user.id}`, 10, 10 * 60_000)).ok) {
@@ -19,14 +20,19 @@ export async function POST(request: Request) {
   }
   const parsed = z.string().uuid().safeParse(request.headers.get("idempotency-key"));
   if (!parsed.success) return Response.json({ error: "A valid checkout request key is required." }, { status: 400 });
+  const body = await readJsonBody(request);
+  if (!body.ok) return body.response;
+  const choices = checkoutChoiceSchema.safeParse(body.value);
+  if (!choices.success) return Response.json({ error: "Choose supported saved drafts and confirm photo permissions." }, { status: 400 });
 
   try {
     await reconcileExpiredCheckouts();
     const code = (await cookies()).get(COUPON_COOKIE)?.value ?? null;
-    const order = await prepareCheckout(user.id, parsed.data, code, stripeConfigured());
+    const order = await prepareCheckout(user.id, parsed.data, code, stripeConfigured(), undefined,
+      choices.data.savedDraftTemplates, choices.data.imageRightsConfirmed);
     const url = await continueCheckout(order);
     if (order.totalCents === 0) await setCouponCookie(null);
-    return Response.json({ url });
+    return Response.json({ url }, { headers: privateResponseHeaders });
   } catch (error) {
     if (error instanceof CheckoutError) {
       return Response.json({ error: error.message, resetAttempt: error instanceof ExpiredCheckoutError }, { status: error.status });

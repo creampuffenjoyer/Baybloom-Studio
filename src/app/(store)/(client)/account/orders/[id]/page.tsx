@@ -155,7 +155,7 @@ async function Order({ params }: Pick<PageProps<"/account/orders/[id]">, "params
                   <ul className="mt-4 grid gap-2 sm:grid-cols-2 print:hidden">
                     {files.map((f) => (
                       <li key={f.id}>
-                        <a
+                        {f.status === "ready" ? <a
                           href={`/api/downloads/${item.id}?file=${f.id}`}
                           className="group flex items-center gap-3 rounded-xl border border-border bg-sand/60 px-3 py-2.5 text-sm transition hover:border-bay/40 hover:bg-white"
                         >
@@ -163,7 +163,10 @@ async function Order({ params }: Pick<PageProps<"/account/orders/[id]">, "params
                           <span className="min-w-0 flex-1 truncate">{f.name}</span>
                           <span className="text-xs text-muted-foreground">{fileSize(f.sizeBytes)}</span>
                           <DownloadIcon className="size-4 text-muted-foreground transition group-hover:text-bay" aria-hidden />
-                        </a>
+                        </a> : <div role="status" className="rounded-xl border border-border px-3 py-2.5 text-sm">
+                          <p className="font-medium">{f.name}</p>
+                          <p className="mt-1 text-muted-foreground">{f.status === "preparing" ? "Preparing your saved package. Refresh this page shortly." : "Your purchase is saved. Contact support with your order number to restore delivery."}</p>
+                        </div>}
                       </li>
                     ))}
                   </ul>
@@ -192,7 +195,7 @@ async function Order({ params }: Pick<PageProps<"/account/orders/[id]">, "params
 
         {order.status === "PAID" && (
           <p className="mt-8 text-xs text-muted-foreground print:hidden">
-            Download links are generated on demand and expire after 5 minutes. Come back here any time to download again.
+            Your purchased website uses the content saved at checkout. Come back here to download again; purchased downloads do not depend on editor membership. File links expire after 5 minutes and can be refreshed here.
           </p>
         )}
       </article>

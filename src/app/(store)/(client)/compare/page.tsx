@@ -4,6 +4,7 @@ import { getCompareColumns } from "@/lib/catalog";
 import { requireUser } from "@/lib/session";
 import { CompareTable } from "@/app/(store)/(client)/compare/compare-table";
 import { CompareEmpty } from "@/app/(store)/(client)/compare/compare-empty";
+import { PageHeading } from "@/components/layout/page-heading";
 
 export const metadata: Metadata = {
   title: "Compare designs",
@@ -13,13 +14,9 @@ export const metadata: Metadata = {
 export default function ComparePage(props: PageProps<"/compare">) {
   return (
     <div className="container-page py-12 sm:py-16">
-      <p className="text-xs font-semibold tracking-[0.2em] text-hibiscus-strong uppercase">
-        Client area
-      </p>
-      <h1 className="mt-3 text-4xl font-medium sm:text-5xl">Compare designs</h1>
-      <p className="mt-3 max-w-xl text-muted-foreground">
-        Prices, tiers, features and deliverables side by side, for up to three designs.
-      </p>
+      <PageHeading eyebrow="Your collection" title="Compare designs">
+        <p>Compare prices, tiers and included features for up to three designs, all in one place.</p>
+      </PageHeading>
       <div className="mt-10">
         <Suspense fallback={<div className="shimmer h-[520px] rounded-3xl" />}>
           <Compare searchParams={props.searchParams} />

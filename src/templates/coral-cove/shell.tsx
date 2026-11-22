@@ -6,18 +6,20 @@ import { body, display } from "./fonts";
 import { theme } from "./site";
 import { Header } from "./components/header";
 import { Footer } from "./components/footer";
+import { usePersonalization } from "./personalization";
 
 /** Wraps every Coral Cove page: theme, fonts, header and footer. */
-export function Shell({ children }: { children: React.ReactNode }) {
-  return <Suspense fallback={<p role="status">Loading / Naglo-load…</p>}><LanguageProvider><ShellContent>{children}</ShellContent></LanguageProvider></Suspense>;
+export function Shell({ children, languagePicker = true }: { children: React.ReactNode; languagePicker?: boolean }) {
+  return <Suspense fallback={<p role="status">Loading / Naglo-load…</p>}><LanguageProvider><ShellContent languagePicker={languagePicker}>{children}</ShellContent></LanguageProvider></Suspense>;
 }
-function ShellContent({ children }: { children: React.ReactNode }) {
+function ShellContent({ children, languagePicker }: { children: React.ReactNode; languagePicker: boolean }) {
   const { t } = useCoral();
+  const { accent } = usePersonalization();
   return (
     <div
       data-template="coral-cove"
       className={`${display.variable} ${body.variable} flex min-h-dvh flex-col bg-tpl-bg font-tpl-body text-tpl-ink antialiased`}
-      style={themeStyle(theme, { display: "var(--cc-display)", body: "var(--cc-body)" })}
+      style={themeStyle({ ...theme, accent: accent || theme.accent }, { display: "var(--cc-display)", body: "var(--cc-body)" })}
     >
       <a
         href="#content"
@@ -25,7 +27,7 @@ function ShellContent({ children }: { children: React.ReactNode }) {
       >
         {t("Skip to content")}
       </a>
-      <LanguagePicker />
+      {languagePicker && <LanguagePicker />}
       <Header />
       <main id="content" className="flex-1">
         {children}

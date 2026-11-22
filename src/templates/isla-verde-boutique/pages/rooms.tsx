@@ -2,7 +2,7 @@
 
 import { useIsla } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 import { LocalLink as Link } from "../language";
 import { formatMoney } from "../../_kit/dates";
 import { arch, href } from "../site";
@@ -24,10 +24,10 @@ export function RoomsPage() {
             <article key={r.slug} className="grid gap-10 py-16 lg:grid-cols-[1fr_1.1fr] lg:items-center">
               <div className={`grid grid-cols-[1.4fr_1fr] items-end gap-4 ${i % 2 ? "lg:order-2" : ""}`}>
                 <div className={`relative aspect-[3/4] overflow-hidden ${arch}`}>
-                  <Image src={a.src} alt={a.alt} fill sizes="(min-width: 1024px) 28vw, 58vw" className="object-cover" />
+                  <Image placement={`rooms.${r.slug}.photo.1`} src={a.src} unoptimized={a.src.startsWith("blob:") || a.src.startsWith("/api/personalization/")} alt={a.alt} fill sizes="(min-width: 1024px) 28vw, 58vw" className="object-cover" />
                 </div>
                 <div className="relative aspect-[3/4] overflow-hidden">
-                  <Image src={b.src} alt={b.alt} fill sizes="(min-width: 1024px) 20vw, 40vw" className="object-cover" />
+                  <Image placement={`rooms.${r.slug}.photo.2`} src={b.src} unoptimized={b.src.startsWith("blob:") || b.src.startsWith("/api/personalization/")} alt={b.alt} fill sizes="(min-width: 1024px) 20vw, 40vw" className="object-cover" />
                 </div>
               </div>
               <div>

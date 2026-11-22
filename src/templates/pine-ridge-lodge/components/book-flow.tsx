@@ -1,7 +1,7 @@
 "use client";
 import { usePine, LocalLink as Link } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "./placement-image";
 
 import { useSearchParams } from "next/navigation";
 import { useClientToday } from "../../_kit/use-today";
@@ -12,15 +12,19 @@ import { fromDay, formatMoney } from "../../_kit/dates";
 import { useStayBooking } from "../../_kit/use-stay-booking";
 
 import { CURRENCY, href } from "../site";
+import { usePersonalization } from "../personalization";
 
 const money = (n: number) => formatMoney(n, CURRENCY);
 const input = "mt-1.5 w-full rounded-md bg-tpl-surface px-4 py-3 ring-1 ring-tpl-line focus:ring-2 focus:ring-tpl-accent focus:outline-none";
 const primary = "rounded-md bg-tpl-accent px-6 py-3 font-bold text-tpl-on-accent disabled:cursor-not-allowed disabled:opacity-40";
 
 export function BookFlow() {
+  const { photoEditing } = usePersonalization();
   const { t, extras, photo, rooms, season, activities, seasons, locale } = usePine();
-  const availableExtras = extras.filter(x => season === "winter" || x.id !== "lift").map(x => x.id === "rental" ? {...x, name: season === "winter" ? t("One ski set, daily") : t("One bike, daily")} : x);
+  const personalization = usePersonalization();
+  const availableExtras = extras.filter(x => season === "winter" || x.id !== "lift").map(x => x.id === "rental" && !personalization.pineExtras?.rental?.name ? {...x, name: season === "winter" ? t("One ski set, daily") : t("One bike, daily")} : x);
   const b = useStayBooking(rooms, availableExtras, { maxGuests: 6, maxNights: 30 });
+  const step = photoEditing ? 1 : b.step;
   const params = useSearchParams();
   const activity = activities.find(a => a.id === params.get("activity") && a.season === season);
   const today = useClientToday();
@@ -31,7 +35,7 @@ export function BookFlow() {
   const formatDay = (day: string, options: Intl.DateTimeFormatOptions = {day: "numeric", month: "short"}) => new Intl.DateTimeFormat(locale,options).format(fromDay(day));
   const formatLong = (day: string) => formatDay(day,{day: "numeric", month: "long", year: "numeric"});
 
-  if (b.step === 4) {
+  if (step === 4) {
     return (
       <div role="status" className="rounded-md bg-tpl-deep p-6 text-tpl-on-deep sm:p-10">
         <p className="font-tpl-display text-5xl font-bold">{t("Your sample stay is ready.")}</p>
@@ -45,7 +49,7 @@ export function BookFlow() {
     );
   }
 
-  const canNext = [datesValid && inSeason, datesValid && inSeason && !!b.room && b.availability[b.room.slug], true, true][b.step];
+  const canNext = [datesValid && inSeason, datesValid && inSeason && !!b.room && b.availability[b.room.slug], true, true][step];
 
   return (
     <div>
@@ -55,21 +59,21 @@ export function BookFlow() {
       {/* Trail progress */}
       <ol aria-label={t("Booking steps")} className="relative flex justify-between gap-2 border-t-2 border-dashed border-tpl-line pt-4">
         {[t("Dates"), t("Room"), t("Details"), t("Review")].map((label, i) => (
-          <li key={label} aria-current={b.step === i ? "step" : undefined} className="relative flex flex-col items-center gap-2">
+          <li key={label} aria-current={step === i ? "step" : undefined} className="relative flex flex-col items-center gap-2">
             <span
               className={`grid size-8 place-items-center rounded-full text-sm font-bold ring-4 ring-tpl-bg ${
-                i <= b.step ? "bg-tpl-accent text-tpl-on-accent" : "bg-tpl-soft text-tpl-muted"
+                i <= step ? "bg-tpl-accent text-tpl-on-accent" : "bg-tpl-soft text-tpl-muted"
               }`}
             >
-              {i < b.step ? "✓" : i + 1}
+              {i < step ? "✓" : i + 1}
             </span>
-            <span className={`text-center text-sm ${b.step === i ? "font-bold" : "text-tpl-muted"}`}>{label}</span>
+            <span className={`text-center text-sm ${step === i ? "font-bold" : "text-tpl-muted"}`}>{label}</span>
           </li>
         ))}
       </ol>
 
       <div className="mt-12">
-        {b.step === 0 && (
+        {step === 0 && (
           <section aria-labelledby="dates">
             <h2 id="dates" className="font-tpl-display text-4xl font-bold">{t("Pick your dates")}</h2>
             <Calendar
@@ -95,13 +99,13 @@ export function BookFlow() {
           </section>
         )}
 
-        {b.step === 1 && (
+        {step === 1 && (
           <section aria-labelledby="room">
             <h2 id="room" className="font-tpl-display text-4xl font-bold">{t("Choose a room")}</h2>
             {rooms.every(r=>!b.availability[r.slug]) && <p role="status" className="mt-5 text-tpl-alt">{t("No sample rooms match these dates and guest count. Try different dates or fewer guests.")}</p>}
             <div className="mt-6 grid gap-5 sm:grid-cols-2">
               {rooms.map((r) => {
-                const free = b.availability[r.slug];
+                const free = photoEditing || b.availability[r.slug];
                 const chosen = b.room?.slug === r.slug;
                 const p = photo(r.photos[0]);
                 return (
@@ -116,7 +120,7 @@ export function BookFlow() {
                     }`}
                   >
                     <span className="relative aspect-square overflow-hidden rounded">
-                      <Image src={p.src} alt="" fill sizes="120px" className="object-cover" />
+                      <Image placement={`book.room.${r.slug}`} src={p.src} alt="" unoptimized={p.src.startsWith("blob:") || p.src.startsWith("/api/personalization/")} fill sizes="120px" className="object-cover" />
                     </span>
                     <span>
                       <span className="block font-tpl-display text-2xl font-bold">{r.name}</span>
@@ -134,7 +138,7 @@ export function BookFlow() {
           </section>
         )}
 
-        {b.step === 2 && (
+        {step === 2 && (
           <form
             id="details-form"
             onChange={(event) => { const field = event.target; if ((field instanceof HTMLInputElement || field instanceof HTMLSelectElement) && field.name) b.setDetails({...b.details,[field.name]:field.value}); }}
@@ -174,7 +178,7 @@ export function BookFlow() {
           </form>
         )}
 
-        {b.step === 3 && (
+        {step === 3 && (
           <section aria-labelledby="confirm">
             <h2 id="confirm" className="font-tpl-display text-4xl font-bold">{t("Check everything")}</h2>
             <dl className="mt-6 divide-y divide-tpl-line rounded-md bg-tpl-surface ring-1 ring-tpl-line">
@@ -206,15 +210,15 @@ export function BookFlow() {
             <span className="text-tpl-muted"> · {b.room?.name ?? t("No room yet")} · </span>
             <span className="font-bold">{t("Estimated subtotal")}: {b.room && b.nights ? money(total) : "—"}</span>
           </p>
-          {b.step > 0 && (
-            <button type="button" onClick={() => b.goTo((b.step - 1) as 0 | 1 | 2)} className="font-medium underline underline-offset-4">{t("Back")}</button>
+          {step > 0 && (
+            <button type="button" onClick={() => b.goTo((step - 1) as 0 | 1 | 2)} className="font-medium underline underline-offset-4">{t("Back")}</button>
           )}
-          {b.step === 2 ? (
+          {step === 2 ? (
             <button type="submit" form="details-form" className={primary}>{t("Review")}</button>
-          ) : b.step === 3 ? (
+          ) : step === 3 ? (
             <button type="button" className={primary} onClick={() => { if (!datesValid || !inSeason || !b.room || !b.availability[b.room.slug]) { b.goTo(0); return; } b.confirm(bookingRef("PR-SAMPLE")); }}>{t("Finish sample stay")}</button>
           ) : (
-            <button type="button" className={primary} disabled={!canNext} onClick={() => b.goTo((b.step + 1) as 1 | 2)}>{t("Continue")}</button>
+            <button type="button" className={primary} disabled={!canNext} onClick={() => b.goTo((step + 1) as 1 | 2)}>{t("Continue")}</button>
           )}
         </div>
       </div>

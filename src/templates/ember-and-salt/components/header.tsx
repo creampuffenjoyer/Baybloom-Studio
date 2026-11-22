@@ -6,12 +6,16 @@ import { useEffect, useState } from "react";
 import { fromDay } from "../../_kit/dates";
 import { useClientToday } from "../../_kit/use-today";
 import { href, nav } from "../site";
+import { usePersonalization } from "../personalization";
+import { useEmberCopy } from "../copy";
 
 // Opening hours by weekday (0 = Sunday), used for the "tonight" strip.
 const TONIGHT = ["12 pm – 10 pm", null, "5:30 pm – 11 pm", "5:30 pm – 11 pm", "5:30 pm – 11 pm", "5:30 pm – 12 am", "5:30 pm – 12 am"];
 
 function Tonight() {
   const today = useClientToday();
+  const { emberHours } = usePersonalization();
+  if (emberHours && Object.keys(emberHours).length) return <span>See our current hours on the Visit page.</span>;
   if (!today) return <span>Open Tuesday to Sunday from 5:30 pm</span>;
   const hours = TONIGHT[fromDay(today).getDay()];
   return hours ? (
@@ -24,6 +28,8 @@ function Tonight() {
 }
 
 export function Header() {
+  const t = useEmberCopy();
+  const { business } = usePersonalization();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -42,7 +48,7 @@ export function Header() {
       <div className="mx-auto grid h-18 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-6 px-5 sm:px-8">
         <nav aria-label="Main" className="hidden items-center gap-7 text-[15px] lg:flex">
           {nav.slice(0, 3).map((item) => (
-            <NavItem key={item.href} {...item} active={pathname.startsWith(href(item.href))} />
+            <NavItem key={item.href} {...item} label={t(item.label)} active={pathname.startsWith(href(item.href))} />
           ))}
         </nav>
         <button
@@ -55,12 +61,12 @@ export function Header() {
           {open ? "Close" : "Menu"}
         </button>
         <Link href={href("/")} onClick={() => setOpen(false)} className="font-tpl-display text-2xl whitespace-nowrap sm:text-3xl">
-          Ember <span className="text-tpl-accent">&amp;</span> Salt
+          {business?.name || <>Ember <span className="text-tpl-accent">&amp;</span> Salt</>}
         </Link>
         <div className="flex items-center justify-end gap-7 text-[15px]">
           <nav aria-label="More" className="hidden items-center gap-7 lg:flex">
             {nav.slice(3).map((item) => (
-              <NavItem key={item.href} {...item} active={pathname.startsWith(href(item.href))} />
+              <NavItem key={item.href} {...item} label={t(item.label)} active={pathname.startsWith(href(item.href))} />
             ))}
           </nav>
           <Link
@@ -78,7 +84,7 @@ export function Header() {
               {[{ href: "/", label: "Home" }, ...nav, { href: "/reserve", label: "Reserve a table" }].map((item) => (
                 <li key={item.href}>
                   <Link href={href(item.href)} onClick={() => setOpen(false)} className="block py-1 font-tpl-display text-4xl">
-                    {item.label}
+                    {t(item.label)}
                   </Link>
                 </li>
               ))}

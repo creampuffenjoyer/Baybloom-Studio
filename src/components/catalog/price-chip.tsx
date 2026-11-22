@@ -34,7 +34,7 @@ export function PriceChip({
     <Link
       href={loginHref(callbackUrl)}
       className={cn(
-        "relative z-10 inline-flex items-center gap-1.5 rounded-full bg-sand-deep px-3 py-1 text-xs font-medium text-bay transition-colors hover:bg-secondary",
+        "relative z-10 inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-sand px-3 py-2 text-xs font-medium text-bay transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
         className,
       )}
     >

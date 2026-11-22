@@ -23,6 +23,11 @@ npm run dev
 
 ## Scripts
 
+On this workspace, run tools through `node scripts/workspace-run.mjs npm ...`
+(or `node scripts/workspace-run.mjs node ...`) to keep temporary files and caches
+on E:. The wrapper removes its own temporary folder after each run. See
+[workspace tools](docs/workspace-tools.md).
+
 | Script | What it does |
 |---|---|
 | `dev` / `build` / `start` | Next.js |
@@ -49,6 +54,11 @@ npm run dev
 - Email goes through Resend when `RESEND_API_KEY` is set (sender: `EMAIL_FROM`); otherwise emails are printed to the dev server console.
 - Console email delivery is allowed only with `NODE_ENV=development`; all other environments require Resend configuration.
 - Google never automatically links to an existing password account. Existing customers should use their password or email recovery.
+- New passwords require at least 15 Unicode characters and at most 72 UTF-8 bytes; existing login credentials remain compatible.
+- Registration, password changes and resets screen submitted passwords against Pwned Passwords using a padded five-character hash-prefix lookup. No full password/hash is sent. If screening is unavailable, setting a password waits for a retry; existing login remains available.
+- Signup attempts share database-backed hourly limits: five per IP, three per email, and 100 account-creation attempts across password and Google signup. Existing linked Google logins do not consume signup capacity. IP limits depend on trusted ingress headers.
+- Saving drafts or uploading photos requires a verified email. Existing saved content can still be read and existing photo-delete endpoints remain available; resend the verification link from My account.
+- Administrators must enroll an authenticator and use a fresh code or a single-use recovery code to sign in. Password resets preserve MFA. See [administrative MFA](docs/admin-mfa.md) for migration/key requirements, recovery and rollout; client login behavior is unchanged.
 
 ## Payments (Stripe)
 
@@ -82,6 +92,24 @@ tsx loader and Node test runner. `npm run test:integration` additionally
 requires an explicit `TEST_DATABASE_URL` pointing to a migrated disposable database
 whose name contains `_test`. It never falls back to `.env` or the application database.
 
+`npm run test:security:e2e` builds an isolated production app and tests browser
+CSRF, XSS, object authorization, uploads, checkout and session revocation over
+local HTTPS. It requires Chrome, OpenSSL and the guarded `.env.test.local`
+database configuration. See [the security audit](docs/security-audit.md) for
+findings, reproduction details and remaining public-launch requirements.
+
+`npm run test:storage` tests photo quota races and rollback using tiny fixtures
+in that same guarded test database. Saved draft photos, including hero and legacy
+photo controls, share limits of 100 MiB per draft and 200 MiB per account.
+Replacing a photo counts its resulting size; restoring photos frees capacity.
+Purchased snapshots and delivered files are outside this draft quota.
+
+Hosting is still in planning. The [restricted staging checklist](docs/staging-checklist.md)
+records the infrastructure and provider checks to complete once a target is selected.
+
+The [draft retention plan](docs/storage-retention.md) includes an aggregate,
+read-only storage report. Automatic draft deletion remains disabled.
+
 ## Downloads
 
 Audit Phase 2 adds a durable email worker, shared rate limits, cart recovery, structured error events, and PostgreSQL CI. Before deploying, follow [Phase 2 deployment and operations](docs/phase-2-deployment.md), including the migration and authenticated scheduler setup.
@@ -90,6 +118,8 @@ Audit Phase 2 adds a durable email worker, shared rate limits, cart recovery, st
 - `GET /api/downloads/[orderItemId]?file=…` checks ownership, payment and tier, then redirects to a link that expires in 5 minutes.
 - Production: set `S3_ENDPOINT`, `S3_BUCKET`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` (and `S3_REGION`, `auto` for R2) to serve presigned URLs from a **private** bucket.
 - Development without S3: files live in `./storage` (git-ignored, written by the seed) and are served by `/api/files` only with a valid HMAC signature.
+
+All eight templates now have explicit original/saved-content purchase choices, retained source releases, immutable purchase snapshots and a leased package-delivery queue. Generated packages use private storage with purchaser-authorized links. Follow [template export Phase 2](docs/template-export-phase2.md) for migrations, reviewed release activation, S3 write access and maintenance, and [template export Phase 3](docs/template-export-phase3.md) for the six additional standalone exports and verification commands. Existing private deliverables are preserved.
 
 ## Templates
 

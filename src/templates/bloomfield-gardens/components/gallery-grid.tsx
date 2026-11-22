@@ -1,10 +1,14 @@
 "use client";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "./placement-image";
+import { PHOTO_REGISTRY } from "../photo-placements";
+import { usePersonalization } from "../personalization";
 import { Lightbox, type Photo } from "../../_kit/lightbox";
 
 /** Rhythmic grid: every fifth photo spans two columns. */
-export function GalleryGrid({ photos }: { photos: Photo[] }) {
+export function GalleryGrid({ photos: originals, placements }: { photos: Photo[]; placements: string[] }) {
+  const personalization = usePersonalization();
+  const photos = originals.map((photo, i) => PHOTO_REGISTRY.resolve(placements[i], photo, personalization));
   return (
     <Lightbox photos={photos} overlayClassName="bg-[#2a1d26]/96 text-[#fffaf6]">
       {(open) => (
@@ -16,8 +20,8 @@ export function GalleryGrid({ photos }: { photos: Photo[] }) {
                 onClick={() => open(i)}
                 className="group relative block aspect-square w-full overflow-hidden rounded-[1.25rem] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-tpl-alt"
               >
-                <Image
-                  src={p.src}
+                <Image placement={placements[i]}
+                  src={p.src} unoptimized={p.src.startsWith("blob:") || p.src.startsWith("/api/personalization/")}
                   alt={p.alt}
                   fill
                   sizes={i % 5 === 0 ? "50vw" : "25vw"}

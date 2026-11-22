@@ -7,6 +7,7 @@ import { validStay } from "../stay-plan";
 import { addDays } from "../../_kit/dates";
 import { useClientToday } from "../../_kit/use-today";
 import { href } from "../site";
+import { usePersonalization } from "../personalization";
 
 /* Ticket notches either side of the perforation (wide screens only). */
 const ticketCss = `
@@ -24,11 +25,12 @@ const ticketCss = `
 }`;
 
 const field =
-  "mt-1 w-full bg-transparent text-base font-semibold sm:text-lg text-tpl-ink outline-none [color-scheme:light] placeholder:text-tpl-muted";
+  "mt-1 min-h-8 w-full rounded-sm bg-transparent text-base font-medium sm:text-lg text-tpl-ink tabular-nums [color-scheme:light] placeholder:text-tpl-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-tpl-deep";
 
 /** The home-page booking bar, drawn as a boarding pass: dates and guests on the ticket, search on the stub. */
 export function BookingTicket() {
   const { t, language } = useCoral();
+  const { previewNavigate } = usePersonalization();
   const router = useRouter();
   const today = useClientToday();
   const [checkIn, setCheckIn] = useState("");
@@ -47,18 +49,20 @@ export function BookingTicket() {
       q.set("checkin", checkIn);
       q.set("checkout", checkOut);
     }
-    router.push(`${href("/book")}?${q}`);
+    const destination = `${href("/book")}?${q}`;
+    if (previewNavigate) previewNavigate(destination);
+    else router.push(destination);
   }
 
   return (
     <form
       onSubmit={submit}
       aria-label={t("Plan a sample stay")}
-      className="relative flex flex-col drop-shadow-[0_24px_40px_rgb(13_43_51/0.28)] md:flex-row"
+      className="relative flex flex-col drop-shadow-[0_8px_16px_rgb(0_0_0/0.12)] md:flex-row"
     >
       <style>{ticketCss}</style>
       <div
-        className="cc-ticket-body grid flex-1 grid-cols-2 gap-px overflow-hidden rounded-t-3xl bg-tpl-line sm:grid-cols-3 md:rounded-l-3xl md:rounded-tr-none"
+        className="cc-ticket-body grid min-w-0 flex-1 grid-cols-2 gap-px overflow-hidden rounded-t-2xl bg-tpl-line sm:grid-cols-3 md:rounded-l-2xl md:rounded-tr-none"
       >
         <label className="block bg-white px-4 py-3 sm:px-6 sm:py-4">
           <span className="text-sm text-tpl-muted">{t("Arrive")}</span>
@@ -101,11 +105,11 @@ export function BookingTicket() {
         </label>
       </div>
       <div
-        className="cc-ticket-stub flex items-center rounded-b-3xl border-t-2 border-dashed border-white/50 bg-tpl-accent px-3 py-3 md:rounded-r-3xl md:rounded-bl-none md:border-t-0 md:border-l-2 md:py-0"
+        className="cc-ticket-stub flex items-center rounded-b-2xl border-t-2 border-dashed border-white/50 bg-tpl-accent px-3 py-3 md:rounded-r-2xl md:rounded-bl-none md:border-t-0 md:border-l-2 md:py-0"
       >
         <button
           type="submit"
-          className="w-full rounded-full px-6 py-2 text-lg font-bold sm:py-3 whitespace-nowrap text-tpl-on-accent focus-visible:outline-2 focus-visible:outline-white md:w-auto"
+          className="min-h-12 w-full rounded-lg px-6 py-2 text-lg font-semibold sm:py-3 whitespace-nowrap text-tpl-on-accent transition-colors hover:bg-black/10 focus-visible:outline-2 focus-visible:outline-white md:w-auto"
         >{t("Plan a stay")}</button>
       </div>
       {error && (

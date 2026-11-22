@@ -8,6 +8,7 @@ import { db } from "@/lib/db";
 import { loginSchema } from "@/lib/validators";
 import { rateLimit } from "@/lib/rate-limit";
 import { authorizeGoogleAccount } from "@/lib/google-account";
+import { consumeMfaCode, MfaError } from "@/lib/mfa";
 
 class RateLimited extends CredentialsSignin {
   code = "rate_limited";
@@ -30,6 +31,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Credentials({
       credentials: { email: {}, password: {} },
       async authorize(raw) {
+        const authStartedAt = Date.now();
         const parsed = loginSchema.safeParse(raw);
         if (!parsed.success) return null;
         const { email, password } = parsed.data;
@@ -47,8 +49,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const user = await db.user.findUnique({ where: { email } });
         const ok = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
         if (!user || !user.passwordHash || !ok || user.disabled) return null;
-
-        return { id: user.id, email: user.email, name: user.name, role: user.role };
+        let mfaVersion: number | undefined;
+        if (user.role === "ADMIN") {
+          const factor = await db.mfaCredential.findUnique({ where: { userId: user.id } });
+          if (factor?.enabledAt) {
+            try { mfaVersion = await consumeMfaCode(user.id, parsed.data.code ?? "", db, authStartedAt); }
+            catch (error) { if (error instanceof MfaError) return null; throw error; }
+          }
+        }
+        return { id: user.id, email: user.email, name: user.name, role: user.role, mfaVersion, authStartedAt };
       },
     }),
     ...(googleEnabled ? [Google] : []),
@@ -57,10 +66,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async signIn({ account, profile }) {
       if (account?.provider !== "google") return true;
       if (!profile?.email || profile.email_verified !== true) return false;
+      // Administrative sessions use password + our enrolled factor. Provider
+      // claims alone cannot establish that this application's MFA was completed.
+      const administrative = await db.user.findUnique({ where: { email: profile.email.trim().toLowerCase() }, select: { role: true } });
+      if (administrative?.role === "ADMIN") return false;
 
       return authorizeGoogleAccount({
         subject: account.providerAccountId, email: profile.email, name: profile.name,
         image: typeof profile.picture === "string" ? profile.picture : null,
+      }, db, async () => {
+        const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
+        const email = profile.email!.trim().toLowerCase();
+        return (await rateLimit(`register:${ip}`, 5, 60 * 60_000)).ok &&
+          (await rateLimit(`register:email:${email}`, 3, 60 * 60_000)).ok &&
+          (await rateLimit("register:global", 100, 60 * 60_000)).ok;
       });
     },
 
@@ -79,8 +98,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!dbUser) return null;
         token.uid = dbUser.id;
         token.role = dbUser.role;
-        token.authAt = Date.now();
-        return token;
+        token.authAt = account.provider === "credentials" ? user.authStartedAt : Date.now();
+        token.mfaVersion = account.provider === "credentials" ? user.mfaVersion : undefined;
       }
 
       if (!token.uid) return null;
@@ -96,12 +115,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       token.email = current.email;
       token.role = current.role;
       token.name = current.name;
+      token.mfaPending = false;
+      if (current.role === "ADMIN") {
+        const factor = await db.mfaCredential.findUnique({ where: { userId: token.uid } });
+        if (factor?.enabledAt) {
+          if (!token.mfaVersion || token.mfaVersion !== factor.version) return null;
+        } else {
+          token.role = "CLIENT";
+          token.mfaPending = true;
+        }
+      } else { delete token.mfaVersion; }
       return token;
     },
 
     session({ session, token }) {
       session.user.id = token.uid;
       session.user.role = token.role;
+      session.user.mfaPending = token.mfaPending;
+      session.user.authAt = token.authAt;
       return session;
     },
   },

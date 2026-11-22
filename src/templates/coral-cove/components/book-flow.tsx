@@ -1,7 +1,8 @@
 "use client";
 import { useCoral, LocalLink as Link } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "./placement-image";
+import { usePersonalization } from "../personalization";
 
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -21,8 +22,11 @@ const primary =
 const ghost = "rounded-full px-5 py-3 font-semibold underline underline-offset-4";
 
 export function BookFlow() {
-  const { t, extras, offers, photo, villas, locale } = useCoral();
+  const { t, extras, offers, villaPhoto, villas, locale } = useCoral();
   const b = useStayBooking(villas, extras, { maxGuests: 5, maxNights: 30 });
+  const { photoEditing, photoSelection } = usePersonalization();
+  const step = photoEditing ? 1 : b.step;
+  const summaryVilla = photoEditing ? villas.find(v => photoSelection?.endsWith(v.slug)) ?? b.room : b.room;
   const params = useSearchParams();
   const offer = offers.find((o) => o.slug === params.get("offer")) ?? null;
   const [payment, setPayment] = useState<"deposit" | "arrival">("deposit");
@@ -33,7 +37,7 @@ export function BookFlow() {
   const formatDay = (day: string, options: Intl.DateTimeFormatOptions = {day: "numeric", month: "short"}) => new Intl.DateTimeFormat(locale, options).format(fromDay(day));
   const formatLong = (day: string) => formatDay(day, {weekday: "long", day: "numeric", month: "long", year: "numeric"});
 
-  if (b.step === 4) {
+  if (step === 4) {
     return (
       <div className="mx-auto max-w-2xl py-10 text-center">
         <p className="mx-auto grid size-16 place-items-center rounded-full bg-tpl-deep text-3xl text-white animate-in zoom-in duration-500">
@@ -63,15 +67,15 @@ export function BookFlow() {
       <div>
         <ol className="flex flex-wrap gap-x-6 gap-y-2" aria-label={t("Booking steps")}>
           {[t("Dates"), t("Villa"), t("Details"), t("Review")].map((label, i) => (
-            <li key={label} aria-current={b.step === i ? "step" : undefined} className="flex items-center gap-2">
+            <li key={label} aria-current={step === i ? "step" : undefined} className="flex items-center gap-2">
               <span
                 className={`grid size-8 place-items-center rounded-full text-sm font-bold ${
-                  i < b.step ? "bg-tpl-deep text-white" : i === b.step ? "bg-tpl-accent text-white" : "bg-tpl-soft text-tpl-muted"
+                  i < step ? "bg-tpl-deep text-white" : i === step ? "bg-tpl-accent text-white" : "bg-tpl-soft text-tpl-muted"
                 }`}
               >
-                {i < b.step ? "✓" : i + 1}
+                {i < step ? "✓" : i + 1}
               </span>
-              <span className={i === b.step ? "font-semibold" : "text-tpl-muted"}>{t(label)}</span>
+              <span className={i === step ? "font-semibold" : "text-tpl-muted"}>{t(label)}</span>
             </li>
           ))}
         </ol>
@@ -85,7 +89,7 @@ export function BookFlow() {
 
         {!datesValid && b.checkIn && <p role="alert" className="mt-4 text-tpl-accent">{t("Choose future arrival and departure dates, for a stay of 1–30 nights.")}</p>}
         <div className="mt-8">
-          {b.step === 0 && (
+          {step === 0 && (
             <section aria-labelledby="step-dates">
               <h2 id="step-dates" className="font-tpl-display text-3xl font-bold tracking-tight">{t("When are you coming?")}</h2>
               <p className="mt-2 text-tpl-muted">{t("Pick your arrival day, then the day you leave.")}</p>
@@ -135,7 +139,7 @@ export function BookFlow() {
             </section>
           )}
 
-          {b.step === 1 && (
+          {step === 1 && (
             <section aria-labelledby="step-villa">
               <h2 id="step-villa" className="font-tpl-display text-3xl font-bold tracking-tight">{t("Choose your villa")}</h2>
               <p className="mt-2 text-tpl-muted">
@@ -148,7 +152,7 @@ export function BookFlow() {
                   const free = b.availability[v.slug];
                   const tooSmall = v.maxGuests < b.guests;
                   const chosen = b.room?.slug === v.slug;
-                  const p = photo(v.photos[0]);
+                  const p = villaPhoto(v);
                   return (
                     <li key={v.slug}>
                       <label
@@ -165,7 +169,7 @@ export function BookFlow() {
                           onChange={() => b.selectRoom(v.slug)}
                         />
                         <span className="relative aspect-square overflow-hidden rounded-2xl sm:aspect-[4/3]">
-                          <Image src={p.src} alt="" fill sizes="150px" className="object-cover" />
+                          <Image placement={`book.villa.${v.slug}`} src={p.src} alt="" unoptimized={(p.src).startsWith("blob:") || (p.src).startsWith("/api/personalization/")} fill sizes="150px" className="object-cover" />
                         </span>
                         <span>
                           <span className="block font-tpl-display text-xl font-bold">{v.name}</span>
@@ -199,7 +203,7 @@ export function BookFlow() {
             </section>
           )}
 
-          {b.step === 2 && (
+          {step === 2 && (
             <form
               aria-labelledby="step-details"
               onChange={(event) => { const field = event.target; if ((field instanceof HTMLInputElement || field instanceof HTMLSelectElement || field instanceof HTMLTextAreaElement) && field.name) b.setDetails({ ...b.details, [field.name]: field.value }); }}
@@ -275,7 +279,7 @@ export function BookFlow() {
             </form>
           )}
 
-          {b.step === 3 && (
+          {step === 3 && (
             <form
               aria-labelledby="step-review"
               onSubmit={(e) => {
@@ -343,9 +347,9 @@ export function BookFlow() {
 
       <aside aria-label={t("Booking summary")} className="lg:sticky lg:top-28 lg:self-start">
         <div className="overflow-hidden rounded-3xl bg-tpl-soft">
-          {b.room && (
+          {summaryVilla && (
             <div className="relative aspect-[16/9]">
-              <Image src={photo(villas.find((v) => v.slug === b.room!.slug)!.photos[0]).src} alt="" fill sizes="360px" className="object-cover" />
+              <Image placement={`book.summary.${summaryVilla!.slug}`} src={villaPhoto(summaryVilla!).src} alt="" unoptimized={(villaPhoto(summaryVilla!).src).startsWith("blob:") || (villaPhoto(summaryVilla!).src).startsWith("/api/personalization/")} fill sizes="360px" className="object-cover" />
             </div>
           )}
           <div className="p-6">

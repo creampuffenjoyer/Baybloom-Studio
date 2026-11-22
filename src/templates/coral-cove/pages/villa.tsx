@@ -1,6 +1,6 @@
 "use client";
 import { useCoral, LocalLink as Link } from "../language";
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 
 import { notFound } from "next/navigation";
 import { formatMoney } from "../../_kit/dates";
@@ -9,7 +9,7 @@ import { PhotoGrid } from "../components/photo-grid";
 import { href } from "../site";
 
 export function VillaPage({ slug }: { slug: string }) {
-  const { t, photo, villas, site } = useCoral();
+  const { t, photo, villaPhoto, villas, site } = useCoral();
   const villa = villas.find((v) => v.slug === slug);
   if (!villa) notFound();
   const others = villas.filter((v) => v.slug !== slug);
@@ -27,7 +27,7 @@ export function VillaPage({ slug }: { slug: string }) {
       <p className="mt-4 max-w-[52ch] text-lg text-tpl-muted sm:text-xl">{villa.short}</p>
 
       <div className="mt-10">
-        <PhotoGrid photos={villa.photos.map(photo)} />
+        <PhotoGrid placements={villa.photos.map((_, index) => `villa.${villa.slug}.photo.${index + 1}`)} photos={villa.photos.map((key, index) => index === 0 ? villaPhoto(villa) : photo(key))} />
       </div>
 
       <div className="mt-14 grid gap-14 lg:grid-cols-[1fr_380px]">
@@ -95,12 +95,12 @@ export function VillaPage({ slug }: { slug: string }) {
         <h2 id="more" className="font-tpl-display text-3xl font-bold tracking-tight">{t("Other villas")}</h2>
         <ul className="mt-8 grid gap-6 sm:grid-cols-3">
           {others.map((v) => {
-            const p = photo(v.photos[0]);
+            const p = villaPhoto(v);
             return (
               <li key={v.slug}>
                 <Link href={href(`/villas/${v.slug}`)} className="group block">
                   <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-                    <Image src={p.src} alt={p.alt} fill sizes="(min-width: 640px) 33vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <Image placement={`villa.${villa.slug}.other.${v.slug}`} src={p.src} alt={p.alt} unoptimized={(p.src).startsWith("blob:") || (p.src).startsWith("/api/personalization/")} fill sizes="(min-width: 640px) 33vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
                   </div>
                   <p className="mt-3 font-tpl-display text-xl font-bold group-hover:underline">{v.name}</p>
                   <p className="text-tpl-muted">{t("from")}{" "}{formatMoney(v.price)}{" "}{t("a night")}</p>

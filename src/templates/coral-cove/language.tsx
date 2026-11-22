@@ -6,6 +6,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import * as content from "./content";
 import { nav, site } from "./site";
 import { copy } from "./translations";
+import { usePersonalization } from "./personalization";
 
 export type Language = "en" | "tl" | "taglish";
 export const languageOf = (value: string | null): Language => value === "tl" || value === "taglish" ? value : "en";
@@ -64,14 +65,34 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
 export function useCoral() {
   const language = useContext(Context);
+  const personalization = usePersonalization();
   return useMemo(() => ({
     language, locale: language === "en" ? "en-PH" : "fil-PH",
     t: (text: string) => translated(text, language),
-    villas: translateData(content.villas, language), extras: translateData(content.extras, language),
-    experiences: translateData(content.experiences, language), offers: translateData(content.offers, language),
-    reviews: translateData(content.reviews, language), site: translateData(site, language), nav: translateData(nav, language),
-    photo: (key: content.PhotoKey) => ({ ...content.photo(key), alt: translated(content.photo(key).alt, language) }),
-  }), [language]);
+    villas: translateData(content.villas, language).map((villa) => {
+      const override = personalization.villas?.[villa.slug];
+      if (!override) return villa;
+      const { description, amenities, ...fields } = override;
+      return { ...villa, ...fields,
+        ...(description ? { description: description.split(/\n+/).map((line) => line.trim()).filter(Boolean) } : {}),
+        ...(amenities ? { amenities: amenities.split(/\n+/).map((line) => line.trim()).filter(Boolean) } : {}) };
+    }), extras: translateData(content.extras, language),
+    experiences: translateData(content.experiences, language).map((experience) => ({ ...experience, ...personalization.experiences?.[experience.slug] })),
+    offers: translateData(content.offers, language).map((offer) => {
+      const override = personalization.offers?.[offer.slug];
+      if (!override) return offer;
+      const { includes, ...fields } = override;
+      return { ...offer, ...fields, ...(includes ? { includes: includes.split(/\n+/).map((line) => line.trim()).filter(Boolean) } : {}) };
+    }),
+    reviews: translateData(content.reviews, language).map((review, index) => ({ ...review, ...personalization.reviews?.[["first", "second", "third"][index]] })), site: { ...translateData(site, language), ...personalization.business }, nav: translateData(nav, language),
+    photo: (key: content.PhotoKey) => ({ ...content.photo(key), src: personalization.websitePhotos?.[key] || content.photo(key).src, alt: personalization.coralPhotoAlt?.[key] || translated(content.photo(key).alt, language) }),
+    villaPhoto: (villa: content.Villa) => {
+      const original = content.photo(villa.photos[0]);
+      const key = villa.photos[0];
+      const custom = personalization.websitePhotos?.[key] || personalization.villaPhotos?.[villa.slug];
+      return { ...original, src: custom || original.src, alt: personalization.coralPhotoAlt?.[key] || (custom ? `Photo of ${villa.name}` : translated(original.alt, language)) };
+    },
+  }), [language, personalization]);
 }
 
 export function localizedHref(href: string, language: Language) {
@@ -89,7 +110,7 @@ export function LanguagePicker() {
   const { language, t } = useCoral();
   const params = useSearchParams();
   const path = usePathname();
-  return <label className="mx-auto flex max-w-6xl items-center justify-end gap-2 px-5 pt-3 text-sm sm:px-8">
+  return <label className="mx-auto flex w-full max-w-7xl items-center justify-end gap-2 px-5 pt-3 text-sm sm:px-8">
     {t("Language")}
     <select aria-label={t("Language")} value={language} className="max-w-40 rounded-lg border border-tpl-line bg-tpl-surface px-3 py-2" onChange={(e) => {
       const next = new URLSearchParams(params.toString());

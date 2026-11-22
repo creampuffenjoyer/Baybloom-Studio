@@ -7,6 +7,7 @@ import * as content from "./content";
 import { nav, site } from "./site";
 import { seasonOf } from "./plan";
 import { copy } from "./translations";
+import { usePersonalization } from "./personalization";
 
 export type Language = "en" | "tl" | "taglish";
 export const languageOf = (value: string | null): Language => value === "tl" || value === "taglish" ? value : "en";
@@ -68,16 +69,18 @@ export function usePine() {
   const params = useSearchParams();
   const season = seasonOf(params.get("season"));
   const language = useContext(Context);
+  const personalization = usePersonalization();
   return useMemo(() => ({
     language, season,
     setSeason: (next: content.Season) => { const url = new URL(location.href); url.searchParams.set("season", next); url.searchParams.delete("activity"); window.history.replaceState(null, "", url); },
     locale: language === "en" ? "en-PH" : "fil-PH",
-    t: (text: string) => translated(text, language),
-    rooms: translateData(content.rooms, language), extras: translateData(content.extras, language),
-    activities: translateData(content.activities, language), seasons: translateData(content.seasons, language),
-    menu: translateData(content.menu, language), posts: translateData(content.posts, language), site: translateData(site, language), nav: translateData(nav, language),
-    photo: (key: content.PhotoKey) => ({ ...content.photo(key), alt: translated(content.photo(key).alt, language) }),
-  }), [language, season]);
+    t: (text: string) => personalization.pineCopy?.[text] || translated(text, language),
+    rooms: translateData(content.rooms, language).map((room) => { const override = personalization.pineRooms?.[room.slug]; if (!override) return room; const { description, features, ...fields } = override; return { ...room, ...fields, ...(description ? { description: description.split(/\n+/).map(s => s.trim()).filter(Boolean) } : {}), ...(features ? { features: features.split(/\n+/).map(s => s.trim()).filter(Boolean) } : {}) }; }), extras: translateData(content.extras, language).map(extra => ({ ...extra, ...personalization.pineExtras?.[extra.id] })),
+    activities: translateData(content.activities, language).map(activity => ({ ...activity, ...personalization.pineActivities?.[activity.id] })), seasons: { winter: { ...translateData(content.seasons.winter, language), ...personalization.pineSeasons?.winter }, summer: { ...translateData(content.seasons.summer, language), ...personalization.pineSeasons?.summer } },
+    menu: translateData(content.menu, language).map((item, index) => ({ ...item, ...personalization.pineMenu?.[["first", "second", "third", "fourth", "fifth"][index]] })),
+    posts: translateData(content.posts, language).map(post => { const override = personalization.pinePosts?.[post.slug]; if (!override) return post; const { body, ...fields } = override; return { ...post, ...fields, ...(body ? { body: body.split(/\n+/).map(s => s.trim()).filter(Boolean) } : {}) }; }), site: { ...translateData(site, language), ...personalization.business, ...personalization.pineStayTimes }, nav: nav.map(item => ({ ...item, label: personalization.pineCopy?.[item.label] || translated(item.label, language) })),
+    photo: (key: content.PhotoKey) => { const original = content.photo(key); const custom = personalization.pinePhotos?.[key]; return { ...original, src: custom || original.src, alt: personalization.pinePhotoAlt?.[key] || (custom ? "Your selected website photo" : translated(original.alt, language)) }; },
+  }), [language, season, personalization]);
 }
 
 export function localizedHref(href: string, language: Language) {

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getImageCredits } from "@/lib/catalog";
 import { TEMPLATE_PHOTOS } from "@/lib/templates";
+import { PageHeading } from "@/components/layout/page-heading";
 
 export const metadata: Metadata = {
   title: "Image credits",
@@ -15,8 +16,8 @@ export default async function CreditsPage() {
 
   return (
     <div className="container-page max-w-5xl py-16">
-      <h1 className="text-4xl font-medium sm:text-5xl">Image credits</h1>
-      <p className="mt-4 max-w-2xl leading-relaxed text-muted-foreground">
+      <PageHeading eyebrow="Behind the imagery" title="Image credits">
+      <p>
         The template demos use sample photography from{" "}
         <a
           href="https://commons.wikimedia.org/"
@@ -30,6 +31,7 @@ export default async function CreditsPage() {
         screenshots of those demos. Each template ships with its own credits page; replace the sample
         photos with your own before launch.
       </p>
+      </PageHeading>
 
       <div className="mt-12 space-y-14">
         {designs.map((d) => (
@@ -47,10 +49,10 @@ export default async function CreditsPage() {
             <ul className="mt-5 grid gap-4 sm:grid-cols-2">
               {TEMPLATE_PHOTOS[d.slug].map((img) => (
                 <li key={img.src} className="flex gap-4 rounded-2xl bg-white p-3 ring-1 ring-border/70">
-                  <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-sand-deep">
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-sand-deep sm:w-28">
                     <Image src={img.src} alt="" fill sizes="112px" className="object-cover" />
                   </div>
-                  <div className="min-w-0 text-sm">
+                  <div className="min-w-0 text-sm [overflow-wrap:anywhere]">
                     <p className="line-clamp-2 text-ink">{img.alt}</p>
                     <p className="mt-1 text-muted-foreground">
                       Photo:{" "}

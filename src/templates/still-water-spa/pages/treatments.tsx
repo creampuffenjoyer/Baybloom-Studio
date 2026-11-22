@@ -1,24 +1,24 @@
 "use client";
-
+import { useSpaCopy } from "../copy";
+import { useSpaPhoto } from "../photos";
 import { useStillWater } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 import { LocalLink as Link } from "../language";
 import { formatMoney } from "../../_kit/dates";
-import { RITUALS, photo } from "../content";
+import { RITUALS } from "../content";
 import { href, pebbles } from "../site";
 import { TreatmentFinder } from "../components/treatment-finder";
 
 export function TreatmentsPage() {
+  const copy = useSpaCopy();
+  const photo = useSpaPhoto();
   const { treatments } = useStillWater();
   return (
     <>
       <section className="mx-auto max-w-7xl px-5 pt-12 pb-10 sm:px-8">
-        <h1 className="font-tpl-display text-6xl sm:text-7xl">Treatments</h1>
-        <p className="mt-5 max-w-[56ch] text-lg text-tpl-muted">
-          Every treatment begins with a warm foot ritual and ends with tea. Arrive twenty minutes early to
-          change and settle in.
-        </p>
+        <h1 className="font-tpl-display text-6xl sm:text-7xl">{copy("Treatments")}</h1>
+        <p className="mt-5 max-w-[56ch] text-lg text-tpl-muted">{copy("Every treatment begins with a warm foot ritual and ends with tea. Arrive twenty minutes early to change and settle in.")}</p>
         <nav aria-label="Rituals" className="mt-8 flex flex-wrap gap-2">
           {RITUALS.map((r) => (
             <a key={r.id} href={`#${r.id}`} className="rounded-full bg-tpl-surface px-4 py-2 text-[15px] hover:bg-tpl-soft">
@@ -46,7 +46,7 @@ export function TreatmentsPage() {
                   return (
                     <li key={t.slug} className="grid items-center gap-6 py-8 sm:grid-cols-[140px_1fr_auto]">
                       <div className={`relative aspect-square w-28 overflow-hidden sm:w-full ${pebbles[i % 3]}`}>
-                        <Image src={p.src} alt="" fill sizes="140px" className="object-cover" />
+                        <Image placement={`treatments.${t.slug}`} src={p.src} unoptimized={p.src.startsWith("blob:") || p.src.startsWith("/api/personalization/")} alt="" fill sizes="140px" className="object-cover" />
                       </div>
                       <div>
                         <h3 className="font-tpl-display text-2xl">
@@ -57,19 +57,15 @@ export function TreatmentsPage() {
                         <p className="mt-1 max-w-[52ch] text-tpl-muted">{t.summary}</p>
                         <p className="mt-2 text-[15px]">
                           {t.options.map((o) => `${o.minutes} min · ${formatMoney(o.price)}`).join("   /   ")}
-                          {t.forTwo && <span className="text-tpl-muted"> for two</span>}
+                          {t.forTwo && <span className="text-tpl-muted"> {copy("for two")}</span>}
                         </p>
                       </div>
                       <div className="flex gap-2 sm:flex-col sm:items-end">
                         <Link
                           href={`${href("/book")}?treatment=${t.slug}`}
                           className="rounded-full bg-tpl-accent px-5 py-2.5 text-[15px] font-semibold text-tpl-on-accent"
-                        >
-                          Book
-                        </Link>
-                        <Link href={href(`/treatments/${t.slug}`)} className="px-2 py-2.5 text-[15px] underline underline-offset-4">
-                          Details
-                        </Link>
+                        >{copy("Book")}</Link>
+                        <Link href={href(`/treatments/${t.slug}`)} className="px-2 py-2.5 text-[15px] underline underline-offset-4">{copy("Details")}</Link>
                       </div>
                     </li>
                   );

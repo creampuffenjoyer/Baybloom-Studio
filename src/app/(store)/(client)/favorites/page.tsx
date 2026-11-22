@@ -5,6 +5,9 @@ import { getFavoriteDesignIds } from "@/lib/favorites";
 import { requireUser } from "@/lib/session";
 import { CardGridSkeleton } from "@/components/catalog/card-grid";
 import { FavoritesGrid } from "@/app/(store)/(client)/favorites/favorites-grid";
+import Link from "next/link";
+import { ArrowRightIcon } from "lucide-react";
+import { PageHeading } from "@/components/layout/page-heading";
 
 export const metadata: Metadata = {
   title: "Favorites",
@@ -14,13 +17,9 @@ export const metadata: Metadata = {
 export default function FavoritesPage() {
   return (
     <div className="container-page py-12 sm:py-16">
-      <p className="text-xs font-semibold tracking-[0.2em] text-hibiscus-strong uppercase">
-        Client area
-      </p>
-      <h1 className="mt-3 text-4xl font-medium sm:text-5xl">Your favorites</h1>
-      <p className="mt-3 max-w-xl text-muted-foreground">
-        Designs you&apos;ve saved. Pick up to three to compare side by side.
-      </p>
+      <PageHeading eyebrow="Your collection" title="Your favorites" action={<Link href="/designs" className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-bay hover:underline">Keep exploring <ArrowRightIcon aria-hidden className="size-4" /></Link>}>
+        <p>A shortlist of places to start. Save the designs you love, then compare up to three side by side.</p>
+      </PageHeading>
       <div className="mt-10">
         <Suspense fallback={<CardGridSkeleton count={3} />}>
           <Favorites />

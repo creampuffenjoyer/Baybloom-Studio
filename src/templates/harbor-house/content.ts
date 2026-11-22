@@ -92,12 +92,12 @@ export const breakfast = [
 ];
 
 export const places = [
-  { name: "Naidi Hills and lighthouse", kind: "Walk", distance: "15 min on foot", note: "Best at sunset, when the lighthouse turns pink." },
-  { name: "Vayang Rolling Hills", kind: "Cycle", distance: "25 min by bike", note: "Grassy headlands and cattle, with the sea on both sides." },
-  { name: "Valugan Boulder Beach", kind: "Beach", distance: "10 min by tricycle", note: "Smooth volcanic boulders. For looking, not swimming." },
-  { name: "Honesty Coffee Shop", kind: "Café", distance: "35 min by tricycle", note: "No staff, just an honour box. Bring small change." },
-  { name: "Chawa View Deck", kind: "Walk", distance: "30 min by tricycle", note: "A staircase down the cliff to the rock pools." },
-  { name: "Kusina sa Daungan", kind: "Dinner", distance: "5 min on foot", note: "Fish of the day and turmeric rice, two doors down the quay." },
+  { id: "naidi-hills", name: "Naidi Hills and lighthouse", kind: "Walk", distance: "15 min on foot", note: "Best at sunset, when the lighthouse turns pink." },
+  { id: "vayang-hills", name: "Vayang Rolling Hills", kind: "Cycle", distance: "25 min by bike", note: "Grassy headlands and cattle, with the sea on both sides." },
+  { id: "valugan-beach", name: "Valugan Boulder Beach", kind: "Beach", distance: "10 min by tricycle", note: "Smooth volcanic boulders. For looking, not swimming." },
+  { id: "honesty-coffee", name: "Honesty Coffee Shop", kind: "Café", distance: "35 min by tricycle", note: "No staff, just an honour box. Bring small change." },
+  { id: "chawa-view", name: "Chawa View Deck", kind: "Walk", distance: "30 min by tricycle", note: "A staircase down the cliff to the rock pools." },
+  { id: "kusina", name: "Kusina sa Daungan", kind: "Dinner", distance: "5 min on foot", note: "Fish of the day and turmeric rice, two doors down the quay." },
 ];
 
 export const guestbook = [

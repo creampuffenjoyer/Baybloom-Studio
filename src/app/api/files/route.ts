@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { verifyLocalLink } from "@/lib/storage";
+import { verifyLocalLink, verifyPurchaseArtifact } from "@/lib/storage";
 
 const TYPES: Record<string, string> = {
   ".pdf": "application/pdf",
@@ -20,6 +20,7 @@ export async function GET(request: Request) {
 
   const data = await readFile(file).catch(() => null);
   if (!data) return new Response("File not found.", { status: 404 });
+  if (!verifyPurchaseArtifact(url.searchParams.get("key") ?? "", data)) return new Response("Package integrity check failed.", { status: 503, headers: { "Cache-Control": "private, no-store" } });
 
   const name = (url.searchParams.get("name") ?? path.basename(file)).replace(/[^\w.\- ]/g, "");
   return new Response(new Uint8Array(data), {

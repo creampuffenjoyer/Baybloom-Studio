@@ -1,5 +1,5 @@
 /** Wordmark with three ripple rings. */
-export function Logo({ className = "" }: { className?: string }) {
+export function Logo({ className = "", name = "still water" }: { className?: string; name?: string }) {
   return (
     <span className={`inline-flex items-center gap-2.5 font-tpl-display text-2xl lowercase ${className}`}>
       <svg viewBox="0 0 32 32" aria-hidden className="size-7">
@@ -7,7 +7,7 @@ export function Logo({ className = "" }: { className?: string }) {
         <circle cx="16" cy="16" r="8.5" fill="none" stroke="currentColor" strokeWidth="1.2" opacity="0.6" />
         <circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.3" />
       </svg>
-      still water
+      {name}
     </span>
   );
 }

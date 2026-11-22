@@ -1,22 +1,24 @@
 "use client";
 import { usePine } from "../language";
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
+import { usePersonalization } from "../personalization";
 
 
 export function DiningPage() {
   const { t, menu, photo } = usePine();
+  const page = usePersonalization().pinePages?.dining;
   return (
     <>
       <div className="relative aspect-[16/9] max-h-[560px] w-full overflow-hidden sm:aspect-[21/8]">
-        <Image src={photo("restaurant").src} alt={photo("restaurant").alt} fill priority sizes="100vw" className="object-cover" />
+        <Image placement={"dining.banner"} src={photo("restaurant").src} alt={photo("restaurant").alt} unoptimized={photo("restaurant").src.startsWith("blob:") || photo("restaurant").src.startsWith("/api/personalization/")} fill priority sizes="100vw" className="object-cover" />
       </div>
       <div className="mx-auto grid max-w-7xl gap-14 px-5 pt-14 sm:px-8 lg:grid-cols-[1fr_1.2fr]">
         <div>
-          <h1 className="font-tpl-display text-5xl font-bold sm:text-6xl">{t("Dining")}</h1>
+          <h1 className="font-tpl-display text-5xl font-bold sm:text-6xl">{page?.heading || t("Dining")}</h1>
           <div className="mt-6 space-y-4 text-lg leading-relaxed text-tpl-muted">
-            <p>{t("Breakfast from 7 to 10: porridge, eggs any way, sourdough from our oven and bottomless coffee.")}</p>
+            {page?.intro ? <p>{page.intro}</p> : <><p>{t("Breakfast from 7 to 10: porridge, eggs any way, sourdough from our oven and bottomless coffee.")}</p>
             <p>{t("Trail lunches are packed to order the night before. Supper is at 7, family style at the long table, with a lighter menu in the bar from 5.")}</p>
-            <p>{t("Non-residents are welcome for supper; please book a day ahead.")}</p>
+            <p>{t("Non-residents are welcome for supper; please book a day ahead.")}</p></>}
           </div>
         </div>
         <section aria-labelledby="tonight">

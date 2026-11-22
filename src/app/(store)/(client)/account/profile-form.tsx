@@ -21,7 +21,7 @@ function Field({
   ...props
 }: React.ComponentProps<typeof Input> & { name: string; label: string; error?: string }) {
   return (
-    <div className={cn("space-y-1.5", className)}>
+    <div className={cn("min-w-0 space-y-1.5", className)}>
       <Label htmlFor={name}>{label}</Label>
       <Input
         id={name}
@@ -55,16 +55,17 @@ export function ProfileForm({ account }: { account: Account }) {
         <h2 id="profile-heading" className="text-2xl font-medium">
           Profile
         </h2>
-        <div className="mt-6 grid gap-5 sm:grid-cols-2">
+        <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
           <Field name="name" label="Full name" autoComplete="name" defaultValue={account.name ?? ""} error={e.name} required />
-          <div className="space-y-1.5">
+          <div className="min-w-0 space-y-1.5">
             <Label htmlFor="email">Email</Label>
-            <div className="flex h-11 items-center gap-2 rounded-md border border-input bg-sand px-3 text-sm text-ink/80">
-              <span id="email" className="truncate">{account.email}</span>
+            <div className="relative">
+              <Input id="email" type="email" value={account.email} readOnly className="h-11 bg-sand pr-10" aria-describedby="email-note" />
               {account.emailVerified && (
-                <BadgeCheckIcon className="ml-auto size-4 shrink-0 text-bay" aria-label="Verified" />
+                <BadgeCheckIcon className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-bay" aria-hidden />
               )}
             </div>
+            <p id="email-note" className="text-xs text-muted-foreground">{account.emailVerified ? "Your verified sign-in email." : "Your sign-in email."}</p>
           </div>
           <Field name="phone" label="Phone" type="tel" autoComplete="tel" defaultValue={account.phone ?? ""} error={e.phone} placeholder="+63 917 123 4567" />
           <Field name="company" label="Business or company" autoComplete="organization" defaultValue={account.company ?? ""} error={e.company} />
@@ -76,7 +77,7 @@ export function ProfileForm({ account }: { account: Account }) {
           Billing details
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">Used on your receipts and to pre-fill checkout.</p>
-        <div className="mt-6 grid gap-5 sm:grid-cols-2">
+        <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
           <Field name="addressLine1" label="Address" autoComplete="address-line1" defaultValue={account.addressLine1 ?? ""} error={e.addressLine1} className="sm:col-span-2" />
           <Field name="addressLine2" label="Apartment, suite, etc. (optional)" autoComplete="address-line2" defaultValue={account.addressLine2 ?? ""} error={e.addressLine2} className="sm:col-span-2" />
           <Field name="city" label="City" autoComplete="address-level2" defaultValue={account.city ?? ""} error={e.city} />
@@ -89,7 +90,7 @@ export function ProfileForm({ account }: { account: Account }) {
               name="country"
               autoComplete="country"
               defaultValue={account.country}
-              className="h-11 w-full rounded-md border border-input bg-white px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="h-11 w-full min-w-0 rounded-md border border-input bg-white px-3 text-base shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:text-sm"
             >
               {COUNTRIES.map((c) => (
                 <option key={c} value={c}>
@@ -103,7 +104,7 @@ export function ProfileForm({ account }: { account: Account }) {
       </section>
 
       <div className="flex justify-end">
-        <Button type="submit" disabled={pending} className="h-11 rounded-full px-8">
+        <Button type="submit" disabled={pending} className="h-12 rounded-lg px-8">
           {pending && <Loader2Icon className="animate-spin" />}
           Save changes
         </Button>

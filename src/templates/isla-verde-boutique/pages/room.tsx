@@ -2,7 +2,7 @@
 
 import { useIsla } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 import { LocalLink as Link } from "../language";
 import { notFound } from "next/navigation";
 import { formatMoney } from "../../_kit/dates";
@@ -39,7 +39,7 @@ export function RoomPage({ slug }: { slug: string }) {
           </div>
         </div>
         <div className={`relative aspect-[3/4] overflow-hidden ${arch}`}>
-          <Image src={a.src} alt={a.alt} fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+          <Image placement={`room.${r.slug}.photo.1`} src={a.src} unoptimized={a.src.startsWith("blob:") || a.src.startsWith("/api/personalization/")} alt={a.alt} fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
         </div>
       </section>
       <section className="mx-auto mt-20 grid max-w-7xl gap-12 px-5 sm:px-8 md:grid-cols-[1fr_1.5fr]">
@@ -56,9 +56,9 @@ export function RoomPage({ slug }: { slug: string }) {
           </p>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          {[b, c].map((p) => (
+          {[b, c].map((p, index) => (
             <div key={p.src} className="relative aspect-[3/4] overflow-hidden">
-              <Image src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 30vw, 50vw" className="object-cover" />
+              <Image placement={`room.${r.slug}.photo.${index + 2}`} src={p.src} unoptimized={p.src.startsWith("blob:") || p.src.startsWith("/api/personalization/")} alt={p.alt} fill sizes="(min-width: 768px) 30vw, 50vw" className="object-cover" />
             </div>
           ))}
         </div>

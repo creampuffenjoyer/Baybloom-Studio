@@ -1,18 +1,20 @@
 "use client";
 import { usePine, LocalLink as Link } from "../language";
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 
 import { notFound } from "next/navigation";
 import { formatMoney } from "../../_kit/dates";
 
 import { CURRENCY, href } from "../site";
+import { usePersonalization } from "../personalization";
 
 export function RoomsPage() {
   const { t, photo, rooms, site, season, seasons } = usePine();
+  const page = usePersonalization().pinePages?.rooms;
   return (
     <div className="mx-auto max-w-7xl px-5 pt-14 sm:px-8">
-      <h1 className="font-tpl-display text-5xl font-bold sm:text-6xl">{t("Rooms")}</h1>
-      <p className="mt-4 max-w-[56ch] text-lg text-tpl-muted">{t("Fourteen rooms in the lodge and one chalet in the pines. Breakfast, the sauna and the boot room are included in every stay.")}</p>
+      <h1 className="font-tpl-display text-5xl font-bold sm:text-6xl">{page?.heading || t("Rooms")}</h1>
+      <p className="mt-4 max-w-[56ch] text-lg text-tpl-muted">{page?.intro || t("Fourteen rooms in the lodge and one chalet in the pines. Breakfast, the sauna and the boot room are included in every stay.")}</p>
       <p className="mt-5">{t("Planning season:")} {seasons[season].label}. <Link href={href("/activities")} className="font-semibold underline">{t("Change trip plan")}</Link></p>
       <div role="region" aria-label={t("Compare rooms")} tabIndex={0} className="mt-12 overflow-x-auto rounded-md ring-1 ring-tpl-line">
         <table className="w-full min-w-[720px] bg-tpl-surface text-left">
@@ -32,7 +34,7 @@ export function RoomsPage() {
                 <th scope="row" className="p-4">
                   <Link href={href(`/rooms/${r.slug}`)} className="flex items-center gap-4 hover:text-tpl-alt">
                     <span className="relative size-16 shrink-0 overflow-hidden rounded">
-                      <Image src={photo(r.photos[0]).src} alt="" fill sizes="64px" className="object-cover" />
+                      <Image placement={`rooms.${r.slug}`} src={photo(r.photos[0]).src} alt="" unoptimized={photo(r.photos[0]).src.startsWith("blob:") || photo(r.photos[0]).src.startsWith("/api/personalization/")} fill sizes="64px" className="object-cover" />
                     </span>
                     <span className="font-tpl-display text-xl font-bold">{r.name}</span>
                   </Link>
@@ -60,7 +62,7 @@ export function RoomPage({ slug }: { slug: string }) {
     <>
       <section className="relative isolate">
         <div className="relative aspect-[16/9] max-h-[640px] w-full overflow-hidden sm:aspect-[21/9]">
-          <Image src={a.src} alt={a.alt} fill priority sizes="100vw" className="object-cover" />
+          <Image placement={`room.${r.slug}.photo.1`} src={a.src} alt={a.alt} unoptimized={a.src.startsWith("blob:") || a.src.startsWith("/api/personalization/")} fill priority sizes="100vw" className="object-cover" />
         </div>
       </section>
       <div className="mx-auto grid max-w-7xl gap-12 px-5 pt-12 sm:px-8 lg:grid-cols-[1.4fr_1fr]">
@@ -74,9 +76,9 @@ export function RoomPage({ slug }: { slug: string }) {
             ))}
           </div>
           <div className="mt-10 grid grid-cols-2 gap-3">
-            {[b, c].map((p) => (
+            {[b, c].map((p, index) => (
               <div key={p.src} className="relative aspect-[4/3] overflow-hidden rounded-md">
-                <Image src={p.src} alt={p.alt} fill sizes="(min-width: 1024px) 28vw, 50vw" className="object-cover" />
+                <Image placement={`room.${r.slug}.photo.${index + 2}`} src={p.src} alt={p.alt} unoptimized={p.src.startsWith("blob:") || p.src.startsWith("/api/personalization/")} fill sizes="(min-width: 1024px) 28vw, 50vw" className="object-cover" />
               </div>
             ))}
           </div>

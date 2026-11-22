@@ -4,13 +4,23 @@
 import { cp, mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { zipSync } from "fflate";
+import { createHash } from "node:crypto";
 
 const ROOT = process.cwd();
 const args = process.argv.slice(2);
 const keep = args.includes("--keep");
+const locksArg = args.find(a => a.startsWith("--lockfiles="));
+const locksRoot = locksArg ? path.resolve(locksArg.slice("--lockfiles=".length)) : undefined;
 const only = args.filter((a) => !a.startsWith("--"));
+// Tests can use an isolated output directory without replacing the private deliverables.
+const outputArg = args.find((a) => a.startsWith("--output-root="));
+const outputRoot = outputArg ? path.resolve(outputArg.slice("--output-root=".length)) : path.join(ROOT, "storage");
+if (path.relative(ROOT, outputRoot).startsWith("..") || path.isAbsolute(path.relative(ROOT, outputRoot)) || outputRoot === ROOT) throw new Error("Output must be a child directory of the workspace");
+const exportTemplates = JSON.parse(await readFile(path.join(ROOT, "src/lib/personalization/export-templates.json"), "utf8"));
 const versions = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
 const dep = (name) => versions.dependencies[name] ?? versions.devDependencies[name];
+const installed = async (name) => JSON.parse(await readFile(path.join(ROOT, "node_modules", name, "package.json"), "utf8")).version;
+const tailwindVersion = await installed("tailwindcss");
 
 const slugs = (await readdir(path.join(ROOT, "src", "templates"), { withFileTypes: true }))
   .filter((d) => d.isDirectory() && !d.name.startsWith("_"))
@@ -33,7 +43,9 @@ const write = async (file, text) => {
 };
 
 for (const slug of slugs) {
-  const out = path.join(ROOT, "storage", "build", slug);
+  const contract = exportTemplates[slug];
+  const out = path.join(outputRoot, "build", slug);
+  if (path.relative(outputRoot, out).startsWith("..") || !path.relative(outputRoot, out)) throw new Error("Invalid build directory");
   await rm(out, { recursive: true, force: true });
   await mkdir(out, { recursive: true });
 
@@ -60,7 +72,9 @@ for (const slug of slugs) {
   await write(
     path.join(out, "src", "app", "layout.tsx"),
     `import type { Metadata } from "next";
+import { Suspense } from "react";
 ${shellImport}
+${contract ? 'import { PersonalizedProvider } from "./personalized-provider";' : ""}
 import "./globals.css";
 
 ${metadata.trim()}
@@ -69,7 +83,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <Shell>{children}</Shell>
+        <Suspense fallback={<p role="status">Loading website…</p>}>${contract ? "<PersonalizedProvider><Shell>{children}</Shell></PersonalizedProvider>" : "<Shell>{children}</Shell>"}</Suspense>
       </body>
     </html>
   );
@@ -121,16 +135,18 @@ html {
         version: "1.0.0",
         private: true,
         engines: { node: "^22.13.0 || >=24.0.0" },
-        scripts: { dev: "next dev", build: "next build", start: "next start", lint: "eslint" },
+        // The current Tailwind dependency includes an ESM-only module that
+        // Turbopack's CSS worker cannot load in this standalone project.
+        scripts: { dev: "next dev --webpack", build: "next build --webpack", start: "next start", lint: "eslint" },
         dependencies: { next: dep("next"), react: dep("react"), "react-dom": dep("react-dom") },
         devDependencies: {
-          "@tailwindcss/postcss": dep("tailwindcss"),
+          "@tailwindcss/postcss": tailwindVersion,
           "@types/node": dep("@types/node"),
           "@types/react": dep("@types/react"),
           "@types/react-dom": dep("@types/react-dom"),
           eslint: dep("eslint"),
           "eslint-config-next": dep("eslint-config-next"),
-          tailwindcss: dep("tailwindcss"),
+          tailwindcss: tailwindVersion,
           "tw-animate-css": dep("tw-animate-css"),
           typescript: dep("typescript"),
         },
@@ -335,12 +351,28 @@ ${photos.map((p) => `- ${p.alt}. Photo by [${p.author}](${p.source}), ${p.licens
   );
 
   // 7. Zip it.
+  if (locksRoot) {
+    const lock = JSON.parse(await readFile(path.join(locksRoot, slug, "package-lock.json"), "utf8"));
+    const pkg = JSON.parse(await readFile(path.join(out, "package.json"), "utf8"));
+    if (lock.name !== slug || JSON.stringify(lock.packages?.[""]?.dependencies) !== JSON.stringify(pkg.dependencies) || JSON.stringify(lock.packages?.[""]?.devDependencies) !== JSON.stringify(pkg.devDependencies)) {
+      const sorted = value => JSON.stringify(Object.entries(value ?? {}).sort(([a], [b]) => a.localeCompare(b)));
+      if (lock.name !== slug || sorted(lock.packages?.[""]?.dependencies) !== sorted(pkg.dependencies) || sorted(lock.packages?.[""]?.devDependencies) !== sorted(pkg.devDependencies)) throw new Error(`Lockfile does not match ${slug}`);
+    }
+    await write(path.join(out, "package-lock.json"), JSON.stringify(lock, null, 2) + "\n");
+  }
+  if (contract) {
+    await write(path.join(out, "src/app/personalized.json"), "{}\n");
+    await write(path.join(out, "src/app/personalized-provider.tsx"), `"use client";\nimport type { ContextType } from "react";\nimport { PersonalizationContext } from "@/templates/${slug}/personalization";\nimport value from "./personalized.json";\n// Export snapshots are validated before packaging; JSON imports widen enum literals.\nexport function PersonalizedProvider({ children }: { children: React.ReactNode }) { return <PersonalizationContext value={value as ContextType<typeof PersonalizationContext>}>{children}</PersonalizationContext>; }\n`);
+    const hashes = {};
+    for (const file of (await walk(out)).sort()) hashes[path.relative(out, file).split(path.sep).join("/")] = createHash("sha256").update(await readFile(file)).digest("hex");
+    await write(path.join(out, "baybloom-template.json"), JSON.stringify({ formatVersion: 1, template: slug, templateVersion: contract.templateVersion, contentVersion: contract.contentVersion, files: hashes }, null, 2) + "\n");
+  }
   const files = {};
   for (const file of await walk(out)) {
     files[`${slug}/${path.relative(out, file).split(path.sep).join("/")}`] = new Uint8Array(await readFile(file));
   }
   const zipped = zipSync(files, { level: 6 });
-  const zipPath = path.join(ROOT, "storage", "deliverables", slug, `${slug}-source.zip`);
+  const zipPath = path.join(outputRoot, "deliverables", slug, `${slug}-source.zip`);
   await mkdir(path.dirname(zipPath), { recursive: true });
   await writeFile(zipPath, zipped);
   if (!keep) await rm(out, { recursive: true, force: true });

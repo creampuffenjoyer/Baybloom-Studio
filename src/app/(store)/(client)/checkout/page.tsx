@@ -7,16 +7,18 @@ import { requireUser } from "@/lib/session";
 import { stripeConfigured } from "@/lib/stripe";
 import { VerifyBanner } from "@/app/(store)/(client)/account/verify-banner";
 import { CheckoutPanel } from "@/app/(store)/(client)/checkout/checkout-panel";
+import { db } from "@/lib/db";
+import { purchaseTemplates } from "@/lib/personalization/purchases";
+import { PageHeading } from "@/components/layout/page-heading";
 
 export const metadata: Metadata = { title: "Checkout", robots: { index: false } };
 
 export default function CheckoutPage(props: PageProps<"/checkout">) {
   return (
     <div className="container-page py-12 sm:py-16">
-      <p className="text-xs font-semibold tracking-[0.2em] text-hibiscus-strong uppercase">
-        Secure checkout
-      </p>
-      <h1 className="mt-3 text-4xl font-medium sm:text-5xl">Checkout</h1>
+      <PageHeading eyebrow="Your order" title="Checkout">
+        <p>Check your billing details, choose your website content and review your order.</p>
+      </PageHeading>
       <div className="mt-10">
         <Suspense fallback={<div className="shimmer h-96 rounded-3xl" />}>
           <Checkout searchParams={props.searchParams} />
@@ -32,6 +34,10 @@ async function Checkout({ searchParams }: Pick<PageProps<"/checkout">, "searchPa
   const user = await requireUser("/checkout");
   const [account, { canceled }] = await Promise.all([getAccount(user.id), searchParams]);
   if (!account) return null;
+  const [drafts, releases] = await Promise.all([
+    db.personalizationDraft.findMany({ where: { userId: user.id, template: { in: purchaseTemplates } }, select: { template: true, updatedAt: true } }),
+    db.activeTemplateRelease.findMany({ where: { template: { in: purchaseTemplates } }, select: { template: true } }),
+  ]);
 
   const address = [
     account.addressLine1,
@@ -52,6 +58,10 @@ async function Checkout({ searchParams }: Pick<PageProps<"/checkout">, "searchPa
       <CheckoutPanel
         emailVerified={Boolean(account.emailVerified)}
         stripeReady={stripeConfigured()}
+        purchaseOptions={purchaseTemplates.map(template => ({ template,
+          savedAt: drafts.find(draft => draft.template === template)?.updatedAt.toISOString() ?? null,
+          releaseReady: releases.some(release => release.template === template),
+        }))}
         billing={
           <section className="rounded-3xl bg-white p-6 ring-1 ring-border/70">
             <div className="flex items-start justify-between gap-4">
@@ -63,7 +73,7 @@ async function Checkout({ searchParams }: Pick<PageProps<"/checkout">, "searchPa
                 <PencilIcon className="size-3.5" /> Edit
               </Link>
             </div>
-            <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-2">
+            <dl className="mt-4 grid grid-cols-1 gap-4 text-sm [overflow-wrap:anywhere] sm:grid-cols-2">
               <div>
                 <dt className="text-muted-foreground">Name</dt>
                 <dd className="mt-0.5">{account.name}</dd>

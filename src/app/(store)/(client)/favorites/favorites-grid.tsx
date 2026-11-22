@@ -7,6 +7,7 @@ import { HeartIcon } from "lucide-react";
 import type { DesignCard as DesignCardData } from "@/lib/catalog";
 import { DesignCard } from "@/components/catalog/design-card";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/layout/empty-state";
 import { toast } from "sonner";
 import { setFavoriteAction } from "@/app/actions/favorites";
 
@@ -21,20 +22,9 @@ export function FavoritesGrid({
 
   if (items.length === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col items-center rounded-3xl border border-dashed border-border bg-white/60 px-6 py-20 text-center"
-      >
-        <HeartIcon className="size-10 text-hibiscus" aria-hidden />
-        <h2 className="mt-4 text-2xl font-medium">No favorites yet</h2>
-        <p className="mt-2 max-w-sm text-muted-foreground">
-          Tap the heart on any design to save it here for later.
-        </p>
-        <Button asChild className="mt-6 rounded-full">
-          <Link href="/designs">Browse designs</Link>
-        </Button>
-      </motion.div>
+      <EmptyState icon={HeartIcon} title="No favorites yet" action={<Button asChild className="h-12 rounded-lg px-6"><Link href="/designs">Explore templates</Link></Button>}>
+        <p>Tap the heart on any design to keep it here. Your shortlist will be ready whenever you are.</p>
+      </EmptyState>
     );
   }
 

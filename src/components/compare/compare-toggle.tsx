@@ -50,7 +50,7 @@ export function CompareToggle({
         onClick={onClick}
         aria-pressed={selected}
         className={cn(
-          "inline-flex h-10 items-center justify-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+          "inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border px-4 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
           selected
             ? "border-bay bg-secondary text-bay"
             : "border-border bg-white text-ink/80 hover:border-bay/40",
@@ -71,7 +71,7 @@ export function CompareToggle({
       aria-label={label}
       title={label}
       className={cn(
-        "grid size-10 place-items-center rounded-full shadow-sm backdrop-blur transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+        "grid size-11 place-items-center rounded-full shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
         selected ? "bg-bay text-white" : "bg-white/90 text-ink/70 hover:bg-white",
         className,
       )}

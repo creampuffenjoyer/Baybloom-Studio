@@ -1,8 +1,9 @@
 "use client";
+import { usePersonalization } from "../personalization";
 
 import { useIsla } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "./placement-image";
 import { LocalLink as Link } from "../language";
 import { bookingRef } from "../../_kit/availability";
 import { Calendar } from "../../_kit/calendar";
@@ -18,11 +19,13 @@ const input =
 const primary = "bg-tpl-accent px-6 py-3.5 text-tpl-on-accent hover:bg-tpl-alt disabled:cursor-not-allowed disabled:opacity-40";
 
 export function BookFlow() {
+  const { photoEditing } = usePersonalization();
   const { t, locale, date, extras, photo, rooms } = useIsla();
   const b = useStayBooking(rooms, extras, { maxGuests: 4, maxNights: 30 });
+  const step = photoEditing ? 1 : b.step;
   const short = (d: string | null) => (d ? date(d, { weekday: "short", day: "numeric", month: "short" }) : "—");
 
-  if (b.step === 4) {
+  if (step === 4) {
     return (
       <div className="mx-auto max-w-2xl text-center">
         <p className="font-tpl-display text-6xl italic">{t("Your sample stay.")}</p>
@@ -55,8 +58,8 @@ export function BookFlow() {
 
       <ol className="mt-12 space-y-4">
         {TITLES.map((title, i) => {
-          const open = b.step === i;
-          const done = b.step > i;
+          const open = step === i;
+          const done = step > i;
           return (
             <li key={title} className={`border-b border-tpl-line pb-4 ${open ? "" : "opacity-90"}`}>
               <h2 className="flex items-baseline gap-5">
@@ -103,7 +106,7 @@ export function BookFlow() {
               {open && i === 1 && (
                 <div className="mt-8 grid gap-6 sm:pl-15 sm:grid-cols-2 lg:grid-cols-4">
                   {rooms.map((r) => {
-                    const free = b.availability[r.slug];
+                    const free = photoEditing || b.availability[r.slug];
                     const chosen = b.room?.slug === r.slug;
                     const p = photo(r.photos[0]);
                     return (
@@ -116,7 +119,7 @@ export function BookFlow() {
                         className={`group text-left disabled:cursor-not-allowed disabled:opacity-45 ${chosen ? "" : ""}`}
                       >
                         <span className={`relative block aspect-[3/4] overflow-hidden ${arch} ${chosen ? "ring-4 ring-tpl-alt ring-offset-4 ring-offset-tpl-bg" : ""}`}>
-                          <Image src={p.src} alt="" fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" className="object-cover" />
+                          <Image placement={`book.room.${r.slug}`} src={p.src} unoptimized={p.src.startsWith("blob:") || p.src.startsWith("/api/personalization/")} alt="" fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" className="object-cover" />
                         </span>
                         <span className="mt-4 block font-tpl-display text-2xl italic">{r.name}</span>
                         <span className="block text-[15px] text-tpl-muted">

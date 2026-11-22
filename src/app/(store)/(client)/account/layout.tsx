@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AccountNav, AccountNavList } from "@/app/(store)/(client)/account/account-nav";
+import { PageHeading } from "@/components/layout/page-heading";
 
 export const metadata: Metadata = {
   title: { default: "My account", template: "%s · My account · Baybloom Studio" },
@@ -10,10 +11,9 @@ export const metadata: Metadata = {
 export default function AccountLayout({ children }: LayoutProps<"/account">) {
   return (
     <div className="container-page py-12 sm:py-16">
-      <p className="text-xs font-semibold tracking-[0.2em] text-hibiscus-strong uppercase">
-        Client area
-      </p>
-      <h1 className="mt-3 text-4xl font-medium sm:text-5xl">My account</h1>
+      <PageHeading eyebrow="Your space at Baybloom" title="My account">
+        <p>Your details, purchases and downloads, all together.</p>
+      </PageHeading>
       <div className="mt-10 grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
         <Suspense fallback={<AccountNavList pathname={null} />}>
           <AccountNav />

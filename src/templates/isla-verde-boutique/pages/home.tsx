@@ -2,35 +2,37 @@
 
 import { useIsla } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 import { LocalLink as Link } from "../language";
 import { formatMoney } from "../../_kit/dates";
 import { arch, href } from "../site";
+import { usePersonalization } from "../personalization";
 
 export function HomePage() {
   const { t, date, menuHighlights, photo, posts, rooms } = useIsla();
+  const personalization = usePersonalization();
   const courtyard = photo("courtyard");
   return (
     <>
       {/* Hero */}
-      <section className="mx-auto grid max-w-7xl gap-12 px-5 pt-14 pb-20 sm:px-8 lg:grid-cols-[1.1fr_1fr] lg:items-end">
+      <section className="mx-auto grid max-w-7xl gap-12 px-5 pt-12 pb-20 sm:px-8 lg:grid-cols-[1.1fr_1fr] lg:items-end">
         <div className="lg:pb-10">
-          <h1 className="font-tpl-display text-6xl leading-[0.98] italic sm:text-8xl">{t("A house with a long memory.")}</h1>
-          <p className="mt-8 max-w-[46ch] text-lg leading-relaxed text-tpl-muted">{t("Twelve rooms in an 1887 bahay na bato on Calle Crisologo, the cobbled heart of old Vigan. Capiz windows, narra floors and breakfast under the acacia in the courtyard.")}</p>
-          <div className="mt-9 flex flex-wrap items-center gap-6">
-            <Link href={href("/book")} className="bg-tpl-accent px-6 py-3.5 text-tpl-on-accent hover:bg-tpl-alt">{t("Book your stay")}</Link>
-            <Link href={href("/rooms")} className="border-b border-tpl-ink pb-0.5 hover:border-tpl-alt hover:text-tpl-alt">{t("See the rooms")}</Link>
+          <h1 className="font-tpl-display text-6xl leading-[0.98] italic sm:text-8xl">{personalization.home?.headline || t("A house with a long memory.")}</h1>
+          <p className="mt-8 max-w-[46ch] text-lg leading-relaxed text-tpl-muted">{personalization.home?.welcome || t("Twelve rooms in an 1887 bahay na bato on Calle Crisologo, the cobbled heart of old Vigan. Capiz windows, narra floors and breakfast under the acacia in the courtyard.")}</p>
+          <div className="mt-8 flex flex-wrap items-center gap-6">
+            <Link href={href("/book")} className="bg-tpl-accent px-6 py-4 text-tpl-on-accent transition-colors hover:bg-tpl-alt focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-tpl-ink">{t("Book your stay")}</Link>
+            <Link href={href("/rooms")} className="border-b border-tpl-ink pb-0.5 transition-colors hover:border-tpl-alt hover:text-tpl-alt focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-tpl-ink">{t("See the rooms")}</Link>
           </div>
         </div>
         <div className={`relative aspect-[3/4] overflow-hidden ${arch}`}>
-          <Image src={courtyard.src} alt={courtyard.alt} fill priority sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
+          <Image placement={"home.hero"} src={personalization.heroImage || courtyard.src} alt={personalization.heroImage ? "Your selected hero image" : courtyard.alt} unoptimized={!!personalization.heroImage || courtyard.src.startsWith("blob:") || courtyard.src.startsWith("/api/personalization/")} fill preload sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
         </div>
       </section>
 
       {/* Story teaser */}
       <section className="border-y border-tpl-line">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 sm:px-8 md:grid-cols-[auto_1fr] md:gap-20">
-          <p className="font-tpl-display text-8xl leading-none text-tpl-alt italic sm:text-9xl">1887</p>
+          <p className="font-tpl-display text-8xl leading-none text-tpl-alt italic sm:text-9xl">{personalization.islaStory?.foundingYear || "1887"}</p>
           <div>
             <p className="max-w-[58ch] font-tpl-display text-2xl leading-snug sm:text-3xl">{t("Built by a tobacco merchant for his eleven children, the house survived two wars, a typhoon and a decade as a school before we brought it back in 2019.")}</p>
             <Link href={href("/story")} className="mt-6 inline-block border-b border-tpl-ink pb-0.5 hover:border-tpl-alt hover:text-tpl-alt">{t("Read the story of the house")}</Link>
@@ -44,17 +46,17 @@ export function HomePage() {
           <h2 id="rooms" className="font-tpl-display text-5xl italic sm:text-6xl">{t("Rooms and suites")}</h2>
           <Link href={href("/rooms")} className="border-b border-tpl-ink pb-0.5">{t("All rooms")}</Link>
         </div>
-        <ul className="mt-14 grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-12 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
           {rooms.map((r) => {
             const p = photo(r.photos[0]);
             return (
               <li key={r.slug}>
-                <Link href={href(`/rooms/${r.slug}`)} className="group block">
+                <Link href={href(`/rooms/${r.slug}`)} className="group block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-tpl-ink">
                   <div className={`relative aspect-[3/4] overflow-hidden ${arch}`}>
-                    <Image src={p.src} alt={p.alt} fill sizes="(min-width: 1024px) 25vw, 50vw" className="object-cover transition-transform duration-1000 group-hover:scale-105" />
+                    <Image placement={`home.room.${r.slug}`} src={p.src} unoptimized={p.src.startsWith("blob:") || p.src.startsWith("/api/personalization/")} alt={p.alt} fill sizes="(min-width: 1024px) 25vw, 50vw" className="object-cover" />
                   </div>
                   <h3 className="mt-5 font-tpl-display text-2xl italic group-hover:text-tpl-alt">{r.name}</h3>
-                  <p className="mt-1 text-tpl-muted">{t("From ")}{formatMoney(r.price)}{t(" a night")}</p>
+                  <p className="mt-1 text-tpl-muted tabular-nums">{t("From ")}{formatMoney(r.price)}{t(" a night")}</p>
                 </Link>
               </li>
             );
@@ -66,7 +68,7 @@ export function HomePage() {
       <section className="bg-tpl-soft">
         <div className="mx-auto grid max-w-7xl gap-12 px-5 py-24 sm:px-8 lg:grid-cols-2 lg:items-center">
           <div className="relative aspect-[4/3] overflow-hidden">
-            <Image src={photo("restaurant").src} alt={photo("restaurant").alt} fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+            <Image placement={"home.dining"} src={photo("restaurant").src} unoptimized={photo("restaurant").src.startsWith("blob:") || photo("restaurant").src.startsWith("/api/personalization/")} alt={photo("restaurant").alt} fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
           </div>
           <div>
             <h2 className="font-tpl-display text-5xl italic">{t("Comedor")}</h2>
@@ -86,7 +88,7 @@ export function HomePage() {
 
       {/* Events */}
       <section className="relative isolate overflow-hidden text-white">
-        <Image src={photo("garden-night").src} alt="" fill sizes="100vw" className="-z-10 object-cover" />
+        <Image placement={"home.events"} src={photo("garden-night").src} unoptimized={photo("garden-night").src.startsWith("blob:") || photo("garden-night").src.startsWith("/api/personalization/")} alt="" fill sizes="100vw" className="-z-10 object-cover" />
         <div className="absolute inset-0 -z-10 bg-black/55" />
         <div className="mx-auto max-w-7xl px-5 py-32 text-center sm:px-8">
           <h2 className="mx-auto max-w-3xl font-tpl-display text-5xl leading-tight italic sm:text-6xl">{t("Weddings under the acacia")}</h2>
@@ -101,9 +103,9 @@ export function HomePage() {
         <ul className="mt-10 grid gap-10 md:grid-cols-3">
           {posts.map((p) => (
             <li key={p.slug}>
-              <Link href={href(`/journal/${p.slug}`)} className="group block">
+              <Link href={href(`/journal/${p.slug}`)} className="group block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-tpl-ink">
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image src={photo(p.photo).src} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
+                  <Image placement={`home.post.${p.slug}`} src={photo(p.photo).src} unoptimized={photo(p.photo).src.startsWith("blob:") || photo(p.photo).src.startsWith("/api/personalization/")} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
                 </div>
                 <p className="mt-4 text-sm text-tpl-muted">{date(p.date)}</p>
                 <h3 className="mt-1 font-tpl-display text-2xl italic group-hover:text-tpl-alt">{p.title}</h3>

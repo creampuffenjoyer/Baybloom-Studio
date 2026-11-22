@@ -15,14 +15,16 @@ export function CompareTray() {
 
   return (
     <AnimatePresence>
+      {visible && <div key="compare-space" aria-hidden className="h-36 sm:h-24" />}
       {visible && (
         <motion.aside
+          key="compare-tray"
           aria-label="Compare selection"
           initial={{ y: 120, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 120, opacity: 0 }}
           transition={{ type: "spring", stiffness: 320, damping: 30 }}
-          className="fixed inset-x-4 bottom-4 z-40 mx-auto flex max-w-xl items-center gap-3 rounded-2xl bg-bay-deep p-3 text-white shadow-2xl sm:inset-x-0"
+          className="fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 mx-auto flex max-w-xl flex-wrap items-center gap-3 rounded-2xl bg-bay-deep p-3 text-white shadow-2xl sm:inset-x-0"
         >
           <ul className="flex gap-2">
             {Array.from({ length: COMPARE_MAX }, (_, i) => {
@@ -36,7 +38,7 @@ export function CompareTray() {
                         type="button"
                         onClick={() => remove(item.slug)}
                         aria-label={`Remove ${item.title}`}
-                        className="absolute inset-0 grid place-items-center bg-ink/60 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+                        className="absolute inset-0 grid place-items-center bg-ink/60 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
                       >
                         <XIcon className="size-4" />
                       </button>
@@ -55,17 +57,16 @@ export function CompareTray() {
             <button
               type="button"
               onClick={clear}
-              className="rounded-full px-3 py-2 text-sm text-white/75 hover:text-white"
+              className="min-h-11 rounded-lg px-3 py-2 text-sm text-white/90 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               Clear
             </button>
-            <Link
+            {items.length < 2 ? <span role="link" aria-disabled="true" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-white/30 px-4 py-2.5 text-sm font-semibold text-white/70"><GitCompareArrowsIcon aria-hidden className="size-4" /> Compare</span> : <Link
               href={compareHref(items)}
-              aria-disabled={items.length < 2}
-              className="inline-flex items-center gap-2 rounded-full bg-hibiscus-strong px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-hibiscus-strong/90 aria-disabled:pointer-events-none aria-disabled:opacity-50"
+              className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-hibiscus-strong px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-hibiscus-strong/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               <GitCompareArrowsIcon className="size-4" /> Compare
-            </Link>
+            </Link>}
           </div>
         </motion.aside>
       )}

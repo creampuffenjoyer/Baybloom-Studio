@@ -2,7 +2,7 @@
 
 import { useHarbor } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 import { LocalLink as Link } from "../language";
 import { Postcard } from "../components/postcard";
 
@@ -22,19 +22,19 @@ export function HomePage() {
         <h1 className="max-w-3xl font-tpl-display text-5xl leading-[1.08] sm:text-6xl lg:text-7xl">
           {personalization.home?.headline || t("A room by the harbour, and breakfast like home.")}</h1>
         <div className="relative mt-10">
-          <div className="relative aspect-[16/10] overflow-hidden rounded-3xl sm:aspect-[21/10]">
-            <Image src={personalization.heroImage || cove.src} alt={personalization.heroImage ? "Your selected hero image" : cove.alt} unoptimized={!!personalization.heroImage} fill priority sizes="(min-width: 1152px) 1088px, 100vw" className="object-cover" />
+          <div className="relative aspect-[16/10] overflow-hidden rounded-2xl sm:aspect-[21/10]">
+            <Image placement="home.hero" src={personalization.heroImage || cove.src} alt={personalization.heroImage ? "Your selected hero image" : cove.alt} unoptimized={(personalization.heroImage || cove.src).startsWith("blob:") || (personalization.heroImage || cove.src).startsWith("/api/personalization/")} fill preload sizes="(min-width: 1152px) 1088px, 100vw" className="object-cover" />
           </div>
-          <div className="relative -mt-16 ml-4 max-w-sm -rotate-2 bg-tpl-soft p-6 shadow-xl sm:absolute sm:-bottom-10 sm:left-8 sm:mt-0 sm:ml-0">
+          <div className="relative -mt-16 ml-4 max-w-sm -rotate-2 bg-tpl-soft p-6 shadow-[0_4px_16px_rgb(0_0_0/0.08)] sm:absolute sm:-bottom-10 sm:left-8 sm:mt-0 sm:ml-0">
             <p className="font-[family-name:var(--hh-hand)] text-[1.7rem] leading-snug">
               {personalization.home?.welcome || t("Welcome! Four rooms, one big breakfast table and the whole of Batanes on the doorstep. We can’t wait to have you.")}</p>
             <p className="mt-3 text-right font-[family-name:var(--hh-hand)] text-2xl text-tpl-accent">— {site.hosts}</p>
           </div>
         </div>
         <div className="mt-10 flex flex-wrap items-center gap-4 sm:mt-20 sm:justify-end">
-          <Link href={href("/book")} className="rounded-full bg-tpl-accent px-6 py-3 font-bold text-tpl-on-accent">
+          <Link href={href("/book")} className="rounded-lg bg-tpl-accent px-6 py-3 font-medium text-tpl-on-accent transition-colors hover:bg-tpl-deep focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-tpl-ink">
             {t("Check dates")}</Link>
-          <Link href={href("/rooms")} className="font-semibold underline decoration-tpl-alt decoration-2 underline-offset-8">
+          <Link href={href("/rooms")} className="font-medium underline decoration-tpl-alt decoration-2 underline-offset-8 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-tpl-ink">
             {t("See the rooms")}</Link>
         </div>
       </section>
@@ -46,7 +46,7 @@ export function HomePage() {
         <p className="mt-3 max-w-[52ch] text-lg text-tpl-muted">{t("Breakfast, wifi and a warm welcome included. Free cancellation up to five days before.")}</p>
         <div className="mt-12 grid gap-10 md:grid-cols-2">
           {rooms.map((r, i) => (
-            <Postcard key={r.slug} room={r} tilt={TILTS[i]} />
+            <Postcard placement={`home.room.${r.slug}`} key={r.slug} room={r} tilt={TILTS[i]} />
           ))}
         </div>
       </section>
@@ -55,16 +55,16 @@ export function HomePage() {
       <section className="bg-tpl-soft">
         <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 sm:px-8 md:grid-cols-2 md:items-center">
           <div className="relative aspect-square overflow-hidden rounded-3xl">
-            <Image src={photo("breakfast").src} alt={photo("breakfast").alt} fill sizes="(min-width: 768px) 45vw, 100vw" className="object-cover" />
+            <Image placement="home.breakfast" src={photo("breakfast").src} unoptimized={(photo("breakfast").src).startsWith("blob:") || (photo("breakfast").src).startsWith("/api/personalization/")} alt={photo("breakfast").alt} fill sizes="(min-width: 768px) 45vw, 100vw" className="object-cover" />
           </div>
           <div>
             <h2 className="font-tpl-display text-4xl sm:text-5xl">{t("Breakfast is the main event")}</h2>
             <p className="mt-4 text-lg text-tpl-ink/80">{t("Served from 7 to 10 at the big table, or in bed if you ask nicely.")}</p>
             <ul className="mt-6 space-y-3">
-              {breakfast[0].items.map((i) => (
-                <li key={i} className="flex gap-3">
+            {breakfast[0].items.map((item, index) => (
+                <li key={index} className="flex gap-3">
                   <span aria-hidden className="mt-2 size-2 shrink-0 rounded-full bg-tpl-accent" />
-                  {i}
+                  {item}
                 </li>
               ))}
             </ul>
@@ -83,12 +83,12 @@ export function HomePage() {
             <p className="mt-4 text-lg text-tpl-muted">
               {t("Joel keeps a hand-drawn map at the front desk. Here are the places guests love most.")}</p>
             <div className="relative mt-8 aspect-[4/3] overflow-hidden rounded-3xl">
-              <Image src={photo("lighthouse").src} alt={photo("lighthouse").alt} fill sizes="(min-width: 768px) 40vw, 100vw" className="object-cover" />
+              <Image placement="home.guide" src={photo("lighthouse").src} unoptimized={(photo("lighthouse").src).startsWith("blob:") || (photo("lighthouse").src).startsWith("/api/personalization/")} alt={photo("lighthouse").alt} fill sizes="(min-width: 768px) 40vw, 100vw" className="object-cover" />
             </div>
           </div>
           <ul className="divide-y divide-tpl-line self-center border-y border-tpl-line">
             {places.slice(0, 5).map((p) => (
-              <li key={p.name} className="grid grid-cols-[1fr_auto] gap-4 py-5">
+              <li key={p.id} className="grid grid-cols-[1fr_auto] gap-4 py-5">
                 <div>
                   <p className="font-tpl-display text-xl">{p.name}</p>
                   <p className="text-tpl-muted">{p.note}</p>

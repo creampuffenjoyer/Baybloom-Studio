@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useId, useState } from "react";
-import { motion, useAnimationControls } from "motion/react";
-import { CheckIcon, Loader2Icon, LockIcon, ShoppingBagIcon, ZapIcon } from "lucide-react";
+import { motion } from "motion/react";
+import { Loader2Icon, LockIcon, ShoppingBagIcon, ZapIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/cart/cart-provider";
 import type { DesignPricing } from "@/lib/catalog";
@@ -42,47 +42,34 @@ export function PricePicker({
 
   return (
     <motion.div
-      initial={{ opacity: 0, filter: "blur(10px)" }}
-      animate={{ opacity: 1, filter: "blur(0px)" }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      initial={false}
       className="space-y-6"
     >
       <fieldset>
         <legend id={groupId} className="mb-3 text-sm font-semibold text-ink">
           Choose a tier
         </legend>
-        <div role="radiogroup" aria-labelledby={groupId} className="space-y-2">
+        <div className="space-y-2">
           {pricing.tiers.map((t) => {
             const checked = t.id === tierId;
             return (
-              <button
+              <label
                 key={t.id}
-                type="button"
-                role="radio"
-                aria-checked={checked}
-                onClick={() => setTierId(t.id)}
                 className={cn(
-                  "flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+                  "flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 rounded-lg border px-4 py-3 text-left transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2",
                   checked
                     ? "border-bay bg-secondary/70"
                     : "border-border bg-white hover:border-bay/40",
                 )}
               >
                 <span className="flex items-center gap-3">
-                  <span
-                    className={cn(
-                      "grid size-5 place-items-center rounded-full border",
-                      checked ? "border-bay bg-bay text-white" : "border-input",
-                    )}
-                  >
-                    {checked && <CheckIcon className="size-3" strokeWidth={3} />}
-                  </span>
+                  <input type="radio" name={`tier-${groupId}`} value={t.id} checked={checked} onChange={() => setTierId(t.id)} className="size-4 shrink-0 accent-bay" />
                   <span className="font-medium">{TIER_LABEL[t.level]}</span>
                 </span>
-                <span className="font-semibold text-bay">
+                <span className="font-semibold text-bay tabular-nums">
                   {formatPrice(t.priceCents, t.currency)}
                 </span>
-              </button>
+              </label>
             );
           })}
         </div>
@@ -126,7 +113,7 @@ export function PricePicker({
           onClick={async () => {
             if (tierId && (await add({ designId, tierId, addonIds }))) router.push("/checkout");
           }}
-          className="h-12 rounded-full bg-hibiscus-strong text-base text-white hover:bg-hibiscus-strong/90"
+          className="h-12 rounded-lg bg-hibiscus-strong text-base text-white hover:bg-hibiscus-strong/90"
         >
           <ZapIcon /> Buy now
         </Button>
@@ -136,7 +123,7 @@ export function PricePicker({
           onClick={async () => {
             if (tierId && (await add({ designId, tierId, addonIds }))) setOpen(true);
           }}
-          className="h-12 rounded-full bg-white text-base"
+          className="h-12 rounded-lg bg-white text-base"
         >
           {busy ? <Loader2Icon className="animate-spin" /> : <ShoppingBagIcon />} Add to cart
         </Button>
@@ -183,46 +170,21 @@ function AddonRow({
 }
 
 /**
- * Visitor view. The blurred figures are decorative placeholders; no real
- * price data is ever sent to the browser for signed-out visitors.
+ * Visitor view. Price data is only available after signing in.
  */
 export function LockedPrice({ callbackUrl }: { callbackUrl: string }) {
-  const controls = useAnimationControls();
   return (
     <div className="space-y-5">
-      <button
-        type="button"
-        onClick={() =>
-          controls.start({
-            rotate: [0, -14, 12, -8, 6, 0],
-            transition: { duration: 0.5 },
-          })
-        }
-        className="relative block w-full overflow-hidden rounded-2xl bg-sand-deep p-5 text-left focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-        aria-label="Pricing is locked. Log in to view pricing."
-      >
-        <div aria-hidden className="space-y-3 blur-[7px] select-none">
-          {["Starter", "Standard", "Premium"].map((t) => (
-            <div key={t} className="flex justify-between rounded-xl bg-white px-4 py-3">
-              <span className="font-medium">{t}</span>
-              <span className="font-semibold tracking-wider text-bay">₱ ••,•••</span>
-            </div>
-          ))}
-        </div>
-        <div className="absolute inset-0 grid place-items-center">
-          <span className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-bay shadow-md">
-            <motion.span animate={controls} className="inline-flex">
-              <LockIcon className="size-4" />
-            </motion.span>
-            Log in to view pricing
-          </span>
-        </div>
-      </button>
+      <div className="rounded-xl border border-border bg-sand p-5">
+        <LockIcon aria-hidden className="size-5 text-bay" />
+        <p className="mt-3 font-medium text-ink">Choose the tier that suits you</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">Log in to compare prices, see what each tier includes and choose your add-ons. Creating an account is free.</p>
+      </div>
       <div className="grid gap-2">
-        <Button asChild className="h-12 rounded-full bg-hibiscus-strong text-base text-white hover:bg-hibiscus-strong/90">
+        <Button asChild className="h-12 rounded-lg bg-hibiscus-strong text-base text-white hover:bg-hibiscus-strong/90">
           <Link href={loginHref(callbackUrl)}>Log in to see prices</Link>
         </Button>
-        <Button asChild variant="outline" className="h-12 rounded-full bg-white text-base">
+        <Button asChild variant="outline" className="h-12 rounded-lg bg-white text-base">
           <Link href={`/register?callbackUrl=${encodeURIComponent(callbackUrl)}`}>
             Create a free account
           </Link>

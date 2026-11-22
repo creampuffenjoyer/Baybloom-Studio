@@ -88,6 +88,7 @@ export function Lightbox({
               <Image
                 key={photo.src}
                 src={photo.src}
+                unoptimized={photo.src.startsWith("blob:") || photo.src.startsWith("/api/personalization/")}
                 alt={photo.alt}
                 fill
                 sizes="100vw"

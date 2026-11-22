@@ -16,7 +16,7 @@ export function RoomsPage() {
       </p>
       <div className="mt-14 grid gap-12 md:grid-cols-2">
         {rooms.map((r, i) => (
-          <Postcard key={r.slug} room={r} tilt={i % 2 ? 1 : -1} />
+          <Postcard placement={`rooms.${r.slug}`} key={r.slug} room={r} tilt={i % 2 ? 1 : -1} />
         ))}
       </div>
     </section>

@@ -10,6 +10,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { loginSchema, registerSchema } from "@/lib/validators";
 import { safeCallbackUrl } from "@/lib/urls";
 import { sendVerificationEmail } from "@/lib/account-emails";
+import { checkBreachedPassword, BREACHED_PASSWORD_MESSAGE, PASSWORD_CHECK_UNAVAILABLE } from "@/lib/breached-passwords";
 
 export type AuthFormState = {
   error?: string;
@@ -37,16 +38,18 @@ export async function loginAction(
   const input = {
     email: String(formData.get("email") ?? ""),
     password: String(formData.get("password") ?? ""),
+    code: String(formData.get("code") ?? ""),
   };
   const parsed = loginSchema.safeParse(input);
   if (!parsed.success) {
     return { fieldErrors: fieldErrors(parsed.error), values: { email: input.email } };
   }
 
+  const accountRole = await db.user.findUnique({ where: { email: parsed.data.email }, select: { role: true } });
   try {
     await signIn("credentials", {
       ...parsed.data,
-      redirectTo: safeCallbackUrl(formData.get("callbackUrl")),
+      redirectTo: accountRole?.role === "ADMIN" ? "/account/security" : safeCallbackUrl(formData.get("callbackUrl")),
     });
   } catch (error) {
     // signIn throws a redirect on success; only Auth.js errors are failures.
@@ -55,7 +58,7 @@ export async function loginAction(
       return {
         error: limited
           ? "Too many sign-in attempts. Please wait a few minutes and try again."
-          : "That email and password don't match an account.",
+          : "Check your sign-in details. Administrators also need a current authenticator code or unused recovery code after enrollment.",
         values: { email: parsed.data.email },
       };
     }
@@ -83,6 +86,9 @@ export async function registerAction(
   if (!parsed.success) return { fieldErrors: fieldErrors(parsed.error), values };
 
   const { name, email, password } = parsed.data;
+  if (!(await rateLimit(`register:email:${email}`, 3, 60 * 60_000)).ok) {
+    return { error: "Too many sign-up attempts. Please try again later.", values };
+  }
   const exists = await db.user.findUnique({ where: { email }, select: { id: true } });
   if (exists) {
     return {
@@ -91,6 +97,12 @@ export async function registerAction(
     };
   }
 
+  const screening = await checkBreachedPassword(password);
+  if (screening === "breached") return { fieldErrors: { password: BREACHED_PASSWORD_MESSAGE }, values };
+  if (screening === "unavailable") return { error: PASSWORD_CHECK_UNAVAILABLE, values };
+  if (!(await rateLimit("register:global", 100, 60 * 60_000)).ok) {
+    return { error: "Sign-ups are temporarily busy. Please try again later.", values };
+  }
   try {
     await db.user.create({
       data: { name, email, passwordHash: await bcrypt.hash(password, 12) },

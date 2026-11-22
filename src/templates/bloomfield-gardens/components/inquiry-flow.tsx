@@ -6,7 +6,8 @@ import { useState } from "react";
 import { bookingRef } from "../../_kit/availability";
 import { Calendar } from "../../_kit/calendar";
 import { formatLong, isDay, type Day } from "../../_kit/dates";
-import { isDateFree, packages, spaces } from "../content";
+import { useBloomfield } from "../language";
+import { isDateFree } from "../content";
 import { href } from "../site";
 import { Sprig } from "./sprig";
 
@@ -18,6 +19,7 @@ const input =
 const primary = "rounded-full bg-tpl-accent px-7 py-3.5 text-tpl-on-accent disabled:cursor-not-allowed disabled:opacity-40";
 
 export function InquiryFlow() {
+  const { packages, spaces } = useBloomfield();
   const params = useSearchParams();
   const qDate = params.get("date");
   const startDate = isDay(qDate) && isDateFree(qDate) ? qDate : null;

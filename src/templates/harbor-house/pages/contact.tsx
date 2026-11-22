@@ -2,7 +2,7 @@
 
 import { useHarbor } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 import { ContactForm } from "../components/contact-form";
 
 
@@ -42,7 +42,7 @@ export function ContactPage() {
         </div>
       </div>
       <div className="relative min-h-[420px] overflow-hidden rounded-3xl">
-        <Image src={photo("harbour-wall").src} alt={photo("harbour-wall").alt} fill priority sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+        <Image placement="contact.harbour" src={photo("harbour-wall").src} unoptimized={(photo("harbour-wall").src).startsWith("blob:") || (photo("harbour-wall").src).startsWith("/api/personalization/")} alt={photo("harbour-wall").alt} fill priority sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
       </div>
     </div>
   );

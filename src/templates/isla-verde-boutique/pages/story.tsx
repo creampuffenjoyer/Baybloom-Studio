@@ -2,8 +2,9 @@
 
 import { useIsla } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 import { arch } from "../site";
+import { usePersonalization } from "../personalization";
 
 const chapters = [
   { year: "1887", text: "Don Ramon Verde, a tobacco merchant, builds the house on Calle Crisologo: stone below, hardwood and capiz above, the way Vigan had built since the 1700s." },
@@ -15,6 +16,7 @@ const chapters = [
 
 export function StoryPage() {
   const { t, photo } = useIsla();
+  const { islaStory } = usePersonalization();
   return (
     <>
       <section className="mx-auto grid max-w-7xl gap-12 px-5 pt-16 sm:px-8 lg:grid-cols-[1.2fr_1fr] lg:items-end">
@@ -23,23 +25,26 @@ export function StoryPage() {
           <p className="mt-8 max-w-[52ch] text-lg leading-relaxed text-tpl-muted">{t("Vigan’s old houses are built in two halves: stone below to stand up to earthquakes, wood above to breathe in the heat. Ours has stood for more than 130 years.")}</p>
         </div>
         <div className={`relative aspect-[3/4] overflow-hidden ${arch}`}>
-          <Image src={photo("facade").src} alt={photo("facade").alt} fill priority sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
+          <Image placement={"story.facade"} src={photo("facade").src} unoptimized={photo("facade").src.startsWith("blob:") || photo("facade").src.startsWith("/api/personalization/")} alt={photo("facade").alt} fill priority sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
         </div>
       </section>
       <section aria-label={t("Timeline")} className="mx-auto max-w-4xl px-5 py-24 sm:px-8">
         <ol className="space-y-14">
-          {chapters.map((c) => (
-            <li key={c.year} className="grid gap-4 sm:grid-cols-[180px_1fr]">
+          {chapters.map((chapter, index) => {
+            const override = islaStory?.chapters?.[["first", "second", "third", "fourth", "fifth"][index]];
+            const c = { ...chapter, ...override };
+            return (
+            <li key={index} className="grid gap-4 sm:grid-cols-[180px_1fr]">
               <span className="font-tpl-display text-6xl text-tpl-alt italic">{c.year}</span>
               <p className="pt-2 font-tpl-display text-2xl leading-snug">{t(c.text)}</p>
             </li>
-          ))}
+          ); })}
         </ol>
       </section>
       <div className="mx-auto grid max-w-7xl grid-cols-3 gap-4 px-5 sm:px-8">
         {(["street", "bougainvillea", "library"] as const).map((k) => (
           <div key={k} className={`relative aspect-[3/4] overflow-hidden ${arch}`}>
-            <Image src={photo(k).src} alt={photo(k).alt} fill sizes="33vw" className="object-cover" />
+            <Image placement={`story.${k}`} src={photo(k).src} unoptimized={photo(k).src.startsWith("blob:") || photo(k).src.startsWith("/api/personalization/")} alt={photo(k).alt} fill sizes="33vw" className="object-cover" />
           </div>
         ))}
       </div>

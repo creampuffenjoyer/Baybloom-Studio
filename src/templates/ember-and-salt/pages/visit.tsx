@@ -1,7 +1,9 @@
-import Image from "next/image";
+"use client";
+import { useEmberCopy } from "../copy";
+import { PlacementImage as Image } from "../components/placement-image";
 import Link from "next/link";
-import { photo } from "../content";
-import { href, site } from "../site";
+import { href } from "../site";
+import { useEmberData } from "../data";
 
 const notes = [
   { title: "Getting here", text: "Two blocks from Kalayaan Avenue. Pay parking at Century City Mall, a five-minute walk. Grab and taxis can stop at the door." },
@@ -11,11 +13,13 @@ const notes = [
 ];
 
 export function VisitPage() {
+  const t = useEmberCopy();
+  const { site, hours, photo } = useEmberData();
   return (
     <>
       <section className="mx-auto grid max-w-7xl gap-12 px-5 pt-16 pb-20 sm:px-8 lg:grid-cols-[1.1fr_1fr]">
         <div>
-          <h1 className="font-tpl-display text-6xl leading-none sm:text-8xl">Visit</h1>
+          <h1 className="font-tpl-display text-6xl leading-none sm:text-8xl">{t("Visit")}</h1>
           <address className="mt-8 font-tpl-display text-3xl leading-snug not-italic">
             {site.address.map((l) => (
               <span key={l} className="block">
@@ -33,27 +37,25 @@ export function VisitPage() {
             </a>
           </p>
           <dl className="mt-10 max-w-md space-y-2">
-            {site.hours.map((h) => (
-              <div key={h.days} className="flex justify-between gap-4 border-b border-dotted border-tpl-line pb-2">
+            {hours.map((h, index) => (
+              <div key={index} className="flex justify-between gap-4 border-b border-dotted border-tpl-line pb-2">
                 <dt className="text-tpl-muted">{h.days}</dt>
                 <dd className="text-right">{h.time}</dd>
               </div>
             ))}
           </dl>
-          <Link href={href("/reserve")} className="mt-10 inline-block bg-tpl-accent px-6 py-3.5 font-semibold text-tpl-on-accent hover:bg-tpl-alt">
-            Reserve a table
-          </Link>
+          <Link href={href("/reserve")} className="mt-10 inline-block bg-tpl-accent px-6 py-3.5 font-semibold text-tpl-on-accent hover:bg-tpl-alt">{t("Reserve a table")}</Link>
         </div>
         <div className="relative min-h-[420px] overflow-hidden">
-          <Image src={photo("room").src} alt={photo("room").alt} fill priority sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
+          <Image placement={"visit.room"} src={photo("room").src} unoptimized={photo("room").src.startsWith("blob:") || photo("room").src.startsWith("/api/personalization/")} alt={photo("room").alt} fill priority sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
         </div>
       </section>
       <section aria-label="Before you come" className="border-t border-tpl-line">
         <dl className="mx-auto grid max-w-7xl gap-10 px-5 py-20 sm:px-8 md:grid-cols-2 lg:grid-cols-4">
           {notes.map((n) => (
             <div key={n.title}>
-              <dt className="font-tpl-display text-2xl">{n.title}</dt>
-              <dd className="mt-3 leading-relaxed text-tpl-muted">{n.text}</dd>
+              <dt className="font-tpl-display text-2xl">{t(n.title)}</dt>
+              <dd className="mt-3 leading-relaxed text-tpl-muted">{t(n.text)}</dd>
             </div>
           ))}
         </dl>

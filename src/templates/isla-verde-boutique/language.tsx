@@ -9,6 +9,7 @@ import * as content from "./content";
 import { nav, site } from "./site";
 import photos from "./photos.json";
 import { copy } from "./translations";
+import { usePersonalization } from "./personalization";
 
 export function translated(value: string, language: Language): string {
   if (language === "en") return value;
@@ -66,18 +67,22 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
 export function useIsla() {
   const language = useContext(Context);
+  const personalization = usePersonalization();
   return useMemo(() => {
     const locale = language === "en" ? "en-PH" : "fil-PH";
     return {
-      language, locale, t: (value: string, values: Record<string, string | number> = {}) => translated(value, language).replace(/\{(\w+)\}/g, (match, key: string) => String(values[key] ?? match)),
-      rooms: translateData(content.rooms, language), extras: translateData(content.extras, language),
-      posts: translateData(content.posts, language), menuHighlights: translateData(content.menuHighlights, language), eventSpaces: translateData(content.eventSpaces, language),
-      nav: translateData(nav, language), site: translateData(site, language),
+      language, locale, t: (value: string, values: Record<string, string | number> = {}) => (personalization.islaCopy?.[value] || translated(value, language)).replace(/\{(\w+)\}/g, (match, key: string) => String(values[key] ?? match)),
+      rooms: translateData(content.rooms, language).map(room => { const override = personalization.islaRooms?.[room.slug]; if (!override) return room; const { description, details, ...fields } = override; return { ...room, ...fields, ...(description ? { description: description.split(/\n+/).map(s => s.trim()).filter(Boolean) } : {}), ...(details ? { details: details.split(/\n+/).map(s => s.trim()).filter(Boolean) } : {}) }; }),
+      extras: translateData(content.extras, language).map(extra => ({ ...extra, ...personalization.islaExtras?.[extra.id] })),
+      posts: translateData(content.posts, language).map(post => { const override = personalization.islaPosts?.[post.slug]; if (!override) return post; const { body, ...fields } = override; return { ...post, ...fields, ...(body ? { body: body.split(/\n+/).map(s => s.trim()).filter(Boolean) } : {}) }; }),
+      menuHighlights: translateData(content.menuHighlights, language).map((item, index) => ({ ...item, ...personalization.islaMenu?.[["first", "second", "third", "fourth", "fifth"][index]] })),
+      eventSpaces: translateData(content.eventSpaces, language).map((item, index) => ({ ...item, ...personalization.islaSpaces?.[["first", "second", "third"][index]] })),
+      nav: nav.map(item => ({ ...item, label: personalization.islaCopy?.[item.label] || translated(item.label, language) })), site: { ...translateData(site, language), ...personalization.business, ...personalization.islaStayTimes },
       photos: Object.values(photos).map((photo) => ({ ...photo, alt: translated(photo.alt, language) })),
-      photo: (key: content.PhotoKey) => ({ ...content.photo(key), alt: translated(content.photo(key).alt, language) }),
+      photo: (key: content.PhotoKey) => { const original = content.photo(key); const custom = personalization.islaPhotos?.[key]; return { ...original, src: custom || original.src, alt: personalization.islaPhotoAlt?.[key] || (custom ? "Your selected website photo" : translated(original.alt, language)) }; },
       date: (day: string, options: Intl.DateTimeFormatOptions = { day: "numeric", month: "long", year: "numeric" }) => new Intl.DateTimeFormat(locale, options).format(fromDay(day)),
     };
-  }, [language]);
+  }, [language, personalization]);
 }
 
 export function LocalLink({ href, ...props }: React.ComponentProps<typeof NextLink>) {

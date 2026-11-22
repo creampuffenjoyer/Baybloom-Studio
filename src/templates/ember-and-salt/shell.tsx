@@ -1,16 +1,20 @@
+"use client";
+
 import { themeStyle } from "../_kit/theme";
 import { Footer } from "./components/footer";
 import { Header } from "./components/header";
 import { body, display } from "./fonts";
 import { theme } from "./site";
+import { usePersonalization } from "./personalization";
 
 /** Wraps every Ember & Salt page: theme, fonts, header and footer. */
 export function Shell({ children }: { children: React.ReactNode }) {
+  const { accent } = usePersonalization();
   return (
     <div
       data-template="ember-and-salt"
       className={`${display.variable} ${body.variable} flex min-h-dvh flex-col bg-tpl-bg font-tpl-body text-tpl-ink antialiased selection:bg-tpl-accent selection:text-tpl-on-accent`}
-      style={themeStyle(theme, { display: "var(--es-display)", body: "var(--es-body)" })}
+      style={themeStyle({ ...theme, accent: accent || theme.accent }, { display: "var(--es-display)", body: "var(--es-body)" })}
     >
       <a
         href="#content"

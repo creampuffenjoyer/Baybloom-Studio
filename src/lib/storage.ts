@@ -1,7 +1,8 @@
 import "server-only";
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, randomUUID, timingSafeEqual } from "node:crypto";
+import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 /*
@@ -13,6 +14,51 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const LINK_TTL_SECONDS = 5 * 60;
 export const LOCAL_ROOT = path.join(process.cwd(), "storage");
+const digest = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
+const validDigest = (sha256: string) => /^[a-f0-9]{64}$/.test(sha256);
+
+async function atomicLocalArchive(key: string, bytes: Uint8Array) {
+  const destination = path.join(LOCAL_ROOT, key);
+  await mkdir(path.dirname(destination), { recursive: true });
+  const temporary = `${destination}.${randomUUID()}.tmp`;
+  try {
+    await writeFile(temporary, bytes, { flag: "wx" });
+    await rename(temporary, destination);
+  } finally { await unlink(temporary).catch(() => {}); }
+}
+
+/** The database retains the authoritative release. This cache is optional. */
+export async function cacheSourceRelease(sha256: string, bytes: Uint8Array) {
+  if (!validDigest(sha256) || digest(bytes) !== sha256) throw new Error("Source cache integrity mismatch");
+  try { await atomicLocalArchive(`purchases/releases/${sha256}.zip`, bytes); } catch { /* A read-only host can use database fallback. */ }
+}
+
+export async function readCachedSourceRelease(sha256: string) {
+  if (!validDigest(sha256)) throw new Error("Invalid source digest");
+  const bytes = await readFile(path.join(LOCAL_ROOT, "purchases/releases", `${sha256}.zip`)).catch(() => null);
+  return bytes && digest(bytes) === sha256 ? bytes : null;
+}
+
+/** Immutable, digest-addressed objects make retries safe before DB publication. */
+export async function storePurchaseArtifact(bytes: Uint8Array) {
+  const sha256 = digest(bytes);
+  const key = `purchases/artifacts/${sha256}.zip`;
+  const client = s3Client();
+  if (client) {
+    await client.send(new PutObjectCommand({ Bucket: process.env.S3_BUCKET, Key: key,
+      Body: bytes, ContentType: "application/zip", Metadata: { sha256 },
+    }), { abortSignal: AbortSignal.timeout(30_000) });
+  } else {
+    if (process.env.NODE_ENV === "production") throw new Error("Private S3 storage is required for purchase delivery in production");
+    await atomicLocalArchive(key, bytes);
+  }
+  return { key, sha256 };
+}
+
+export function verifyPurchaseArtifact(key: string, bytes: Uint8Array) {
+  const match = /^purchases\/artifacts\/([a-f0-9]{64})\.zip$/.exec(key);
+  return !key.startsWith("purchases/artifacts/") || !!match && digest(bytes) === match[1];
+}
 
 let s3: S3Client | null = null;
 function s3Client() {

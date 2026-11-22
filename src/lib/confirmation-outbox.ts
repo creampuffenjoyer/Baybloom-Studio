@@ -29,7 +29,7 @@ export async function deliverConfirmations(client: PrismaClient = db, send = sen
       const payload = order.confirmationPayload ?? {
         to: order.user.email, subject: `Your Baybloom Studio order ${ref}`,
         ...actionEmail({ heading: `Thank you${order.user.name ? `, ${order.user.name.split(" ")[0]}` : ""}!`,
-          body: `Your payment of ${formatPrice(order.totalCents, order.currency)} for ${order.items.map((i) => `${i.designTitle} (${i.tierName})`).join(", ")} was received. Your files are ready to download from your account.`,
+          body: `Your payment of ${formatPrice(order.totalCents, order.currency)} for ${order.items.map((i) => `${i.designTitle} (${i.tierName})`).join(", ")} was received. Open your order to download your files or check package preparation. Your purchased content is saved independently of later draft edits.`,
           cta: "View receipt & downloads", url: siteUrl(`/account/orders/${order.id}`),
           footer: `Order ${ref}. Download links in your account are refreshed each time you open them.` }),
       };

@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { motion } from "motion/react";
 import { ArrowRightIcon, EyeIcon } from "lucide-react";
 import type { DesignCard as DesignCardData } from "@/lib/catalog";
 import { TIER_LABEL } from "@/lib/format";
@@ -38,10 +37,8 @@ export function DesignCard({
   const href = `/designs/${design.slug}`;
 
   return (
-    <motion.article
-      whileHover={{ y: -6 }}
-      transition={{ type: "spring", stiffness: 300, damping: 24 }}
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-card shadow-[0_1px_2px_rgb(15_76_92/0.06)] ring-1 ring-border/70 transition-shadow duration-300 hover:shadow-[0_24px_48px_-20px_rgb(15_76_92/0.35)]"
+    <article
+      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-colors duration-200 hover:border-bay/40"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-sand-deep">
         <Image
@@ -50,7 +47,7 @@ export function DesignCard({
           fill
           sizes="(min-width: 1280px) 400px, (min-width: 768px) 50vw, 100vw"
           priority={priority}
-          className="object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
+          className="object-cover object-top"
         />
 
         <div className="absolute top-3 left-3 flex gap-2">
@@ -67,24 +64,23 @@ export function DesignCard({
           <CompareToggle
             item={{ slug: design.slug, title: design.title, heroImage: design.heroImage }}
             signedIn={signedIn}
-            className="opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100 aria-pressed:opacity-100 max-md:opacity-100"
           />
         </div>
 
-        {/* Quick view slides up on hover / keyboard focus */}
-        <div className="absolute inset-x-3 bottom-3 z-10 translate-y-[calc(100%+12px)] transition-transform duration-300 ease-out group-focus-within:translate-y-0 group-hover:translate-y-0">
+        <div className="absolute bottom-3 left-3 z-10">
           <Button
             type="button"
             onClick={() => setQuickView(true)}
-            className="h-10 w-full rounded-full bg-white/95 text-bay shadow-md backdrop-blur hover:bg-white"
+            aria-label={`Quick view of ${design.title}`}
+            className="h-11 rounded-lg border border-border bg-white px-4 text-bay shadow-sm hover:bg-sand"
           >
-            <EyeIcon /> Quick view
+            <EyeIcon aria-hidden /> Quick view
           </Button>
         </div>
       </div>
 
       <div className="flex flex-1 flex-col gap-2 p-5">
-        <p className="text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">
+        <p className="text-xs font-medium text-muted-foreground">
           {design.category.name}
           {design.style && ` · ${design.style.name}`}
         </p>
@@ -99,7 +95,7 @@ export function DesignCard({
         <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
           {design.summary}
         </p>
-        <div className="mt-auto flex items-center justify-between pt-3">
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border/70 pt-4">
           <PriceChip price={price} callbackUrl={href} />
           <ArrowRightIcon
             aria-hidden
@@ -109,7 +105,7 @@ export function DesignCard({
       </div>
 
       <Dialog open={quickView} onOpenChange={setQuickView}>
-        <DialogContent className="overflow-hidden p-0 sm:max-w-2xl">
+        <DialogContent className="max-h-[90dvh] overflow-y-auto p-0 sm:max-w-2xl">
           <div className="relative aspect-[16/9] bg-sand-deep">
             <Image
               src={design.heroImage}
@@ -120,7 +116,7 @@ export function DesignCard({
             />
           </div>
           <div className="space-y-3 p-6 pt-4">
-            <p className="text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">
+            <p className="text-xs font-medium text-muted-foreground">
               {design.category.name}
               {design.style && ` · ${design.style.name}`}
             </p>
@@ -133,7 +129,7 @@ export function DesignCard({
             </p>
             <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
               <PriceChip price={price} callbackUrl={href} />
-              <Button asChild className="rounded-full">
+              <Button asChild className="h-11 rounded-lg">
                 <Link href={href}>
                   View full design <ArrowRightIcon />
                 </Link>
@@ -142,6 +138,6 @@ export function DesignCard({
           </div>
         </DialogContent>
       </Dialog>
-    </motion.article>
+    </article>
   );
 }

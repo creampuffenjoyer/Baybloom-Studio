@@ -3,18 +3,28 @@ import { useCoral, LocalLink as Link } from "../language";
 
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { href } from "../site";
 
 export function Header() {
   const { t, nav, site } = useCoral();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const menuToggle = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      menuToggle.current?.focus();
+    }
+    document.addEventListener("keydown", closeOnEscape);
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", closeOnEscape);
     };
   }, [open]);
 
@@ -26,9 +36,9 @@ export function Header() {
         <Link
           href={href("/")}
           onClick={() => setOpen(false)}
-          className="font-tpl-display text-2xl font-extrabold tracking-[-0.04em] [font-stretch:85%]"
+          className="rounded-sm font-tpl-display text-2xl font-semibold tracking-[-0.03em] [font-stretch:88%] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-tpl-deep"
         >
-          coral cove
+          {site.name}
         </Link>
         <nav aria-label={t("Main")} className="ml-auto hidden items-center gap-1 lg:flex">
           {nav.map((item) => {
@@ -38,7 +48,7 @@ export function Header() {
                 key={item.href}
                 href={href(item.href)}
                 aria-current={active ? "page" : undefined}
-                className={`rounded-full px-4 py-2 text-[15px] font-medium transition-colors hover:bg-tpl-soft ${active ? "underline decoration-2 underline-offset-[6px]" : ""}`}
+                className={`rounded-lg px-4 py-2 text-[15px] font-medium transition-colors hover:bg-tpl-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-tpl-deep ${active ? "underline decoration-2 underline-offset-[6px]" : ""}`}
               >
                 {t(item.label)}
               </Link>
@@ -47,14 +57,15 @@ export function Header() {
         </nav>
         <Link
           href={href("/book")}
-          className="ml-auto hidden sm:block rounded-full bg-tpl-accent px-4 py-2 text-sm font-semibold sm:px-5 sm:py-2.5 sm:text-[15px] text-tpl-on-accent transition-transform hover:-translate-y-0.5 lg:ml-2"
+          className="ml-auto hidden sm:block rounded-lg bg-tpl-accent px-4 py-2 text-sm font-medium sm:px-5 sm:py-3 sm:text-[15px] text-tpl-on-accent transition-colors hover:bg-tpl-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-tpl-deep lg:ml-2"
         >{t("Book a villa")}</Link>
         <button
+          ref={menuToggle}
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
           aria-controls="cc-menu"
-          className="-mr-2 ml-auto grid size-11 place-items-center rounded-full lg:hidden"
+          className="-mr-2 ml-auto grid size-11 place-items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-tpl-deep lg:hidden"
         >
           <span className="sr-only">{open ? t("Close menu") : t("Open menu")}</span>
           <span aria-hidden className="relative block h-3 w-6">
@@ -73,7 +84,7 @@ export function Header() {
                   <Link
                     href={href(item.href)}
                     onClick={() => setOpen(false)}
-                    className="block py-2 font-tpl-display text-5xl font-bold tracking-[-0.03em]"
+                    className="block rounded-sm py-2 font-tpl-display text-4xl font-semibold tracking-[-0.03em] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     {t(item.label)}
                   </Link>

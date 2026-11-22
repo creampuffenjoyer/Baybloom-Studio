@@ -1,6 +1,6 @@
 import "server-only";
 import { createHash, randomBytes } from "node:crypto";
-import type { TokenType } from "@prisma/client";
+import type { PrismaClient, TokenType } from "@prisma/client";
 import { db } from "@/lib/db";
 
 const TTL_MS: Record<TokenType, number> = {
@@ -26,12 +26,12 @@ export async function issueToken(email: string, type: TokenType) {
 }
 
 /** Returns the token's email and deletes it, or null if invalid/expired. */
-export async function consumeToken(token: string, type: TokenType) {
+export async function consumeToken(token: string, type: TokenType, client: PrismaClient = db) {
   if (!token || token.length > 100) return null;
-  const row = await db.verificationToken.findUnique({ where: { tokenHash: hash(token) } });
+  const row = await client.verificationToken.findUnique({ where: { tokenHash: hash(token) } });
   if (!row || row.type !== type) return null;
-  await db.verificationToken.delete({ where: { id: row.id } });
-  return row.expiresAt > new Date() ? row.email : null;
+  const consumed = await client.verificationToken.deleteMany({ where: { id: row.id, type, expiresAt: { gt: new Date() } } });
+  return consumed.count === 1 ? row.email : null;
 }
 
 /** Checks a token without consuming it (to render the reset form). */

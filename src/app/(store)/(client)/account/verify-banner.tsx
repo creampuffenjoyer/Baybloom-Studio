@@ -18,7 +18,7 @@ export function VerifyBanner({ email }: { email: string }) {
           {message ?? (
             <>
               We sent a link to <span className="font-medium">{email}</span>. You&apos;ll need a
-              verified email to check out.
+              verified email to save drafts, upload photos, and check out.
             </>
           )}
         </p>

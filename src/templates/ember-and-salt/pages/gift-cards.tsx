@@ -1,9 +1,12 @@
+"use client";
+import { useEmberCopy } from "../copy";
 import { GiftCardForm } from "../components/gift-card-form";
 
 export function GiftCardsPage() {
+  const t = useEmberCopy();
   return (
     <div className="mx-auto max-w-7xl px-5 pt-16 pb-24 sm:px-8">
-      <h1 className="font-tpl-display text-6xl leading-none sm:text-8xl">Gift cards</h1>
+      <h1 className="font-tpl-display text-6xl leading-none sm:text-8xl">{t("Gift cards")}</h1>
       <p className="mt-5 max-w-[52ch] text-lg text-tpl-muted">
         Explore a sample gift card. No payment is taken and no email is sent.
       </p>

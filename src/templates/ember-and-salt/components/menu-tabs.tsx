@@ -1,12 +1,16 @@
 "use client";
+import { useEmberCopy } from "../copy";
 
 import { useRef, useState } from "react";
-import { DIET_LABEL, menus, type Diet } from "../content";
+import { DIET_LABEL, type Diet } from "../content";
+import { useEmberData } from "../data";
 import { MenuList } from "./menu-list";
 import { filterMenu } from "../menu-search";
 
 /** Dinner / drinks / dessert tabs. Every panel stays in the page for search engines. */
 export function MenuTabs() {
+  const t = useEmberCopy();
+  const { menus } = useEmberData();
   const [active, setActive] = useState(menus[0].id);
   const [query, setQuery] = useState("");
   const [diet, setDiet] = useState<Diet | "all">("all");
@@ -23,8 +27,8 @@ export function MenuTabs() {
   return (
     <div>
       <div className="mb-8 grid gap-4 sm:grid-cols-2">
-        <label className="grid gap-2 text-sm">Search dishes<input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Dish or ingredient" className="border border-tpl-line bg-tpl-surface px-4 py-3 text-base" /></label>
-        <label className="grid gap-2 text-sm">Dietary label<select value={diet} onChange={(event) => setDiet(event.target.value as Diet | "all")} className="border border-tpl-line bg-tpl-surface px-4 py-3 text-base"><option value="all">All dishes</option>{Object.entries(DIET_LABEL).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
+        <label className="grid gap-2 text-sm">{t("Search dishes")}<input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Dish or ingredient" className="border border-tpl-line bg-tpl-surface px-4 py-3 text-base" /></label>
+        <label className="grid gap-2 text-sm">{t("Dietary label")}<select value={diet} onChange={(event) => setDiet(event.target.value as Diet | "all")} className="border border-tpl-line bg-tpl-surface px-4 py-3 text-base"><option value="all">{t("All dishes")}</option>{Object.entries(DIET_LABEL).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
       </div>
       <div role="tablist" aria-label="Menus" className="flex gap-8 border-b border-tpl-line">
         {menus.map((m, i) => (
@@ -62,8 +66,8 @@ export function MenuTabs() {
           <p className="text-tpl-muted">{m.served}</p>
           <p className="mt-3 text-sm text-tpl-muted" role="status">{sections.length ? `${sections.reduce((sum, section) => sum + section.dishes.length, 0)} dishes shown` : "No dishes match in this menu. Try another search, label, or menu."}</p>
           <div className="mt-10 grid gap-16 lg:grid-cols-2 lg:gap-x-20">
-            {sections.map((s) => (
-              <MenuList key={s.title} section={s} headingLevel={2} />
+            {sections.map((s, index) => (
+              <MenuList key={index} section={s} headingLevel={2} />
             ))}
           </div>
         </div>

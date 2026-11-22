@@ -28,7 +28,7 @@ test("a concurrent password registration cannot turn into an implicit Google lin
     account: { findUnique: async () => null },
     user: { findUnique: async () => null, create: async () => { throw Object.assign(new Error("unique"), { code: "P2002" }); } },
   };
-  assert.equal(await authorizeGoogleAccount({ subject: "google", email: "victim@example.com" }, client), false);
+  assert.equal(await authorizeGoogleAccount({ subject: "google", email: "victim@example.com" }, client, async () => true), false);
 });
 
 test("a new Google account is created with verified email and no password", async () => {
@@ -37,10 +37,17 @@ test("a new Google account is created with verified email and no password", asyn
     account: { findUnique: async () => null },
     user: { findUnique: async () => null, create: async (args) => { data = args.data; } },
   };
-  assert.equal(await authorizeGoogleAccount({ subject: "google", email: "Victim@Example.com" }, client), true);
+  assert.equal(await authorizeGoogleAccount({ subject: "google", email: "Victim@Example.com" }, client, async () => true), true);
   assert.equal(data.email, "victim@example.com");
   assert.ok(data.emailVerified instanceof Date);
   assert.equal(data.passwordHash, undefined);
+});
+
+test("new Google identities respect signup capacity while existing links can still sign in", async () => {
+  const client = { account: { findUnique: async () => null }, user: { findUnique: async () => null, create: async () => { assert.fail("must not create an account when limited"); } } };
+  assert.equal(await authorizeGoogleAccount({ subject: "new", email: "new@example.com" }, client, async () => false), false);
+  client.account.findUnique = async () => ({ user: { disabled: false, email: "existing@example.com" } });
+  assert.equal(await authorizeGoogleAccount({ subject: "old", email: "existing@example.com" }, client, async () => { assert.fail("existing login must not consume signup capacity"); }), true);
 });
 
 test("missing production email settings do not expose recovery tokens in logs", async (t) => {

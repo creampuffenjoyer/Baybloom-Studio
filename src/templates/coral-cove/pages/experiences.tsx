@@ -1,6 +1,6 @@
 "use client";
 import { useCoral, LocalLink as Link } from "../language";
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 
 import { PageIntro } from "../components/page-intro";
 
@@ -13,7 +13,7 @@ export function ExperiencesPage() {
       <PageIntro
         title={t("Days on the water")}
         lede={t("Snorkel gear, kayaks and paddleboards are free for every guest. Everything else, our front desk can book in a few minutes, or ask us before you arrive.")}
-        image={photo("sandbar")}
+        image={{ ...photo("sandbar"), placement: "experiences.banner" }}
       />
       <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
         <ul className="grid gap-x-10 gap-y-20 md:grid-cols-2">
@@ -22,7 +22,7 @@ export function ExperiencesPage() {
             return (
               <li key={x.slug} id={x.slug} className={`scroll-mt-28 ${i % 2 ? "md:mt-24" : ""}`}>
                 <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem]">
-                  <Image src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+                  <Image placement={`experiences.${x.slug}`} src={p.src} unoptimized={(p.src).startsWith("blob:") || (p.src).startsWith("/api/personalization/")} alt={p.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
                 </div>
                 <h2 className="mt-6 font-tpl-display text-3xl font-bold tracking-[-0.03em] sm:text-4xl">{x.name}</h2>
                 <p className="mt-3 text-lg text-tpl-ink">{x.summary}</p>

@@ -2,7 +2,7 @@
 
 import { useIsla } from "../language";
 
-import Image from "next/image";
+import { PlacementImage as Image } from "../components/placement-image";
 import { SimpleForm } from "../components/simple-form";
 import { arch } from "../site";
 
@@ -11,7 +11,7 @@ export function EventsPage() {
   return (
     <>
       <section className="relative isolate overflow-hidden text-white">
-        <Image src={photo("garden-night").src} alt={photo("garden-night").alt} fill priority sizes="100vw" className="-z-10 object-cover" />
+        <Image placement={"events.banner"} src={photo("garden-night").src} unoptimized={photo("garden-night").src.startsWith("blob:") || photo("garden-night").src.startsWith("/api/personalization/")} alt={photo("garden-night").alt} fill priority sizes="100vw" className="-z-10 object-cover" />
         <div className="absolute inset-0 -z-10 bg-black/50" />
         <div className="mx-auto max-w-7xl px-5 py-36 sm:px-8">
           <h1 className="max-w-3xl font-tpl-display text-6xl leading-[0.98] italic sm:text-8xl">{t("Weddings and gatherings")}</h1>
@@ -26,7 +26,7 @@ export function EventsPage() {
             return (
               <li key={s.name}>
                 <div className={`relative aspect-[3/4] overflow-hidden ${arch}`}>
-                  <Image src={p.src} alt={p.alt} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
+                  <Image placement={`events.${i}`} src={p.src} unoptimized={p.src.startsWith("blob:") || p.src.startsWith("/api/personalization/")} alt={p.alt} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
                 </div>
                 <h3 className="mt-5 font-tpl-display text-3xl italic">{s.name}</h3>
                 <p className="mt-1">{s.capacity}</p>
