@@ -98,7 +98,7 @@ whose name contains `_test`. It never falls back to `.env` or the application da
 CSRF, XSS, object authorization, uploads, checkout and session revocation over
 local HTTPS. It requires Chrome, OpenSSL and the guarded `.env.test.local`
 database configuration. See [the security audit](docs/security-audit.md) for
-findings, reproduction details and remaining public-launch requirements.
+findings, reproduction details and remaining public launch requirements.
 
 `npm run test:storage` tests photo quota races and rollback using tiny fixtures
 in that same guarded test database. Saved draft photos, including hero and legacy
