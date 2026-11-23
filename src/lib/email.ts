@@ -1,4 +1,5 @@
 import "server-only";
+import { publicSiteOrigin } from "@/lib/site-origin";
 
 type Email = { to: string; subject: string; text: string; html: string };
 
@@ -32,8 +33,7 @@ export async function sendEmail(email: Email, idempotencyKey?: string) {
 }
 
 export function siteUrl(path: string) {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  return new URL(path, base).toString();
+  return new URL(path, publicSiteOrigin()).toString();
 }
 
 const escape = (s: string) =>

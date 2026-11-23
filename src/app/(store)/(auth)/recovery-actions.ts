@@ -12,6 +12,7 @@ import { emailSchema, passwordSchema } from "@/lib/validators";
 import { sendPasswordResetEmail, sendVerificationEmail } from "@/lib/account-emails";
 import { getCurrentUser } from "@/lib/session";
 import { auth } from "@/lib/auth";
+import { reportEvent } from "@/lib/monitoring";
 
 export type RecoveryState = {
   ok?: boolean;
@@ -91,20 +92,29 @@ export async function resetPasswordAction(
   const screening = await checkBreachedPassword(parsed.data.password);
   if (screening === "breached") return { fieldErrors: { password: BREACHED_PASSWORD_MESSAGE } };
   if (screening === "unavailable") return { error: PASSWORD_CHECK_UNAVAILABLE };
-  const email = await consumeToken(parsed.data.token, "RESET_PASSWORD");
-  if (!email) return { error: "This reset link has expired or was already used. Please request a new one." };
+  const passwordHash = await bcrypt.hash(parsed.data.password, 12);
+  const changed = await db.$transaction(async (tx) => {
+    const email = await consumeToken(parsed.data.token, "RESET_PASSWORD", tx);
+    if (!email) return false;
 
-  const now = new Date();
-  await db.user.update({
-    where: { email },
-    data: {
-      passwordHash: await bcrypt.hash(parsed.data.password, 12),
-      // Signs out every existing session, including any an attacker may hold.
-      sessionsValidAfter: now,
-      // Following the emailed link proves they own the inbox.
-      emailVerified: now,
-    },
+    const now = new Date();
+    await tx.user.update({
+      where: { email },
+      data: {
+        passwordHash,
+        // Signs out sessions issued before this reset.
+        sessionsValidAfter: now,
+        // Following the emailed link proves they own the inbox.
+        emailVerified: now,
+      },
+    });
+    return true;
+  }).catch(() => {
+    reportEvent("password_reset_update_failed");
+    return undefined;
   });
+  if (changed === undefined) return { error: "We couldn't reset your password right now. Please try again shortly." };
+  if (!changed) return { error: "This reset link has expired or was already used. Please request a new one." };
   redirect("/login?reset=1");
 }
 
@@ -125,6 +135,11 @@ export async function resendVerificationAction(): Promise<{ ok: boolean; message
     select: { emailVerified: true, name: true },
   });
   if (row?.emailVerified) return { ok: true, message: "Your email is already verified." };
-  await sendVerificationEmail(user.email, row?.name);
+  try {
+    await sendVerificationEmail(user.email, row?.name);
+  } catch {
+    reportEvent("verification_email_resend_failed");
+    return { ok: false, message: "We couldn't send a verification email right now. Please try again shortly." };
+  }
   return { ok: true, message: `We sent a new link to ${user.email}.` };
 }

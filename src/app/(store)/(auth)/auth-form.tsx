@@ -64,8 +64,11 @@ export function AuthForm({
     {},
   );
   const formRef = useRef<HTMLFormElement>(null);
+  const resultRef = useRef<HTMLParagraphElement>(null);
   useEffect(() => {
-    if (state.fieldErrors && Object.keys(state.fieldErrors).length) {
+    if (state.accountCreated) {
+      resultRef.current?.focus();
+    } else if (state.fieldErrors && Object.keys(state.fieldErrors).length) {
       formRef.current?.querySelector<HTMLInputElement>('[aria-invalid="true"]')?.focus();
     } else if (state.error) {
       formRef.current?.querySelector<HTMLElement>('[role="alert"]')?.focus();
@@ -74,6 +77,17 @@ export function AuthForm({
   const otherHref = `${mode === "login" ? "/register" : "/login"}${
     callbackUrl ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""
   }`;
+
+  if (state.accountCreated) {
+    return (
+      <div className="space-y-4">
+        <p ref={resultRef} role="status" tabIndex={-1}>Your account was created. Please log in to continue.</p>
+        <Button asChild>
+          <Link href={otherHref}>Log in</Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

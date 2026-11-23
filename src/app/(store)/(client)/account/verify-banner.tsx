@@ -17,7 +17,7 @@ export function VerifyBanner({ email }: { email: string }) {
         <p className="mt-0.5 text-ink/75" role="status">
           {message ?? (
             <>
-              We sent a link to <span className="font-medium">{email}</span>. You&apos;ll need a
+              Check <span className="font-medium">{email}</span> for your verification link. You&apos;ll need a
               verified email to save drafts, upload photos, and check out.
             </>
           )}

@@ -23,12 +23,13 @@ test("web security: browser CSRF, XSS, injection, authentication and object auth
   const prefix = `security-${randomUUID()}`;
   const users = [`${prefix}-alice`, `${prefix}-bob`, `${prefix}-admin`];
   const emails = users.map((id) => `${id}@example.test`);
+  const signupEmail = `${prefix}-signup@example.test`;
   const password = randomBytes(24).toString("base64url");
   const secret = randomBytes(32).toString("base64url");
   const ipBytes = randomBytes(2);
   const clientIp = `198.18.${ipBytes[0]}.${ipBytes[1]}`; // isolated limiter identity at the trusted loopback proxy
   const couponCode = `SEC${randomBytes(12).toString("hex").toUpperCase()}`;
-  const base = "https://127.0.0.1:3322";
+  const base = "https://localhost:3322";
   const xss = '<img src=x onerror="window.__auditXss=1">';
   const fileKey = `security/${prefix}.txt`;
   const orderIds = [];
@@ -66,7 +67,7 @@ test("web security: browser CSRF, XSS, injection, authentication and object auth
     await writeFile(".next/personalization-e2e-config/tsconfig.json", JSON.stringify({ extends: "../../tsconfig.json", include: ["../../next-env.d.ts", "../../src/**/*.ts", "../../src/**/*.tsx", "../personalization-e2e/types/**/*.ts", "../personalization-e2e/dev/types/**/*.ts"], exclude: ["../../node_modules"] }));
     const isolatedEnv = {
       ...process.env, NODE_OPTIONS: `--import=${pathToFileURL(resolve("tests/helpers/pwned-passwords-fixture.mjs")).href}`, RAYON_NUM_THREADS: "2", UV_THREADPOOL_SIZE: "2", BAYBLOOM_PERSONALIZATION_TEST: "1", DATABASE_URL: target, DIRECT_URL: direct,
-      AUTH_SECRET: secret, MFA_ENCRYPTION_KEY: randomBytes(32).toString("base64"), AUTH_URL: base, NEXT_PUBLIC_SITE_URL: base, AUTH_GOOGLE_ID: "", AUTH_GOOGLE_SECRET: "", RESEND_API_KEY: "", EMAIL_FROM: "",
+      AUTH_SECRET: secret, MFA_ENCRYPTION_KEY: randomBytes(32).toString("base64"), AUTH_URL: "", NEXTAUTH_URL: "", AUTH_TRUST_HOST: "", RAILWAY_PUBLIC_DOMAIN: new URL(base).host, NEXT_PUBLIC_SITE_URL: "", AUTH_GOOGLE_ID: "", AUTH_GOOGLE_SECRET: "", RESEND_API_KEY: "", EMAIL_FROM: "",
       STRIPE_SECRET_KEY: "", STRIPE_WEBHOOK_SECRET: "", NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "", S3_ENDPOINT: "", S3_BUCKET: "", S3_ACCESS_KEY: "", S3_SECRET_KEY: "", MAINTENANCE_SECRET: secret,
     };
     serverLog = createWriteStream("storage/security/browser-server.log");
@@ -97,6 +98,15 @@ test("web security: browser CSRF, XSS, injection, authentication and object auth
     browser = await chromium.launch({ channel: "chrome", headless: true });
     const contexts = await Promise.all([0, 1, 2].map(() => browser.newContext({ reducedMotion: "reduce", ignoreHTTPSErrors: true })));
     const [owner, other, anonymous] = contexts;
+    const signedOutSession = await anonymous.request.get(`${base}/api/auth/session`);
+    assert.equal(signedOutSession.status(), 200);
+    assert.equal(await signedOutSession.json(), null);
+    const providers = await anonymous.request.get(`${base}/api/auth/providers`);
+    assert.equal(providers.status(), 200);
+    assert.equal((await providers.json()).credentials.callbackUrl, `${base}/api/auth/callback/credentials`);
+    const robots = await anonymous.request.get(`${base}/robots.txt`);
+    assert.ok((await robots.text()).includes(`Sitemap: ${base}/sitemap.xml`));
+
     async function login(context, index = 0, value = password, code = "") {
       const { csrfToken } = await (await context.request.get(`${base}/api/auth/csrf`)).json();
       await context.request.post(`${base}/api/auth/callback/credentials`, { form: { csrfToken, email: emails[index], password: value, code, json: "true" } });
@@ -152,9 +162,34 @@ test("web security: browser CSRF, XSS, injection, authentication and object auth
       await registration.close();
     });
 
+    await t.test("registration and login forms create a session and honor the requested page", async () => {
+      const signup = await browser.newContext({ ignoreHTTPSErrors: true });
+      try {
+        const form = await signup.newPage();
+        const callback = "?callbackUrl=%2Faccount";
+        await form.goto(`${base}/register${callback}`);
+        await form.getByLabel("Full name", { exact: true }).fill("Security fixture");
+        await form.getByLabel("Email", { exact: true }).fill(signupEmail);
+        await form.getByLabel("Password", { exact: true }).fill(password);
+        await form.getByRole("button", { name: "Create account", exact: true }).click();
+        await form.waitForURL(`${base}/account`);
+        assert.equal((await (await signup.request.get(`${base}/api/auth/session`)).json()).user?.email, signupEmail);
+
+        await signup.clearCookies();
+        await form.goto(`${base}/login${callback}`);
+        await form.getByLabel("Email", { exact: true }).fill(signupEmail);
+        await form.getByLabel("Password", { exact: true }).fill(password);
+        await form.getByRole("button", { name: "Log in", exact: true }).click();
+        await form.waitForURL(`${base}/account`);
+        assert.equal((await (await signup.request.get(`${base}/api/auth/session`)).json()).user?.email, signupEmail);
+      } finally {
+        await signup.close();
+      }
+    });
+
     await t.test("every browser write rejects foreign origins and JSON lookalikes", async () => {
       for (const [method, path] of routes) {
-        for (const origin of ["https://attacker.example", "https://127.0.0.1:3323", "null"]) assert.equal((await owner.request.fetch(base + path, { method, headers: { ...json, origin }, data: {} })).status(), 403, `${method} ${path}`);
+        for (const origin of ["https://attacker.example", "https://localhost:3323", "null"]) assert.equal((await owner.request.fetch(base + path, { method, headers: { ...json, origin }, data: {} })).status(), 403, `${method} ${path}`);
         assert.equal((await owner.request.fetch(base + path, { method, data: {} })).status(), 403);
         if (method === "POST") for (const contentType of ["text/plain", "application/jsonp"]) assert.equal((await owner.request.fetch(base + path, { method, headers: { ...json, "content-type": contentType }, data: "{}" })).status(), 415);
       }
@@ -429,9 +464,9 @@ test("web security: browser CSRF, XSS, injection, authentication and object auth
     try {
       await db.checkoutRequest.deleteMany({ where: { userId: { in: users } } });
       await db.order.deleteMany({ where: { userId: { in: users } } });
-      await db.verificationToken.deleteMany({ where: { email: { in: emails } } });
+      await db.verificationToken.deleteMany({ where: { email: { in: [...emails, signupEmail] } } });
       await db.user.deleteMany({ where: { id: { in: users } } });
-      await db.user.deleteMany({ where: { email: `${prefix}-registration@example.test` } });
+      await db.user.deleteMany({ where: { email: { in: [`${prefix}-registration@example.test`, signupEmail] } } });
       await db.design.deleteMany({ where: { id: prefix } });
       await db.category.deleteMany({ where: { id: prefix } });
       await db.coupon.deleteMany({ where: { code: couponCode } });

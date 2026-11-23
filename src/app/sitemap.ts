@@ -1,9 +1,9 @@
 import type { MetadataRoute } from "next";
 import { getPublishedSlugs } from "@/lib/catalog";
-
-const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+import { publicSiteOrigin } from "@/lib/site-origin";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const base = publicSiteOrigin();
   const slugs = await getPublishedSlugs();
   return [
     { url: `${base}/`, changeFrequency: "weekly", priority: 1 },

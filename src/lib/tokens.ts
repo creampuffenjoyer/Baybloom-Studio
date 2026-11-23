@@ -26,7 +26,7 @@ export async function issueToken(email: string, type: TokenType) {
 }
 
 /** Returns the token's email and deletes it, or null if invalid/expired. */
-export async function consumeToken(token: string, type: TokenType, client: PrismaClient = db) {
+export async function consumeToken(token: string, type: TokenType, client: Pick<PrismaClient, "verificationToken"> = db) {
   if (!token || token.length > 100) return null;
   const row = await client.verificationToken.findUnique({ where: { tokenHash: hash(token) } });
   if (!row || row.type !== type) return null;

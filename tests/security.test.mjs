@@ -1,8 +1,30 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { authorizeGoogleAccount } from "../src/lib/google-account.ts";
-import { sendEmail } from "../src/lib/email.ts";
+import { sendEmail, siteUrl } from "../src/lib/email.ts";
 import { assertHistoricalMigrationSafe } from "../scripts/migration-preflight.mjs";
+
+test("public links use Railway's HTTPS service domain unless a site URL is configured", (t) => {
+  const variables = {
+    RAILWAY_PUBLIC_DOMAIN: "shop.example.test",
+    NEXT_PUBLIC_SITE_URL: undefined,
+  };
+  const original = Object.fromEntries(Object.keys(variables).map((key) => [key, process.env[key]]));
+  function setVariables(values) {
+    for (const [key, value] of Object.entries(values)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  }
+  t.after(() => setVariables(original));
+  setVariables(variables);
+
+  const origin = "https://shop.example.test";
+  assert.equal(siteUrl("/reset-password"), `${origin}/reset-password`);
+
+  process.env.NEXT_PUBLIC_SITE_URL = "https://shop.example.com/";
+  assert.equal(siteUrl("/verify-email"), "https://shop.example.com/verify-email");
+});
 
 test("Google never adopts an existing unverified or verified password account", async () => {
   for (const emailVerified of [null, new Date()]) {

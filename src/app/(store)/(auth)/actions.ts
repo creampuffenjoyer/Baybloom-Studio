@@ -3,20 +3,25 @@
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { signIn, signOut } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
 import { loginSchema, registerSchema } from "@/lib/validators";
 import { safeCallbackUrl } from "@/lib/urls";
+import { reportEvent } from "@/lib/monitoring";
 import { sendVerificationEmail } from "@/lib/account-emails";
 import { checkBreachedPassword, BREACHED_PASSWORD_MESSAGE, PASSWORD_CHECK_UNAVAILABLE } from "@/lib/breached-passwords";
 
 export type AuthFormState = {
+  accountCreated?: boolean;
   error?: string;
   fieldErrors?: Partial<Record<"name" | "email" | "password", string>>;
   values?: { name?: string; email?: string };
 };
+
+const SIGN_IN_UNAVAILABLE = "Sign-in is temporarily unavailable. Please try again shortly.";
 
 async function clientIp() {
   return (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
@@ -29,6 +34,14 @@ function fieldErrors(error: z.ZodError): AuthFormState["fieldErrors"] {
     out[key] ??= issue.message;
   }
   return out;
+}
+
+async function signInWithPassword(credentials: z.output<typeof loginSchema>, redirectTo: string) {
+  const destination: string = await signIn("credentials", { ...credentials, redirectTo, redirect: false });
+  // On a configuration error Auth.js can return the credentials endpoint as
+  // the fallback URL. It is a JSON API and should never be shown to the user.
+  if (destination === `${new URL(destination).origin}${redirectTo}`) redirect(destination);
+  reportEvent("credentials_sign_in_redirect_unavailable");
 }
 
 export async function loginAction(
@@ -45,26 +58,34 @@ export async function loginAction(
     return { fieldErrors: fieldErrors(parsed.error), values: { email: input.email } };
   }
 
-  const accountRole = await db.user.findUnique({ where: { email: parsed.data.email }, select: { role: true } });
+  const values = { email: parsed.data.email };
+  const lookup = await db.user.findUnique({ where: { email: parsed.data.email }, select: { role: true } }).catch(() => {
+    reportEvent("login_account_lookup_failed");
+    return undefined;
+  });
+  if (lookup === undefined) return { error: SIGN_IN_UNAVAILABLE, values };
+
   try {
-    await signIn("credentials", {
-      ...parsed.data,
-      redirectTo: accountRole?.role === "ADMIN" ? "/account/security" : safeCallbackUrl(formData.get("callbackUrl")),
-    });
+    await signInWithPassword(
+      parsed.data,
+      lookup?.role === "ADMIN" ? "/account/security" : safeCallbackUrl(formData.get("callbackUrl")),
+    );
   } catch (error) {
     // signIn throws a redirect on success; only Auth.js errors are failures.
-    if (error instanceof AuthError) {
-      const limited = "code" in error && error.code === "rate_limited";
-      return {
-        error: limited
-          ? "Too many sign-in attempts. Please wait a few minutes and try again."
-          : "Check your sign-in details. Administrators also need a current authenticator code or unused recovery code after enrollment.",
-        values: { email: parsed.data.email },
-      };
+    if (!(error instanceof AuthError)) throw error;
+    if (error.type !== "CredentialsSignin") {
+      reportEvent("login_auth_failed", { type: error.type });
+      return { error: SIGN_IN_UNAVAILABLE, values };
     }
-    throw error;
+    const limited = "code" in error && error.code === "rate_limited";
+    return {
+      error: limited
+        ? "Too many sign-in attempts. Please wait a few minutes and try again."
+        : "Check your sign-in details. Administrators also need a current authenticator code or unused recovery code after enrollment.",
+      values,
+    };
   }
-  return {};
+  return { error: SIGN_IN_UNAVAILABLE, values };
 }
 
 export async function registerAction(
@@ -116,12 +137,13 @@ export async function registerAction(
     console.error("[register] verification email failed", e),
   );
 
-  await signIn("credentials", {
-    email,
-    password,
-    redirectTo: safeCallbackUrl(formData.get("callbackUrl")),
-  });
-  return {};
+  try {
+    await signInWithPassword({ email, password }, safeCallbackUrl(formData.get("callbackUrl")));
+  } catch (error) {
+    if (!(error instanceof AuthError)) throw error;
+    reportEvent("registration_auto_sign_in_failed", { type: error.type });
+  }
+  return { accountCreated: true };
 }
 
 export async function googleSignInAction(formData: FormData) {

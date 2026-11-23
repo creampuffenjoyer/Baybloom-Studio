@@ -9,6 +9,7 @@ import { loginSchema } from "@/lib/validators";
 import { rateLimit } from "@/lib/rate-limit";
 import { authorizeGoogleAccount } from "@/lib/google-account";
 import { consumeMfaCode, MfaError } from "@/lib/mfa";
+import { railwayPublicOrigin } from "@/lib/site-origin";
 
 class RateLimited extends CredentialsSignin {
   code = "rate_limited";
@@ -21,6 +22,13 @@ const DUMMY_HASH = bcrypt.hashSync("baybloom-timing-guard", 12);
 const googleEnabled = Boolean(
   process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET,
 );
+
+// Auth.js uses AUTH_URL for both route handlers and server actions. Pin the
+// Railway default to the service's public HTTPS domain.
+const railwayOrigin = railwayPublicOrigin();
+if (railwayOrigin && !process.env.AUTH_URL && !process.env.NEXTAUTH_URL) {
+  process.env.AUTH_URL = railwayOrigin;
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   // Credentials sign-in requires JWT sessions; the jwt callback below still

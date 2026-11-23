@@ -106,11 +106,30 @@ photo controls, share limits of 100 MiB per draft and 200 MiB per account.
 Replacing a photo counts its resulting size; restoring photos frees capacity.
 Purchased snapshots and delivered files are outside this draft quota.
 
-Hosting is still in planning. The [restricted staging checklist](docs/staging-checklist.md)
-records the infrastructure and provider checks to complete once a target is selected.
-
 The [draft retention plan](docs/storage-retention.md) includes an aggregate,
 read-only storage report. Automatic draft deletion remains disabled.
+
+## Railway deployment
+
+In the Railway app service's **Variables** tab, set `AUTH_SECRET` to a persistent
+secret. If the service needs a new secret, generate one with
+`node -p "require('node:crypto').randomBytes(32).toString('base64')"`.
+
+Set `AUTH_URL` and `NEXT_PUBLIC_SITE_URL` to `https://baybloom-studio.up.railway.app`
+or to the canonical HTTPS domain if it changes. The app also uses Railway's
+public service domain when those variables are omitted. Deploy the variable
+changes so Railway rebuilds the public metadata. For Google sign-in, register
+the canonical origin plus `/api/auth/callback/google` as the callback URL.
+
+Verify that `/api/auth/session` returns `200` with `null` when signed out. If it
+returns `500`, look for `UntrustedHost` or `MissingSecret` in the Railway
+deployment logs. For password sign-in and registration, the app also needs
+`DATABASE_URL` pointing to the migrated database. Set `DIRECT_URL` to the direct
+connection for `npm run db:deploy`, which applies pending migrations.
+Set `RESEND_API_KEY` and `EMAIL_FROM` with a verified sender for account emails.
+
+The [restricted staging checklist](docs/staging-checklist.md) covers the remaining
+hosted infrastructure and provider checks.
 
 ## Downloads
 

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Manrope } from "next/font/google";
+import { publicSiteOrigin } from "@/lib/site-origin";
 import "./globals.css";
 
 const display = Fraunces({
@@ -15,10 +16,8 @@ const body = Manrope({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(publicSiteOrigin()),
   title: {
     default: "Baybloom Studio · Websites for hospitality brands that bloom",
     template: "%s · Baybloom Studio",
