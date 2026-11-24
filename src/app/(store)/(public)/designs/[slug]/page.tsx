@@ -1,3 +1,4 @@
+import { BloomGuide } from "@/components/bloom-guide";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -134,6 +135,7 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
             {design.summary}
           </p>
 
+          <BloomGuide key={design.slug} page="design" slug={design.slug} previewUrl={previewUrl} canEdit={personalizableTemplates.has(design.slug)} />
           {(design.demoUrl || personalizableTemplates.has(design.slug)) && (
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
               {personalizableTemplates.has(design.slug) && <Button asChild size="lg" className="h-12 rounded-lg px-6 text-base">

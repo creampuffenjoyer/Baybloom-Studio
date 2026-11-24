@@ -5,9 +5,11 @@ import { useCoral, LocalLink as Link } from "../language";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { href } from "../site";
+import { usePersonalization } from "../personalization";
 
 export function Header() {
   const { t, nav, site } = useCoral();
+  const { business } = usePersonalization();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const menuToggle = useRef<HTMLButtonElement>(null);
@@ -34,6 +36,7 @@ export function Header() {
     >
       <div className="mx-auto flex h-18 max-w-7xl items-center gap-3 sm:gap-8 px-5 sm:px-8">
         <Link
+          data-preview-brand={business?.name ? "" : undefined}
           href={href("/")}
           onClick={() => setOpen(false)}
           className="rounded-sm font-tpl-display text-2xl font-semibold tracking-[-0.03em] [font-stretch:88%] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-tpl-deep"

@@ -1,5 +1,6 @@
 "use client";
 
+import { BloomGuide } from "@/components/bloom-guide";
 import Link from "next/link";
 import { useLocationPhotoEditor } from "../photo-editor";
 import { PHOTO_TEMPLATES } from "../photo-templates";
@@ -456,9 +457,10 @@ export function HarborEditor({ template = "harbor-house" }: { template?: Persona
         {signInNeeded && <p className="mt-2 text-sm"><Link className="underline underline-offset-4" href={`/login?callbackUrl=${encodeURIComponent(`/personalize/${template}`)}`} target="_blank" rel="noopener noreferrer">Sign in in a new tab</Link>, then return here and try again. Keep this tab open to retain unsaved changes.</p>}
         {!previewReady && <p role="status" className="mt-3 text-sm">Loading preview…</p>}
         {locationEnabled && locationPhotos.controls}
+        <BloomGuide page="editor" slug={template} ready={previewReady && !busy} />
         <fieldset disabled={busy || !previewReady} className="mt-6 space-y-4 disabled:opacity-70">
           <legend className="sr-only">Edit your website</legend>
-          <label className="block text-sm font-semibold">Business name<input className={fieldClass} maxLength={120} value={draft.business.name ?? ""} placeholder={title} onChange={(e) => updateBusiness("name", e.target.value)} /></label>
+          <label className="block text-sm font-semibold">Business name<input id="business-name" className={fieldClass} maxLength={120} value={draft.business.name ?? ""} placeholder={title} onChange={(e) => updateBusiness("name", e.target.value)} /></label>
           <label className="block text-sm font-semibold">Tagline<input className={fieldClass} maxLength={500} value={draft.business.tagline ?? ""} placeholder={bloomfield ? "A garden estate for celebrations" : stillWater ? "Day spa and bathhouse" : ember ? "Wood-fired kitchen and bar" : isla ? "A heritage hotel" : lumen ? "A quiet lakeside retreat" : pine ? "A timber lodge in the mountains" : coral ? "A barefoot island resort" : "A bed and breakfast by the harbour"} onChange={(e) => updateBusiness("tagline", e.target.value)} /></label>
           {!coral && !pine && !lumen && !isla && !ember && !stillWater && !bloomfield && <label className="block text-sm font-semibold">Hosts<input className={fieldClass} maxLength={120} value={draft.business.hosts ?? ""} placeholder="Mila and Joel" onChange={(e) => updateBusiness("hosts", e.target.value)} /></label>}
           <label className="block text-sm font-semibold">Phone<input type="tel" className={fieldClass} maxLength={120} value={draft.business.phone ?? ""} placeholder="+63 918 555 0164" onChange={(e) => updateBusiness("phone", e.target.value)} /></label>
@@ -580,7 +582,7 @@ export function HarborEditor({ template = "harbor-house" }: { template?: Persona
             {(["desktop", "mobile"] as const).map((mode) => <button key={mode} type="button" aria-pressed={device === mode} onClick={() => setDevice(mode)} className={`rounded-md px-3 py-2 text-sm capitalize ${device === mode ? "bg-[#0f4c5c] text-white" : "text-[#203b3b]"}`}>{mode}</button>)}
           </div>
         </div>
-        <div className="flex min-h-0 flex-1 justify-center"><iframe ref={previewRef} src={`/personalize/${template}/live-preview`} title={`${title} home page preview`} onLoad={() => previewRef.current?.contentWindow?.postMessage({ type: "harbor-personalization-preview", draft, photoUrl, roomPhotos: roomPhotoUrls, villaPhotos: villaPhotoUrls, galleryPhotos: galleryPhotoUrls, pinePhotos: pinePhotoUrls, page: previewPage, ...(locationEnabled ? { placementPhotos: placementUrls, photoEditing: photoEditing, photoSelection: photoSelection } : {}) }, window.location.origin)} className={`h-full min-h-[560px] w-full rounded-xl border-0 bg-white shadow-sm ${device === "mobile" ? "max-w-[390px]" : ""}`} /></div>
+        <div className="flex min-h-0 flex-1 justify-center"><iframe data-business-preview ref={previewRef} src={`/personalize/${template}/live-preview`} title={`${title} home page preview`} onLoad={() => previewRef.current?.contentWindow?.postMessage({ type: "harbor-personalization-preview", draft, photoUrl, roomPhotos: roomPhotoUrls, villaPhotos: villaPhotoUrls, galleryPhotos: galleryPhotoUrls, pinePhotos: pinePhotoUrls, page: previewPage, ...(locationEnabled ? { placementPhotos: placementUrls, photoEditing: photoEditing, photoSelection: photoSelection } : {}) }, window.location.origin)} className={`h-full min-h-[560px] w-full rounded-xl border-0 bg-white shadow-sm ${device === "mobile" ? "max-w-[390px]" : ""}`} /></div>
       </section>
     </div>
   </main>;

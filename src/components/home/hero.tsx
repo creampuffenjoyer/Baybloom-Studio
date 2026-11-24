@@ -1,5 +1,6 @@
 "use client";
 
+import { BloomGuide } from "@/components/bloom-guide";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
@@ -8,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import type { ShowcaseTemplate } from "@/lib/templates";
 import { cn } from "@/lib/utils";
 
-export function Hero({ templates, count }: { templates: ShowcaseTemplate[]; count: number }) {
+export function Hero({ templates, count, matches }: { templates: ShowcaseTemplate[]; count: number; matches: ShowcaseTemplate[] }) {
   const [index, setIndex] = useState(0);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const t = templates[index];
@@ -46,6 +47,7 @@ export function Hero({ templates, count }: { templates: ShowcaseTemplate[]; coun
               How it works
             </Link>
           </div>
+          <BloomGuide page="home" matches={matches} />
           <ul className="mt-8 flex flex-wrap gap-x-5 gap-y-3 border-t border-border pt-6 text-sm text-muted-foreground">
             {["Every page included", "Mobile ready", "Full source code"].map((label) => (
               <li key={label} className="flex items-center gap-2"><CheckIcon aria-hidden className="size-4 text-bay" />{label}</li>

@@ -15,7 +15,7 @@ export function Header() {
     <header className="relative border-b border-tpl-line bg-tpl-bg">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 pt-6 pb-3 sm:px-8 md:flex-col md:pb-0">
         <Link href={href("/")} className="text-center leading-none" onClick={() => setOpen(false)}>
-          <span className="block font-tpl-display text-4xl italic sm:text-5xl">{business?.name || "Bloomfield"}</span>
+          <span data-preview-brand={business?.name ? "" : undefined} className="block font-tpl-display text-4xl italic sm:text-5xl">{business?.name || "Bloomfield"}</span>
           {!business?.name && <span className="mt-1 block text-[11px] tracking-[0.35em] text-tpl-muted">GARDENS · TAGAYTAY</span>}
         </Link>
         <button

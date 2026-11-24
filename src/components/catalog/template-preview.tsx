@@ -58,7 +58,7 @@ export function TemplatePreview({ slug, title, base, pages, eventPrefix, seasona
       <div className="flex items-center justify-between gap-3">
         <div><Link href={`/designs/${slug}`} className="text-xs underline underline-offset-4">Back to details</Link>
           <h1 className="mt-1 font-serif text-xl text-bay">{title}</h1></div>
-        <div className="flex flex-wrap justify-end gap-2">{personalizeHref && <Link href={personalizeHref} className="rounded-full border border-bay px-4 py-3 text-sm font-semibold text-bay">Personalize this template</Link>}
+        <div className="flex flex-wrap justify-end gap-2">{personalizeHref && <Link href={`${personalizeHref}#business-name`} className="rounded-full border border-bay px-4 py-3 text-sm font-semibold text-bay">Try my business name</Link>}
         <Link href={`/designs/${slug}#tiers`} className="rounded-full bg-bay px-4 py-3 text-sm font-semibold text-white">View packages</Link></div>
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">

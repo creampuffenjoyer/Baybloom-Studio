@@ -15,7 +15,7 @@ export function Header({ languagePicker = true }: { languagePicker?: boolean }) 
   return (
     <header className="relative z-40">
       <div className="mx-auto flex h-24 max-w-[1400px] items-center gap-10 px-6 sm:px-10">
-        <LocalLink href={href("/")} onClick={() => setOpen(false)} className="font-tpl-display text-3xl">
+        <LocalLink data-preview-brand={business?.name ? "" : undefined} href={href("/")} onClick={() => setOpen(false)} className="font-tpl-display text-3xl">
           {business?.name || "Lumen"}
         </LocalLink>
         {languagePicker && <div className="hidden md:block"><LanguagePicker /></div>}

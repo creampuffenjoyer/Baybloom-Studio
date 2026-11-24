@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ArrowRightIcon, CalendarCheckIcon, CodeIcon, LayoutTemplateIcon, SmartphoneIcon } from "lucide-react";
-import { getCategoriesWithCovers, getFeaturedDesigns, getHomeStats } from "@/lib/catalog";
+import { getCategoriesWithCovers, getFeaturedDesigns, getHomeStats, getPublishedSlugs } from "@/lib/catalog";
 import { Hero } from "@/components/home/hero";
 import { CardGridSkeleton, SessionCardGrid } from "@/components/catalog/card-grid";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
@@ -48,15 +48,16 @@ const FAQ = [
 ];
 
 export default async function HomePage() {
-  const [featured, categories, stats] = await Promise.all([
+  const [featured, categories, stats, published] = await Promise.all([
     getFeaturedDesigns(6),
     getCategoriesWithCovers(),
     getHomeStats(),
+    getPublishedSlugs(),
   ]);
 
   return (
     <>
-      <Hero templates={SHOWCASE} count={stats.designs} />
+      <Hero matches={SHOWCASE.filter(item => published.includes(item.slug))} templates={SHOWCASE} count={stats.designs} />
 
       {/* What's included */}
       <section aria-labelledby="included" className="bg-white/70">

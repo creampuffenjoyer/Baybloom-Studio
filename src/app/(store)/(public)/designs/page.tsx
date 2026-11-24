@@ -1,6 +1,8 @@
+import { BloomGuide } from "@/components/bloom-guide";
+import { SHOWCASE } from "@/lib/templates";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { getFilterOptions } from "@/lib/catalog";
+import { getFilterOptions, getPublishedSlugs } from "@/lib/catalog";
 import { CatalogNavProvider } from "@/components/catalog/catalog-nav";
 import { FilterControls, SearchBox } from "@/components/catalog/catalog-filters";
 import { CatalogResults, ResultsSkeleton } from "@/app/(store)/(public)/designs/results";
@@ -14,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DesignsPage(props: PageProps<"/designs">) {
-  const options = await getFilterOptions();
+  const [options, published] = await Promise.all([getFilterOptions(), getPublishedSlugs()]);
 
   return (
     <CatalogNavProvider>
@@ -25,6 +27,7 @@ export default async function DesignsPage(props: PageProps<"/designs">) {
           venues. Try every live demo, then log in to see pricing for each tier.
           </p>
         </PageHeading>
+        <BloomGuide page="catalog" matches={SHOWCASE.filter(item => published.includes(item.slug))} />
       </div>
 
       <div className="container-page grid gap-10 pb-8 lg:grid-cols-[260px_minmax(0,1fr)]">

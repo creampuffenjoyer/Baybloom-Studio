@@ -29,7 +29,7 @@ export function Header() {
       <div className="mx-auto flex h-18 max-w-7xl items-center gap-3 sm:gap-8 px-5 sm:px-8">
         <Link href={href("/")} onClick={() => setOpen(false)} className="flex items-center gap-3">
           <Mark />
-          <span className="font-tpl-display text-2xl font-bold">{business?.name || "Pine Ridge"}</span>
+          <span data-preview-brand={business?.name ? "" : undefined} className="font-tpl-display text-2xl font-bold">{business?.name || "Pine Ridge"}</span>
         </Link>
         <nav aria-label={t("Main")} className="ml-auto hidden items-center gap-7 lg:flex">
           {nav.map((item) => {

@@ -1,3 +1,4 @@
+import { BloomGuide } from "@/components/bloom-guide";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { requireUser } from "@/lib/session";
@@ -9,6 +10,7 @@ export const metadata: Metadata = { title: "Cart", robots: { index: false } };
 export default function CartPage() {
   return (
     <div className="container-page py-12 sm:py-16">
+      <BloomGuide page="cart" />
       <PageHeading eyebrow="Your selection" title="Your cart">
         <p>Review your designs and chosen tiers before moving on to checkout.</p>
       </PageHeading>

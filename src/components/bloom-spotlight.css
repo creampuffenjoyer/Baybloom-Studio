@@ -1,0 +1,71 @@
+﻿.bloom-spotlight {
+  --bloom-ink: #203b33;
+  --bloom-accent: #16473c;
+  position: fixed;
+  z-index: 65;
+  inset: 0;
+  color: var(--bloom-ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  pointer-events: none;
+}
+
+.bloom-spotlight-ring {
+  position: fixed;
+  border: 2px solid #ffce86;
+  border-radius: .6rem;
+  box-shadow: 0 0 0 1px #16473c, 0 0 0 150vmax #132a24b8;
+}
+
+.bloom-spotlight-card {
+  position: fixed;
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr);
+  gap: .625rem;
+  max-height: calc(100dvh - 1.75rem);
+  padding: .75rem;
+  overflow: auto;
+  border: 1px solid #e7d4b1;
+  border-radius: .875rem;
+  background: #fffaf0;
+  box-shadow: 0 10px 24px #1025203d;
+  pointer-events: auto;
+}
+
+.bloom-spotlight-character {
+  block-size: 2.75rem;
+  border-radius: 50%;
+  background-color: #f5e5c7;
+}
+
+.bloom-spotlight-copy h2 {
+  margin: 0 0 .25rem;
+  color: var(--bloom-ink);
+  font-size: 1rem;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.bloom-spotlight-copy p {
+  margin: 0;
+  font-size: .8125rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.bloom-spotlight-actions {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: .375rem;
+  font-size: .8125rem;
+}
+
+.bloom-spotlight-actions .bloom-secondary {
+  padding-inline: .375rem;
+  white-space: nowrap;
+}
+
+.bloom-spotlight-actions :focus-visible {
+  outline: 2px solid #197465;
+  outline-offset: 2px;
+}

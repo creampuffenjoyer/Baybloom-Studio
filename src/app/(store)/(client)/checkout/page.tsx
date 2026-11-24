@@ -1,3 +1,4 @@
+import { BloomGuide } from "@/components/bloom-guide";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -16,6 +17,7 @@ export const metadata: Metadata = { title: "Checkout", robots: { index: false } 
 export default function CheckoutPage(props: PageProps<"/checkout">) {
   return (
     <div className="container-page py-12 sm:py-16">
+      <BloomGuide page="checkout" />
       <PageHeading eyebrow="Your order" title="Checkout">
         <p>Check your billing details, choose your website content and review your order.</p>
       </PageHeading>

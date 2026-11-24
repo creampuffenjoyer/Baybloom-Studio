@@ -6,9 +6,11 @@ import { LocalLink as Link } from "../language";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { href } from "../site";
+import { usePersonalization } from "../personalization";
 
 export function Header({ languagePicker = true }: { languagePicker?: boolean }) {
   const { t, nav, site } = useIsla();
+  const { business } = usePersonalization();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -16,7 +18,7 @@ export function Header({ languagePicker = true }: { languagePicker?: boolean }) 
     <header className="sticky top-0 z-50 border-b border-tpl-line bg-tpl-bg/95 backdrop-blur">
       <div className="mx-auto flex h-20 max-w-7xl items-center gap-5 px-5 sm:gap-8 sm:px-8">
         <Link href={href("/")} onClick={() => setOpen(false)} className="leading-none">
-          <span className="block font-tpl-display text-2xl whitespace-nowrap italic sm:text-3xl">{site.name}</span>
+          <span data-preview-brand={business?.name ? "" : undefined} className="block font-tpl-display text-2xl whitespace-nowrap italic sm:text-3xl">{site.name}</span>
           <span className="mt-0.5 block text-xs text-tpl-muted">{t("Vigan, since 1887")}</span>
         </Link>
         <nav aria-label={t("Main")} className="mx-auto hidden items-center gap-8 xl:flex">

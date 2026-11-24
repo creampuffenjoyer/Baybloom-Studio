@@ -6,6 +6,7 @@ import { LocalLink as Link } from "../language";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { href } from "../site";
+import { usePersonalization } from "../personalization";
 
 /** A little house-and-wave mark. */
 function Mark() {
@@ -20,13 +21,14 @@ function Mark() {
 
 export function Header() {
   const { t, nav, site } = useHarbor();
+  const { business } = usePersonalization();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   return (
     <header className="relative z-40 bg-tpl-bg">
       <div className="mx-auto flex min-h-20 max-w-6xl flex-wrap items-center gap-3 py-3 px-5 sm:px-8">
-        <Link href={href("/")} onClick={() => setOpen(false)} className="flex items-center gap-2.5 font-tpl-display text-xl whitespace-nowrap sm:text-2xl">
+        <Link data-preview-brand={business?.name ? "" : undefined} href={href("/")} onClick={() => setOpen(false)} className="flex items-center gap-2.5 font-tpl-display text-xl whitespace-nowrap sm:text-2xl">
           <Mark />
           {site.name}</Link>
         <nav aria-label={t("Main")} className="ml-auto hidden items-center gap-6 md:flex">

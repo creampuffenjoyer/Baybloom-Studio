@@ -60,7 +60,7 @@ export function Header() {
         >
           {open ? "Close" : "Menu"}
         </button>
-        <Link href={href("/")} onClick={() => setOpen(false)} className="font-tpl-display text-2xl whitespace-nowrap sm:text-3xl">
+        <Link data-preview-brand={business?.name ? "" : undefined} href={href("/")} onClick={() => setOpen(false)} className="font-tpl-display text-2xl whitespace-nowrap sm:text-3xl">
           {business?.name || <>Ember <span className="text-tpl-accent">&amp;</span> Salt</>}
         </Link>
         <div className="flex items-center justify-end gap-7 text-[15px]">
