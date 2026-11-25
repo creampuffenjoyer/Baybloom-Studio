@@ -21,7 +21,7 @@ export async function syncCheckoutSession(session: Stripe.Checkout.Session, clie
   if (!orderId) return null;
 
   const order = await client.order.findUniqueOrThrow({ where: { id: orderId } });
-  if (session.metadata?.userId !== order.userId || session.amount_total !== order.totalCents ||
+  if (order.paymentMethod === "GCASH" || session.metadata?.userId !== order.userId || session.amount_total !== order.totalCents ||
       session.currency?.toUpperCase() !== order.currency.toUpperCase() ||
       (order.paymentRef && order.paymentRef !== session.id)) {
     throw new Error("Checkout Session does not match its order");

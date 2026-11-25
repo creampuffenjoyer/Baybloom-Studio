@@ -7,6 +7,7 @@ import { orderRef } from "@/lib/orders";
 import { requireUser } from "@/lib/session";
 import { stripe, stripeConfigured } from "@/lib/stripe";
 import { syncCheckoutSession } from "@/lib/stripe-orders";
+import { reconcileGCash } from "@/lib/paymongo";
 import { Button } from "@/components/ui/button";
 import { PendingRefresher, SuccessCheck, SuccessEffects } from "@/app/(store)/(client)/checkout/success/success-client";
 
@@ -34,6 +35,13 @@ async function Result({ searchParams }: Pick<PageProps<"/checkout/success">, "se
     if (session.metadata?.userId === user.id) orderId = await syncCheckoutSession(session);
   }
 
+  if (orderId) {
+    const pending = await db.order.findFirst({ where: { id: orderId, userId: user.id, paymentMethod: "GCASH", status: "PENDING" } });
+    if (pending) {
+      try { await reconcileGCash(pending); }
+      catch { console.error("[gcash-return] reconciliation deferred", pending.id); }
+    }
+  }
   const order = orderId
     ? await db.order.findFirst({
         where: { id: orderId, userId: user.id },
@@ -42,6 +50,7 @@ async function Result({ searchParams }: Pick<PageProps<"/checkout/success">, "se
           status: true,
           totalCents: true,
           currency: true,
+          deliveryEmail: true,
           items: { select: { id: true, designTitle: true, tierName: true } },
         },
       })
@@ -63,12 +72,12 @@ async function Result({ searchParams }: Pick<PageProps<"/checkout/success">, "se
       <div className="rounded-3xl bg-white p-8 text-center ring-1 ring-border/70">
         <PendingRefresher active={order.status === "PENDING"} />
         <h1 className="text-3xl font-medium">
-          {order.status === "PENDING" ? "Confirming your payment…" : "Payment didn't go through"}
+          {order.status === "PENDING" ? "Confirming your payment…" : order.status === "REFUNDED" ? "Order refunded" : "Payment didn't go through"}
         </h1>
         <p className="mt-3 text-muted-foreground">
           {order.status === "PENDING"
             ? "This usually takes a few seconds. We'll email you as soon as it's confirmed."
-            : "You haven't been charged. You can try again from your cart."}
+            : order.status === "REFUNDED" ? "This order has been refunded." : "You can try again from your cart."}
         </p>
         <Button asChild variant="outline" className="mt-6 rounded-full bg-white">
           <Link href={order.status === "PENDING" ? "/account/orders" : "/checkout"}>
@@ -87,7 +96,9 @@ async function Result({ searchParams }: Pick<PageProps<"/checkout/success">, "se
       <p className="mt-3 text-muted-foreground">
         Order {orderRef(order.id)} is confirmed. A receipt is on its way to your inbox.
       </p>
-      <p className="mt-2 text-sm text-muted-foreground">Open your order for downloads and package preparation. Your website content was saved when checkout started.</p>
+      <p className="mt-2 break-words text-sm text-muted-foreground">
+        {order.deliveryEmail ? <>We’ll email your project files to <strong>{order.deliveryEmail}</strong> when they’re ready.</> : "Open your order for downloads and package preparation."}
+      </p>
       <ul className="mx-auto mt-8 max-w-sm divide-y divide-border/70 text-left text-sm">
         {order.items.map((i) => (
           <li key={i.id} className="flex justify-between py-3">

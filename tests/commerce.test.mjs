@@ -1,11 +1,94 @@
 import assert from "node:assert/strict";
+import { createHmac } from "node:crypto";
 import { test } from "node:test";
 import { prepareCheckout } from "../src/lib/checkout.ts";
 import { continueCheckout, ExpiredCheckoutError, reconcileExpiredCheckouts } from "../src/lib/checkout-payment.ts";
 import { fulfillOrder, markOrderFailed, markOrderRefunded } from "../src/lib/orders.ts";
 import { syncCheckoutSession } from "../src/lib/stripe-orders.ts";
+import { closeGCashCheckout, gcashCheckout, handlePayMongoEvent, parsePayMongoWebhook } from "../src/lib/paymongo.ts";
+import { parseProjectDeliveryToken, projectDeliveryToken } from "../src/lib/project-delivery-link.ts";
 import { commerceFixture, stripeFixture } from "./helpers/commerce.mjs";
 import { activeRelease } from "./helpers/template-release.mjs";
+
+test("PayMongo accepts the signed raw event for the configured mode and rejects stale events", () => {
+  const now = 1_765_000_000_000;
+  const ts = now / 1000;
+  const key = "signing-secret-for-test";
+  const payload = { type: "checkout_session.payment.paid", livemode: false, data: { id: "cs_Test1" } };
+  const v1 = Buffer.from(JSON.stringify({ data: { attributes: payload } }));
+  const v2 = Buffer.from(JSON.stringify({ event_type: "send.webhook", data: payload }));
+  const header = raw => `t=${ts},te=${createHmac("sha256", key).update(`${ts}.`).update(raw).digest("hex")},li=`;
+  assert.deepEqual(parsePayMongoWebhook(v1, header(v1), key, false, now), payload);
+  assert.deepEqual(parsePayMongoWebhook(v2, header(v2), key, false, now), payload);
+  assert.throws(() => parsePayMongoWebhook(v1, header(v2), key, false, now));
+  assert.throws(() => parsePayMongoWebhook(v1, header(v1), key, true, now));
+  assert.throws(() => parsePayMongoWebhook(v1, header(v1), key, false, now + 301_000));
+});
+
+test("GCash checkout recovers a lost response, validates the paid amount, and waits for confirmed expiry", async t => {
+  const key = process.env.PAYMONGO_SECRET_KEY;
+  process.env.PAYMONGO_SECRET_KEY = "sk_test_mock";
+  t.after(() => { if (key === undefined) delete process.env.PAYMONGO_SECRET_KEY; else process.env.PAYMONGO_SECRET_KEY = key; });
+  const order = { id: "order-gcash", userId: "alice", status: "PENDING", paymentMethod: "GCASH", totalCents: 10_000, currency: "PHP",
+    paymentRef: null, providerPaymentId: null, createdAt: new Date(), checkoutParameters: { data: { attributes: { reference_number: "order-gcash" } } } };
+  const state = { ...order };
+  const calls = [];
+  const client = {
+    $transaction: async run => run(client), $queryRaw: async () => [],
+    order: {
+      findUnique: async () => ({ ...state }),
+      findUniqueOrThrow: async () => ({ ...state, items: [] }),
+      updateMany: async ({ data }) => {
+        if (data.paymentRef && calls.length === 1) throw new Error("lost reference write");
+        Object.assign(state, data);
+        return { count: 1 };
+      },
+    },
+    cartItem: { deleteMany: async () => ({ count: 0 }) },
+  };
+  const hosted = { id: "cs_Test1", attributes: { status: "active", reference_number: order.id,
+    metadata: { orderId: order.id, userId: order.userId }, checkout_url: "https://checkout.paymongo.com/cs_Test1", payments: [] } };
+  const payment = { id: "pay_Test1", attributes: { status: "paid", amount: 10_001, currency: "PHP", source: { type: "gcash" } } };
+  let allowExpiry = false;
+  t.mock.method(globalThis, "fetch", async (url, init) => {
+    calls.push({ url, method: init.method, idempotencyKey: init.headers["Idempotency-Key"], body: init.body });
+    if (url.endsWith("/expire") && !allowExpiry) return Response.json({}, { status: 400 });
+    if (url.endsWith("/expire")) hosted.attributes.status = "expired";
+    return Response.json({ data: url.endsWith("/pay_Test1") ? payment : hosted });
+  });
+  await assert.rejects(gcashCheckout(order, client), /lost reference write/);
+  assert.equal(await gcashCheckout(order, client), hosted.attributes.checkout_url);
+  assert.deepEqual(calls[0], calls[1]);
+  assert.equal(calls[0].idempotencyKey, "bb-checkout-order-gcash");
+  assert.equal(await closeGCashCheckout({ ...state }, client), "pending");
+  assert.equal(state.status, "PENDING");
+  hosted.attributes.payments = [{ ...payment, attributes: { ...payment.attributes, amount: order.totalCents } }];
+  const event = { type: "checkout_session.payment.paid", livemode: false, data: hosted };
+  await assert.rejects(handlePayMongoEvent(event, client), /payment does not match/);
+  assert.equal(state.status, "PENDING");
+  payment.attributes.amount = order.totalCents;
+  await handlePayMongoEvent(event, client);
+  assert.equal(state.status, "PAID");
+  payment.attributes.refunds = [{ amount: order.totalCents, status: "succeeded" }];
+  await handlePayMongoEvent({ type: "payment.refunded", livemode: false, data: payment }, client);
+  assert.equal(state.status, "REFUNDED");
+  hosted.attributes.payments = [];
+  allowExpiry = true;
+  state.status = "PENDING";
+  assert.equal(await closeGCashCheckout({ ...state }, client), "expired");
+  assert.equal(state.status, "FAILED");
+});
+
+test("project ZIP links are signed and expire seven days after issue", t => {
+  const key = process.env.AUTH_SECRET;
+  process.env.AUTH_SECRET = "test-delivery-link-signing-key";
+  t.after(() => { if (key === undefined) delete process.env.AUTH_SECRET; else process.env.AUTH_SECRET = key; });
+  const now = 1_765_000_000_000;
+  const link = projectDeliveryToken("item-1", 2, now);
+  assert.deepEqual(parseProjectDeliveryToken(link, now), { orderItemId: "item-1", emailRevision: 2 });
+  assert.equal(parseProjectDeliveryToken(link.replace("item-1", "item-2"), now), null);
+  assert.equal(parseProjectDeliveryToken(link, now + 7 * 24 * 3600_000), null);
+});
 
 test("competing buyers cannot both claim the last coupon slot", async () => {
   const f = commerceFixture();

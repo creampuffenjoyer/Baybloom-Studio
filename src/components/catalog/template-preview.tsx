@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BloomGuide } from "@/components/bloom-guide";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -54,16 +55,17 @@ export function TemplatePreview({ slug, title, base, pages, eventPrefix, seasona
   }, [base, pages, eventPrefix, seasonal, languages]);
 
   return <main className="flex h-dvh flex-col overflow-hidden bg-[#e8e4dc] text-ink">
+    <BloomGuide page="preview" slug={slug} canEdit={!!personalizeHref} suggestedPage={pages.find(([path]) => path)?.[1]} />
     <header className="shrink-0 border-b border-border bg-sand px-4 py-3 sm:px-6">
       <div className="flex items-center justify-between gap-3">
         <div><Link href={`/designs/${slug}`} className="text-xs underline underline-offset-4">Back to details</Link>
           <h1 className="mt-1 font-serif text-xl text-bay">{title}</h1></div>
-        <div className="flex flex-wrap justify-end gap-2">{personalizeHref && <Link href={`${personalizeHref}#business-name`} className="rounded-full border border-bay px-4 py-3 text-sm font-semibold text-bay">Try my business name</Link>}
+        <div className="flex flex-wrap justify-end gap-2">{personalizeHref && <Link href={`${personalizeHref}#business-name`} data-bloom-target="preview-edit" className="rounded-full border border-bay px-4 py-3 text-sm font-semibold text-bay">Try my business name</Link>}
         <Link href={`/designs/${slug}#tiers`} className="rounded-full bg-bay px-4 py-3 text-sm font-semibold text-white">View packages</Link></div>
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
         <label className="flex items-center gap-2">Explore
-          <select aria-label="Preview page" value={page} onChange={(e) => {
+          <select aria-label="Preview page" data-bloom-target="preview-pages" value={page} onChange={(e) => {
             const next = allowedPage(e.target.value);
             setPage(next);
             setSource(previewHref(next));
@@ -93,7 +95,7 @@ export function TemplatePreview({ slug, title, base, pages, eventPrefix, seasona
       <p className="mt-2 text-xs leading-relaxed text-muted-foreground">Interactive sample. Bookings and messages are not sent. Use sample details when trying forms.</p>
     </header>
     <div className="flex min-h-0 flex-1 justify-center md:p-4">
-      <iframe key={navigation} ref={frame} src={source} title={`${title} interactive website preview`} className={`h-full w-full border-0 bg-white md:rounded-lg ${device === "mobile" ? "md:max-w-[390px]" : ""}`} />
+      <iframe key={navigation} data-bloom-sample-frame ref={frame} src={source} title={`${title} interactive website preview`} className={`h-full w-full border-0 bg-white md:rounded-lg ${device === "mobile" ? "md:max-w-[390px]" : ""}`} />
     </div>
   </main>;
 }

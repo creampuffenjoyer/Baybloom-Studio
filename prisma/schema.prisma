@@ -46,6 +46,7 @@ enum TokenType {
 // ─── Users & auth ────────────────────────────────────────────────────────────
 
 model User {
+  checkoutDeliveryVerification CheckoutDeliveryVerification?
   id                 String    @id @default(cuid())
   email              String    @unique
   name               String?
@@ -309,6 +310,21 @@ model CartItem {
 
 // ─── Commerce ────────────────────────────────────────────────────────────────
 
+enum CheckoutPaymentMethod {
+  STRIPE
+  GCASH
+  FREE
+}
+
+model CheckoutDeliveryVerification {
+  userId String @id
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email String
+  codeHash String
+  expiresAt DateTime
+  verifiedAt DateTime?
+}
+
 model Order {
   id                 String      @id @default(cuid())
   user               User        @relation(fields: [userId], references: [id])
@@ -318,7 +334,10 @@ model Order {
   discountCents      Int         @default(0)
   totalCents         Int
   currency           String
-  paymentRef         String?     @unique // Stripe Checkout session id
+  paymentMethod      CheckoutPaymentMethod @default(STRIPE)
+  paymentRef         String?     @unique // Hosted checkout session ID
+  providerPaymentId  String?     @unique
+  deliveryEmail      String?
   /// Stable cart snapshot key; cleared only after a confirmed terminal failure.
   checkoutKey        String?     @unique
   checkoutExpiresAt  DateTime?
@@ -375,6 +394,7 @@ model OrderItem {
   priceCents  Int
   /// [{ id, name, priceCents }]
   addons      Json   @default("[]")
+  deploymentRequired Boolean @default(false)
   personalization OrderPersonalization?
   delivery OrderDelivery?
 
@@ -422,6 +442,7 @@ model OrderDelivery {
   orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
   artifact Bytes?
   artifactStorageKey String?
+  legacyStorageKey String?
   artifactSha256 String?
   readyAt DateTime?
   attempts Int @default(0)
@@ -429,8 +450,19 @@ model OrderDelivery {
   leaseUntil DateTime?
   leaseToken String?
   lastError String?
+  deploymentUrl String?
+  emailRevision Int @default(0)
+  emailSentAt DateTime?
+  emailNextAt DateTime? @default(now())
+  emailAttempts Int @default(0)
+  emailFirstAttemptAt DateTime?
+  emailLeaseUntil DateTime?
+  emailLeaseToken String?
+  emailPayload Json?
+  emailError String?
 
   @@index([nextAt])
+  @@index([emailNextAt])
 }
 
 model OrderPersonalizationImage {

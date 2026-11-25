@@ -3,6 +3,8 @@ import { deliverConfirmations } from "@/lib/confirmation-outbox";
 import { db } from "@/lib/db";
 import { reportEvent } from "@/lib/monitoring";
 import { deliverPurchases } from "@/lib/personalization/delivery";
+import { deliverProjectEmails } from "@/lib/project-delivery-outbox";
+import { reconcileExpiredCheckouts } from "@/lib/checkout-payment";
 
 // Source/artifact transfers run outside transactions and need more time than email alone.
 export const maxDuration = 120;
@@ -19,6 +21,8 @@ export async function POST(request: Request) {
   try {
     const purchases = await deliverPurchases(db, undefined, 1);
     const result = await deliverConfirmations(db, undefined, 2);
+    const projectEmails = await deliverProjectEmails(db, undefined, 2);
+    await reconcileExpiredCheckouts(db, undefined, undefined, 2);
     await db.$executeRaw`DELETE FROM "RateLimitBucket" WHERE "resetAt" < CURRENT_TIMESTAMP AND "key" IN (
       SELECT "key" FROM "RateLimitBucket" WHERE "resetAt" < CURRENT_TIMESTAMP LIMIT 1000
     )`;
@@ -26,8 +30,9 @@ export async function POST(request: Request) {
     const overdue = await db.order.count({ where: { status: "PAID", confirmationSentAt: null, confirmationNextAt: { lt: new Date(Date.now() - 10 * 60_000) } } });
     const purchaseExhausted = await db.orderDelivery.count({ where: { readyAt: null, attempts: { gte: 8 }, orderItem: { order: { status: "PAID" } } } });
     const purchaseOverdue = await db.orderDelivery.count({ where: { readyAt: null, nextAt: { lt: new Date(Date.now() - 10 * 60_000) }, orderItem: { order: { status: "PAID" } } } });
-    reportEvent("maintenance_completed", { ...result, exhausted, overdue, purchaseReady: purchases.ready, purchaseFailed: purchases.failed, purchaseExhausted, purchaseOverdue });
-    return Response.json({ ...result, exhausted, overdue, purchases, purchaseExhausted, purchaseOverdue });
+    reportEvent("maintenance_completed", { ...result, exhausted, overdue, purchaseReady: purchases.ready, purchaseFailed: purchases.failed,
+      purchaseExhausted, purchaseOverdue, projectEmailsSent: projectEmails.sent, projectEmailsFailed: projectEmails.failed });
+    return Response.json({ ...result, exhausted, overdue, purchases, purchaseExhausted, purchaseOverdue, projectEmails });
   } catch {
     reportEvent("maintenance_failed");
     return Response.json({ error: "Maintenance failed" }, { status: 503 });

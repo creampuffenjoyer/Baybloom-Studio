@@ -6,6 +6,7 @@ import { stripe } from "@/lib/stripe";
 import { CheckoutError, couponId, recoverCheckoutSession } from "@/lib/checkout";
 import { fulfillOrder, markOrderFailed } from "@/lib/orders";
 import { syncCheckoutSession } from "@/lib/stripe-orders";
+import { closeGCashCheckout, gcashCheckout } from "@/lib/paymongo";
 
 export class ExpiredCheckoutError extends CheckoutError {
   constructor() { super("This checkout has expired. Please try again to start a new checkout."); }
@@ -27,6 +28,11 @@ export async function continueCheckout(order: Order, client: PrismaClient = db, 
   if (order.totalCents === 0) {
     await fulfillOrder(order.id, null, client);
     return `/checkout/success?order=${order.id}`;
+  }
+  if (order.paymentMethod === "GCASH") {
+    const url = await gcashCheckout(order, client);
+    if (!url) throw new ExpiredCheckoutError();
+    return url;
   }
   const gateway = paymentGateway ?? stripe();
   if (!order.checkoutExpiresAt || !order.checkoutParameters) throw new CheckoutError("This checkout needs support to reconcile it.");
@@ -69,15 +75,43 @@ export async function continueCheckout(order: Order, client: PrismaClient = db, 
   return settleSession(session, client, gateway);
 }
 
+export async function closeCheckout(order: Order, client: PrismaClient = db) {
+  if (order.status !== "PENDING") return;
+  if (order.totalCents === 0) throw new CheckoutError("Resume this checkout to complete your order.");
+  if (order.paymentMethod === "GCASH") {
+    if (await closeGCashCheckout(order, client) === "pending") {
+      throw new CheckoutError("Your GCash payment is still processing. Check the order before trying another payment.");
+    }
+    return;
+  }
+  const gateway = stripe();
+  let session = await recoverCheckoutSession(order, gateway);
+  if (!session) {
+    try { await continueCheckout(order, client, gateway); }
+    catch (error) { if (error instanceof ExpiredCheckoutError) return; throw error; }
+    session = await recoverCheckoutSession(await client.order.findUniqueOrThrow({ where: { id: order.id } }), gateway);
+  }
+  if (!session) throw new CheckoutError("This checkout is still being reconciled.", 503);
+  if (session.status === "open") {
+    try { session = await gateway.checkout.sessions.expire(session.id); }
+    catch { session = await gateway.checkout.sessions.retrieve(session.id); }
+  }
+  await syncCheckoutSession(session, client, gateway);
+  if (session.status !== "expired" && session.payment_status !== "paid") {
+    throw new CheckoutError("Your payment is still processing. Check the order before starting another checkout.");
+  }
+}
+
 /** Opportunistic cleanup; webhooks remain the primary release path. No release on API uncertainty. */
-export async function reconcileExpiredCheckouts(client: PrismaClient = db, paymentGateway?: Stripe) {
+export async function reconcileExpiredCheckouts(client: PrismaClient = db, paymentGateway?: Stripe, userId?: string, batchSize = 20) {
   const expired = await client.order.findMany({
-    where: { status: "PENDING", checkoutExpiresAt: { lt: new Date(Date.now() - 5 * 60_000) } },
-    orderBy: { checkoutExpiresAt: "asc" }, take: 20,
+    where: { ...(userId && { userId }), status: "PENDING", checkoutExpiresAt: { lt: new Date(Date.now() - 5 * 60_000) } },
+    orderBy: { checkoutExpiresAt: "asc" }, take: batchSize,
   });
   for (const order of expired) {
     try {
-      await continueCheckout(order, client, paymentGateway);
+      if (order.paymentMethod === "GCASH") await closeGCashCheckout(order, client);
+      else await continueCheckout(order, client, paymentGateway);
     } catch (error) {
       if (!(error instanceof ExpiredCheckoutError)) {
         // Keep the reservation: a timeout is not proof that payment failed.

@@ -52,6 +52,14 @@
   overflow-wrap: anywhere;
 }
 
+.bloom-spotlight-copy p + p {
+  margin-block-start: .375rem;
+}
+
+.bloom-preview-status {
+  color: #355a4f;
+}
+
 .bloom-spotlight-actions {
   grid-column: 1 / -1;
   display: grid;
@@ -68,4 +76,39 @@
 .bloom-spotlight-actions :focus-visible {
   outline: 2px solid #197465;
   outline-offset: 2px;
+}
+
+.bloom-spotlight-unlocked {
+  z-index: 42;
+}
+
+.bloom-spotlight-unlocked .bloom-spotlight-ring {
+  box-shadow: 0 0 0 1px #16473c, 0 0 10px 3px #ffce8670;
+}
+
+.bloom-tutorial-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .375rem;
+  font-size: .8125rem;
+}
+
+.bloom-tutorial-actions .bloom-primary {
+  flex: 1 0 100%;
+}
+
+.bloom-tutorial-actions .bloom-secondary {
+  flex: 1;
+  min-width: max-content;
+  padding-inline: .5rem;
+}
+
+.bloom-tutorial-actions :focus-visible {
+  outline: 2px solid #197465;
+  outline-offset: 2px;
+}
+
+.bloom-spotlight-actions .bloom-skip {
+  grid-column: 1 / -1;
 }

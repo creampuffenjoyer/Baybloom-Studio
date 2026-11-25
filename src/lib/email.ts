@@ -46,12 +46,14 @@ export function actionEmail({
   cta,
   url,
   footer,
+  secondary,
 }: {
   heading: string;
   body: string;
   cta: string;
   url: string;
   footer: string;
+  secondary?: { cta: string; url: string };
 }) {
   const html = `<!doctype html><html><body style="margin:0;background:#faf6f0;font-family:Arial,Helvetica,sans-serif;color:#1b2a2f">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 16px">
@@ -60,8 +62,9 @@ export function actionEmail({
 <tr><td style="padding-top:24px;font-family:Georgia,serif;font-size:24px;color:#0f4c5c">${escape(heading)}</td></tr>
 <tr><td style="padding-top:12px;font-size:15px;line-height:1.6">${escape(body)}</td></tr>
 <tr><td style="padding-top:28px"><a href="${escape(url)}" style="display:inline-block;background:#c4493d;color:#ffffff;text-decoration:none;font-weight:bold;padding:14px 26px;border-radius:999px">${escape(cta)}</a></td></tr>
+${secondary ? `<tr><td style="padding-top:20px"><a href="${escape(secondary.url)}">${escape(secondary.cta)}</a></td></tr>` : ""}
 <tr><td style="padding-top:28px;font-size:12px;line-height:1.6;color:#55666b">${escape(footer)}<br>If the button doesn't work, paste this link into your browser:<br><span style="word-break:break-all">${escape(url)}</span></td></tr>
 </table></td></tr></table></body></html>`;
-  const text = `${heading}\n\n${body}\n\n${cta}: ${url}\n\n${footer}`;
+  const text = `${heading}\n\n${body}\n\n${cta}: ${url}${secondary ? `\n${secondary.cta}: ${secondary.url}` : ""}\n\n${footer}`;
   return { html, text };
 }

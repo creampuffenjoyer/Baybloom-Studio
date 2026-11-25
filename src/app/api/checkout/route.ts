@@ -9,6 +9,13 @@ import { continueCheckout, ExpiredCheckoutError, reconcileExpiredCheckouts } fro
 import { stripeConfigured } from "@/lib/stripe";
 import { checkoutChoiceSchema } from "@/lib/personalization/checkout-choice";
 import { guardBrowserWrite, readJsonBody, privateResponseHeaders } from "@/lib/request-security";
+import { gcashConfigured } from "@/lib/paymongo";
+import { deliveryEmailSchema } from "@/lib/delivery-credentials";
+
+const input = checkoutChoiceSchema.safeExtend({
+  method: z.enum(["STRIPE", "GCASH"]).default("STRIPE"),
+  deliveryEmail: deliveryEmailSchema.optional(),
+});
 
 export async function POST(request: Request) {
   const rejected = guardBrowserWrite(request);
@@ -22,14 +29,18 @@ export async function POST(request: Request) {
   if (!parsed.success) return Response.json({ error: "A valid checkout request key is required." }, { status: 400 });
   const body = await readJsonBody(request);
   if (!body.ok) return body.response;
-  const choices = checkoutChoiceSchema.safeParse(body.value);
-  if (!choices.success) return Response.json({ error: "Choose supported saved drafts and confirm photo permissions." }, { status: 400 });
+  const choices = input.safeParse(body.value);
+  if (!choices.success) {
+    const invalidEmail = choices.error.issues.some(issue => issue.path[0] === "deliveryEmail");
+    return Response.json({ error: invalidEmail ? "Enter a valid delivery email." : "Check your payment method, saved drafts and photo permissions." }, { status: 400 });
+  }
 
   try {
-    await reconcileExpiredCheckouts();
+    await reconcileExpiredCheckouts(undefined, undefined, user.id, 2);
     const code = (await cookies()).get(COUPON_COOKIE)?.value ?? null;
     const order = await prepareCheckout(user.id, parsed.data, code, stripeConfigured(), undefined,
-      choices.data.savedDraftTemplates, choices.data.imageRightsConfirmed);
+      choices.data.savedDraftTemplates, choices.data.imageRightsConfirmed,
+      { method: choices.data.method, gcashReady: gcashConfigured(), deliveryEmail: choices.data.deliveryEmail });
     const url = await continueCheckout(order);
     if (order.totalCents === 0) await setCouponCookie(null);
     return Response.json({ url }, { headers: privateResponseHeaders });

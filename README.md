@@ -62,26 +62,42 @@ on E:. The wrapper removes its own temporary folder after each run. See
 - Saving drafts or uploading photos requires a verified email. Existing saved content can still be read and existing photo-delete endpoints remain available; resend the verification link from My account.
 - Administrators must enroll an authenticator and use a fresh code or a single-use recovery code to sign in. Password resets preserve MFA. See [administrative MFA](docs/admin-mfa.md) for migration/key requirements, recovery and rollout; client login behavior is unchanged.
 
-## Payments (Stripe)
+## Payments and project delivery
+
+Customers can pay by card through Stripe or pay with GCash through PayMongo when enabled. To discuss a custom order, they can call +63 966 922 1451 or email baybloom.studios@gmail.com.
+
+### Stripe test checkout
 
 1. Put your **test-mode** keys in `.env`: `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`.
 2. Forward webhooks locally with the [Stripe CLI](https://docs.stripe.com/stripe-cli):
    `stripe listen --forward-to localhost:3000/api/webhooks/stripe`, then copy the printed `whsec_…` into `STRIPE_WEBHOOK_SECRET`.
 3. Pay with test card `4242 4242 4242 4242`, any future date, any CVC.
 
-How it fits together:
+### PayMongo setup
 
-- `POST /api/checkout` recomputes the cart on the server, creates a **PENDING** order (with item and billing snapshots) and a Stripe Checkout Session in PHP. A promo code becomes a one-off Stripe coupon.
-- `POST /api/webhooks/stripe` verifies the signature and marks orders **PAID / FAILED / REFUNDED**. Every transition is a conditional update, so retries and duplicate events are safe; errors return 500 so Stripe retries.
-- The success page also asks Stripe for the session status (server-side), so orders complete even if the webhook is late or not running in development.
-- Paying clears the purchased designs from the cart, counts the coupon redemption and sends one confirmation email.
-- Fully discounted (₱0) orders skip Stripe.
+1. In a staging environment, set `PAYMONGO_SECRET_KEY` to a test key and register `/api/webhooks/paymongo` on the staging HTTPS URL. Subscribe to `checkout_session.payment.paid`, `payment.refunded`, and `payment.refund.updated`. Set `PAYMONGO_WEBHOOK_SECRET` to the endpoint's signing secret.
+2. Set `PAYMONGO_GCASH_ENABLED=true` in staging to verify hosted checkout, webhook fulfillment, refunds, and closing a pending checkout before switching methods.
+3. Request GCash activation in the live PayMongo account. After activation and the staging checks, configure the corresponding live key and webhook secret before enabling GCash in production. Leave the flag disabled to hide the GCash option.
 
-Checkout now persists buyer-scoped retry keys and immutable Stripe parameters.
+See [PayMongo Hosted Checkout](https://docs.paymongo.com/docs/payment-channels-hosted-checkout) for merchant setup and testing.
+
+### How checkout works
+
+- `POST /api/checkout` recalculates the total and freezes the order, delivery email, and provider request. An alternate email requires a six-digit verification code before payment.
+- Signed provider webhooks and server-side payment checks update the order. A pending session must be confirmed closed before the customer can switch payment methods. Fully discounted orders skip the payment providers.
+- Confirmed orders clear the purchased items from the cart, record the coupon redemption, and queue a receipt to the selected delivery address.
+
+Checkout persists buyer-scoped retry keys and immutable payment parameters.
 Identical cart snapshots reuse an order across tabs. Coupon capacity is reserved
 under a database row lock, then redeemed once at fulfillment or released after a
 confirmed failure/expiration. Full refunds are terminal even if their webhook
 arrives before checkout completion.
+
+### Fulfilling orders on Railway
+
+Apply the migrations in staging first. Configure private package storage, a verified Resend sender (`RESEND_API_KEY` and `EMAIL_FROM`), the public app URL, and the existing authenticated scheduler for `POST /api/jobs/maintenance` using `MAINTENANCE_SECRET`. The job sends receipts and one project email per purchased website after its ZIP is ready.
+
+For each item with paid **Hosting setup**, deploy the site, sign in as a verified administrator with MFA, and enter the public HTTPS URL at `/admin/deliveries`. The job emails the ZIP and live site links together for that item. The emailed ZIP link lasts seven days. Customers can request a fresh link from their order and use the downloads in their account.
 
 Before deploying these changes, read [the Phase 1 deployment guide](docs/phase-1-deployment.md).
 `db:deploy` and `db:migrate` run a read-only safety gate for the older websites-only

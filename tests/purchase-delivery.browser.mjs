@@ -37,6 +37,7 @@ test(`purchaser checkout, package preparation and authenticated downloads for ${
   const maintenanceSecret = randomBytes(32).toString("base64url");
   let browser;
   let server;
+  let verificationCode;
   const diagnostics = [];
   try {
     await db.category.create({ data: { id: prefix, slug: prefix, name: prefix } });
@@ -76,12 +77,14 @@ test(`purchaser checkout, package preparation and authenticated downloads for ${
       env: { ...process.env, BAYBLOOM_PERSONALIZATION_TEST: "1", DATABASE_URL: target, DIRECT_URL: direct,
         AUTH_SECRET: randomBytes(32).toString("base64url"), AUTH_URL: base, NEXT_PUBLIC_SITE_URL: base,
         AUTH_GOOGLE_ID: "", AUTH_GOOGLE_SECRET: "", RESEND_API_KEY: "", EMAIL_FROM: "",
-        STRIPE_SECRET_KEY: "", STRIPE_WEBHOOK_SECRET: "", NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "",
+        STRIPE_SECRET_KEY: "", STRIPE_WEBHOOK_SECRET: "", NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "", PAYMONGO_GCASH_ENABLED: "false",
         S3_ENDPOINT: "", S3_BUCKET: "", S3_ACCESS_KEY: "", S3_SECRET_KEY: "", MAINTENANCE_SECRET: maintenanceSecret,
       }, windowsHide: true, stdio: ["ignore", "pipe", "pipe"],
     });
     for (const stream of [server.stdout, server.stderr]) stream.on("data", chunk => {
-      for (const line of String(chunk).split(/\r?\n/)) if (/error|failed|reload|restart/i.test(line) && !/postgres|secret|token|password|email|cookie|authorization/i.test(line)) diagnostics.push(line.slice(0, 300));
+      const output = String(chunk);
+      verificationCode = output.match(/Your Baybloom checkout code is (\d{6})\./)?.[1] ?? verificationCode;
+      for (const line of output.split(/\r?\n/)) if (/error|failed|reload|restart/i.test(line) && !/postgres|secret|token|password|email|cookie|authorization/i.test(line)) diagnostics.push(line.slice(0, 300));
     });
     const deadline = Date.now() + 120_000;
     while (true) {
@@ -132,6 +135,24 @@ test(`purchaser checkout, package preparation and authenticated downloads for ${
     page.on("pageerror", error => browserErrors.push(error.message));
     await page.goto(`${base}/checkout`, { waitUntil: "networkidle" });
     await page.getByRole("heading", { name: "Choose your website content" }).waitFor();
+    const deliveryEmail = `alternate-${prefix}@example.com`;
+    const recipientInput = page.getByRole("textbox", { name: "Delivery email" });
+    assert.equal(await recipientInput.inputValue(), emails[0]);
+    assert.equal(await page.getByRole("link", { name: "Call +63 966 922 1451" }).getAttribute("href"), "tel:+639669221451");
+    assert.equal(await page.getByRole("link", { name: "baybloom.studios@gmail.com" }).getAttribute("href"), "mailto:baybloom.studios@gmail.com");
+    await page.getByRole("button", { name: /Ask Bloom|Need any help\?/ }).click();
+    const guide = page.getByRole("dialog", { name: "Bloom" });
+    await guide.getByRole("button", { name: "Order with the owner" }).click();
+    assert.equal(await guide.getByRole("link", { name: "baybloom.studios@gmail.com" }).getAttribute("href"), "mailto:baybloom.studios@gmail.com");
+    assert.equal(await guide.getByRole("link", { name: "Call +63 966 922 1451" }).getAttribute("href"), "tel:+639669221451");
+    await guide.getByRole("button", { name: "Minimize Bloom" }).click();
+    await recipientInput.fill(deliveryEmail);
+    await page.getByRole("button", { name: "Send verification code" }).click();
+    await page.getByText("Check this inbox for a six-digit code.").waitFor();
+    assert.match(verificationCode, /^\d{6}$/);
+    await page.getByRole("textbox", { name: "Verification code" }).fill(verificationCode);
+    await page.getByRole("button", { name: "Verify email" }).click();
+    await page.getByText("Delivery email verified.").waitFor();
     for (const fieldset of await page.locator("fieldset").all()) await fieldset.getByLabel("My saved content and photos").check();
     assert.equal(await page.getByRole("button", { name: "Complete order" }).isDisabled(), true);
     await page.getByLabel("I have permission to use the photos").check();
@@ -147,6 +168,7 @@ test(`purchaser checkout, package preparation and authenticated downloads for ${
     await page.waitForURL("**/checkout/success?order=**", { timeout: 90_000 });
     const order = await db.order.findFirstOrThrow({ where: { userId: ids[0], status: "PAID" }, include: { items: { include: { personalization: true } } } });
     assert.equal(order.items.length, templates.length);
+    assert.equal(order.deliveryEmail, deliveryEmail);
     assert.equal((await db.coupon.findUniqueOrThrow({ where: { code: coupon } })).redemptions, 1);
     await db.personalizationDraft.deleteMany({ where: { userId: ids[0] } });
     const retry = await buyer.request.post(`${base}/api/checkout`, { headers: { origin: base, "idempotency-key": submitted.headers()["idempotency-key"] }, data: submitted.postDataJSON() });
@@ -173,6 +195,14 @@ test(`purchaser checkout, package preparation and authenticated downloads for ${
       assert.match(response.headers()["cache-control"], /private, no-store/);
       assert.match(response.headers()["content-disposition"], /attachment/);
       const bytes = await response.body();
+      const job = await db.orderDelivery.findUniqueOrThrow({ where: { orderItemId: item.id } });
+      assert.ok(job.emailSentAt);
+      assert.equal(job.emailPayload.to, deliveryEmail);
+      const emailedUrl = job.emailPayload.text.match(/https?:\/\/\S+\/api\/project-delivery\/\S+/)?.[0];
+      assert.ok(emailedUrl);
+      const emailedDownload = await fetch(emailedUrl);
+      assert.equal(emailedDownload.status, 200);
+      assert.deepEqual(Buffer.from(await emailedDownload.arrayBuffer()), bytes);
       await writeFile(`${output}/${item.personalization.template}-purchased.zip`, bytes);
       const files = unzipSync(bytes);
       const template = item.personalization.template;

@@ -46,7 +46,7 @@ export function PricePicker({
       className="space-y-6"
     >
       <fieldset>
-        <legend id={groupId} className="mb-3 text-sm font-semibold text-ink">
+        <legend id={groupId} data-bloom-target="pricing" className="mb-3 text-sm font-semibold text-ink">
           Choose a tier
         </legend>
         <div className="space-y-2">
@@ -129,7 +129,7 @@ export function PricePicker({
         </Button>
         <CompareToggle item={compareItem} signedIn variant="button" className="mt-1" />
         <p className="text-center text-xs text-muted-foreground">
-          Secure payment by Stripe. Files are available to download right after payment.
+          Choose card or GCash where available. Project links arrive by email when ready.
         </p>
       </div>
     </motion.div>
@@ -182,7 +182,7 @@ export function LockedPrice({ callbackUrl }: { callbackUrl: string }) {
       </div>
       <div className="grid gap-2">
         <Button asChild className="h-12 rounded-lg bg-hibiscus-strong text-base text-white hover:bg-hibiscus-strong/90">
-          <Link href={loginHref(callbackUrl)}>Log in to see prices</Link>
+          <Link href={loginHref(callbackUrl)} data-bloom-target="pricing">Log in to see prices</Link>
         </Button>
         <Button asChild variant="outline" className="h-12 rounded-lg bg-white text-base">
           <Link href={`/register?callbackUrl=${encodeURIComponent(callbackUrl)}`}>

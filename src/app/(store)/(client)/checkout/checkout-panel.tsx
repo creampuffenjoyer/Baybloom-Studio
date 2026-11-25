@@ -1,37 +1,89 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Loader2Icon, LockIcon } from "lucide-react";
 import { CartStatus } from "@/components/cart/cart-status";
 import { useCart } from "@/components/cart/cart-provider";
 import { CartLines, CartTotals, CouponField, EmptyCart } from "@/components/cart/cart-contents";
 import { Button } from "@/components/ui/button";
+import { StudioOrderContact } from "@/components/studio-order-contact";
+import { gcashEligible } from "@/lib/checkout-methods";
+import { DeliveryEmailField } from "./delivery-email-field";
 
 export function CheckoutPanel({
   billing,
   emailVerified,
   stripeReady,
+  gcashReady,
+  accountEmail,
+  pendingOrder,
   purchaseOptions,
 }: {
   billing: React.ReactNode;
   emailVerified: boolean;
   stripeReady: boolean;
+  gcashReady: boolean;
+  accountEmail: string;
+  pendingOrder: { id: string; paymentMethod: "STRIPE" | "GCASH" | "FREE"; deliveryEmail: string | null } | null;
   purchaseOptions: { template: string; savedAt: string | null; releaseReady: boolean }[];
 }) {
   const { cart, loadState, busy } = useCart();
+  const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savedDraftTemplates, setSavedDraftTemplates] = useState<string[]>([]);
   const [imageRightsConfirmed, setImageRightsConfirmed] = useState(false);
+  const [deliveryEmail, setDeliveryEmail] = useState(accountEmail);
+  const [verifiedRecipient, setVerifiedRecipient] = useState("");
+  const [method, setMethod] = useState<"STRIPE" | "GCASH">(stripeReady ? "STRIPE" : "GCASH");
   const attempt = useRef<{ fingerprint: string; key: string } | null>(null);
   const submitting = useRef(false);
 
-  if (!cart || loadState !== "ready") return <CartStatus />;
-  if (cart.lines.length === 0) {
-    return <EmptyCart />;
+  function clearAttempt() {
+    attempt.current = null;
+    try { sessionStorage.removeItem("bb:checkout-attempt"); } catch { /* Storage unavailable. */ }
   }
 
-  // Fully discounted orders complete without Stripe.
+  async function managePending(action: "resume" | "close") {
+    if (!pendingOrder || submitting.current) return;
+    submitting.current = true;
+    setPending(true);
+    setError(null);
+    try {
+      const response = await fetch("/api/checkout/pending", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId: pendingOrder.id, action }),
+      });
+      const result = await response.json();
+      if (!response.ok) setError(result.error ?? "We couldn't check that payment.");
+      else if (result.url) window.location.assign(result.url);
+      else if (result.closed) { clearAttempt(); router.refresh(); }
+    } catch {
+      setError("We couldn't reach checkout. Try again.");
+    } finally {
+      submitting.current = false;
+      setPending(false);
+    }
+  }
+
+  const pendingPayment = pendingOrder && <section className="space-y-3 rounded-xl border border-border bg-sand p-4">
+    <h3 className="font-semibold">Pending checkout</h3>
+    <p className="text-sm">Resume your {pendingOrder.paymentMethod === "GCASH" ? "GCash" : pendingOrder.paymentMethod === "STRIPE" ? "card" : "discounted"} order{pendingOrder.deliveryEmail && <> for <strong className="break-all">{pendingOrder.deliveryEmail}</strong></>}.
+      {pendingOrder.paymentMethod !== "FREE" && " Close it before choosing a different payment method or delivery email."}</p>
+    <div className="flex flex-wrap gap-2">
+      <Button type="button" onClick={() => void managePending("resume")} disabled={pending}>Resume checkout</Button>
+      {pendingOrder.paymentMethod !== "FREE" && <Button type="button" variant="outline" onClick={() => void managePending("close")} disabled={pending}>Close pending checkout</Button>}
+    </div>
+  </section>;
+  if (!cart || loadState !== "ready") return <CartStatus />;
+  if (cart.lines.length === 0) {
+    return <div className="space-y-4">{pendingPayment}{error && <p role="alert">{error}</p>}<EmptyCart /></div>;
+  }
+
+  const offerGCash = gcashReady && gcashEligible(cart.totalCents, cart.currency);
+  const offerCard = stripeReady && cart.totalCents >= 2000;
+  const selectedMethod = method === "GCASH" && offerGCash || !offerCard && offerGCash ? "GCASH" : "STRIPE";
+  const recipient = deliveryEmail.trim().toLowerCase();
   const pilotLines = cart.lines.filter(line => purchaseOptions.some(option => option.template === line.design.slug));
   const selectedDrafts = savedDraftTemplates.filter(template => pilotLines.some(line => line.design.slug === template));
   const missingRelease = pilotLines.some(line => !purchaseOptions.find(option => option.template === line.design.slug)?.releaseReady);
@@ -39,17 +91,19 @@ export function CheckoutPanel({
     ? "Verify your email to continue."
     : missingRelease ? "A source package is being prepared for a template in your cart. Please return later or contact support."
     : selectedDrafts.length > 0 && !imageRightsConfirmed ? "Confirm photo permissions to continue."
-    : !stripeReady && cart.totalCents > 0
-      ? "Online payments aren't set up yet."
+    : recipient !== accountEmail.toLowerCase() && (!recipient || recipient !== verifiedRecipient) ? "Verify your delivery email to continue."
+    : !offerGCash && !offerCard && cart.totalCents > 0
+      ? "Online payment is unavailable for this total. You can contact the developer."
       : null;
-  const canPay = blockedReason === null && !busy;
+  const canPay = blockedReason === null && !busy && !pendingOrder;
 
   async function pay() {
-    if (submitting.current || !cart || busy || loadState !== "ready") return;
+    if (submitting.current || !cart || !canPay || loadState !== "ready") return;
     submitting.current = true;
     setPending(true);
     setError(null);
-    const fingerprint = JSON.stringify({ lines: cart.lines, coupon: cart.coupon, total: cart.totalCents, savedDraftTemplates: selectedDrafts.sort(), imageRightsConfirmed });
+    const fingerprint = JSON.stringify({ lines: cart.lines, coupon: cart.coupon, total: cart.totalCents, savedDraftTemplates: [...selectedDrafts].sort(),
+      imageRightsConfirmed, method: selectedMethod, deliveryEmail: recipient });
     try {
       if (!attempt.current) {
         try {
@@ -64,17 +118,15 @@ export function CheckoutPanel({
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Idempotency-Key": attempt.current.key },
-        body: JSON.stringify({ savedDraftTemplates: selectedDrafts, imageRightsConfirmed }),
+        body: JSON.stringify({ savedDraftTemplates: selectedDrafts, imageRightsConfirmed, method: selectedMethod, deliveryEmail: recipient }),
       });
       const body = await res.json().catch(() => ({}));
       if (res.ok && body.url) {
         window.location.assign(body.url);
         return;
       }
-      if (body.resetAttempt) {
-        attempt.current = null;
-        try { sessionStorage.removeItem("bb:checkout-attempt"); } catch { /* Storage unavailable. */ }
-      }
+      if (body.resetAttempt) clearAttempt();
+      router.refresh();
       setError(body.error ?? "Something went wrong. Please try again.");
     } catch {
       setError("We couldn't reach checkout. Please retry; your previous attempt will be reused.");
@@ -88,6 +140,9 @@ export function CheckoutPanel({
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_400px]">
       <div className="space-y-6">
         {billing}
+        <DeliveryEmailField email={pendingOrder ? pendingOrder.deliveryEmail ?? accountEmail : deliveryEmail}
+          accountEmail={accountEmail} onChange={setDeliveryEmail} onVerified={setVerifiedRecipient}
+          disabled={!emailVerified || pending || !!pendingOrder} locked={!!pendingOrder} />
         <section aria-label="Order items" className="rounded-3xl bg-white px-6 pt-2 ring-1 ring-border/70">
           <CartLines />
         </section>
@@ -124,26 +179,39 @@ export function CheckoutPanel({
         <h2 className="text-2xl font-medium">Order summary</h2>
         <CouponField />
         <CartTotals />
+        {pendingPayment}
+        {cart.totalCents > 0 && !pendingOrder && (offerCard || offerGCash) && (
+          <fieldset disabled={pending} className="grid gap-2">
+            <legend className="mb-2 text-sm font-semibold">Payment method</legend>
+            {offerCard && <label className="flex min-h-11 items-center gap-2 rounded-lg border border-border px-3 text-sm">
+              <input type="radio" name="payment-method" checked={selectedMethod === "STRIPE"} onChange={() => setMethod("STRIPE")} /> Pay by card with Stripe
+            </label>}
+            {offerGCash && <label className="flex min-h-11 items-center gap-2 rounded-lg border border-border px-3 text-sm">
+              <input type="radio" name="payment-method" checked={selectedMethod === "GCASH"} onChange={() => setMethod("GCASH")} /> Pay with GCash
+            </label>}
+          </fieldset>
+        )}
         {error && (
           <p role="alert" className="rounded-lg bg-destructive/8 px-3 py-2.5 text-sm text-destructive">
             {error}
           </p>
         )}
-        <Button
+        {!pendingOrder && <Button
           onClick={pay}
           disabled={!canPay || pending}
           className="h-12 w-full rounded-full bg-hibiscus-strong text-base text-white hover:bg-hibiscus-strong/90"
         >
           {pending ? <Loader2Icon className="animate-spin" /> : <LockIcon />}
-          {cart.totalCents === 0 ? "Complete order" : "Pay securely"}
-        </Button>
+          {cart.totalCents === 0 ? "Complete order" : selectedMethod === "GCASH" ? "Continue to GCash" : "Pay securely"}
+        </Button>}
         {blockedReason ? (
           <p className="text-center text-sm text-muted-foreground">{blockedReason}</p>
         ) : (
           <p className="text-center text-xs leading-relaxed text-muted-foreground">
-            {cart.totalCents > 0 ? "You’ll be taken to Stripe to pay by card. " : ""}Your order will show downloads and package preparation after payment is confirmed.
+            We’ll email your project links when they’re ready.
           </p>
         )}
+        <StudioOrderContact />
       </aside>
     </div>
   );

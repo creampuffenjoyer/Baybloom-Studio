@@ -21,12 +21,14 @@ export default async function DesignsPage(props: PageProps<"/designs">) {
   return (
     <CatalogNavProvider>
       <div className="container-page pt-12 pb-8 sm:pt-16">
-        <PageHeading eyebrow="The collection" title="A website that feels like your place">
-          <p>
-          Complete, multi-page website templates for resorts, hotels, restaurants, spas and
-          venues. Try every live demo, then log in to see pricing for each tier.
-          </p>
-        </PageHeading>
+        <div data-bloom-target="catalog">
+          <PageHeading eyebrow="The collection" title="A website that feels like your place">
+            <p>
+              Complete, multi-page website templates for resorts, hotels, restaurants, spas and
+              venues. Try every live demo, then log in to see pricing for each tier.
+            </p>
+          </PageHeading>
+        </div>
         <BloomGuide page="catalog" matches={SHOWCASE.filter(item => published.includes(item.slug))} />
       </div>
 

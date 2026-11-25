@@ -6,6 +6,7 @@ import { CartStatus } from "@/components/cart/cart-status";
 import { useCart } from "@/components/cart/cart-provider";
 import { CartLines, CartTotals, CouponField, EmptyCart } from "@/components/cart/cart-contents";
 import { Button } from "@/components/ui/button";
+import { StudioOrderContact } from "@/components/studio-order-contact";
 
 export function CartView() {
   const { cart, loadState } = useCart();
@@ -30,8 +31,9 @@ export function CartView() {
           <Link href="/checkout">Continue to checkout</Link>
         </Button>
         <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-          <LockIcon className="size-3" /> Payments are processed securely by Stripe.
+          <LockIcon className="size-3" /> Pay by card or GCash where available.
         </p>
+        <StudioOrderContact />
       </aside>
     </div>
   );

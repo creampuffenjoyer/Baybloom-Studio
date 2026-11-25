@@ -10,6 +10,8 @@ import { authorizeDownload } from "../src/lib/deliverables.ts";
 import { stripeFixture } from "./helpers/commerce.mjs";
 import { rateLimit } from "../src/lib/rate-limit.ts";
 import { deliverConfirmations } from "../src/lib/confirmation-outbox.ts";
+import { deliverProjectEmails } from "../src/lib/project-delivery-outbox.ts";
+import { findProjectDelivery } from "../src/lib/project-delivery-link.ts";
 import { createHash } from "node:crypto";
 
 // Never load .env or fall back to the application's DATABASE_URL.
@@ -26,6 +28,7 @@ test("PostgreSQL checkout/security integration", { skip: !url && "Set TEST_DATAB
   const prefix = `audit-${randomUUID()}`;
   const users = [`${prefix}-alice`, `${prefix}-bob`];
   const designId = `${prefix}-design`;
+  const hostingDesignId = `${prefix}-hosting-design`;
   const tierId = `${prefix}-tier`;
   const code = prefix.toUpperCase();
 
@@ -42,7 +45,7 @@ test("PostgreSQL checkout/security integration", { skip: !url && "Set TEST_DATAB
       await db.checkoutRequest.deleteMany({ where: { userId: { in: users } } });
       await db.order.deleteMany({ where: { userId: { in: users } } });
       await db.user.deleteMany({ where: { id: { in: users } } });
-      await db.design.deleteMany({ where: { id: designId } });
+      await db.design.deleteMany({ where: { id: { in: [designId, hostingDesignId] } } });
       await db.category.deleteMany({ where: { id: prefix } });
       await db.coupon.deleteMany({ where: { code } });
     } finally { await db.$disconnect(); }
@@ -152,6 +155,65 @@ test("PostgreSQL checkout/security integration", { skip: !url && "Set TEST_DATAB
     await markOrderRefunded(order.id, db);
     await deliverConfirmations(db, async () => { sends++; }, 1);
     assert.equal(sends, 0);
+  });
+
+  await t.test("verified recipient gets one email per project, and hosting waits for the live URL", async (subtest) => {
+    if (!process.env.AUTH_SECRET) {
+      process.env.AUTH_SECRET = "test-only-project-delivery-signing-key";
+      subtest.after(() => { delete process.env.AUTH_SECRET; });
+    }
+    await clearOrders();
+    await db.deliverableFile.update({ where: { id: `${prefix}-file` }, data: { storageKey: `${prefix}/base-source.zip` } });
+    const hostedTier = `${prefix}-hosted-tier`;
+    const addon = `${prefix}-hosting`;
+    await db.design.create({ data: {
+      id: hostingDesignId, slug: hostingDesignId, title: "Hosting fixture", summary: "Test", description: "Test",
+      status: "PUBLISHED", categoryId: prefix, heroImage: "/test.webp", deliverables: [],
+      tiers: { create: { id: hostedTier, level: "STARTER", name: "Starter", priceCents: 12_000, inclusions: [] } },
+      addons: { create: { id: addon, name: "Hosting setup", priceCents: 8_500 } },
+    } });
+    await db.deliverableFile.create({ data: { designId: hostingDesignId, name: "Hosted ZIP",
+      storageKey: `${prefix}/hosted-source.zip`, minTierId: hostedTier } });
+    await db.cartItem.create({ data: { userId: users[0], designId: hostingDesignId, tierId: hostedTier, addonIds: [addon] } });
+    const deliveryEmail = `delivery-${prefix}@example.com`;
+    const options = { method: "GCASH", gcashReady: true, deliveryEmail };
+    const submit = methodOptions => prepareCheckout(users[0], randomUUID(), null, true, db, [], false, methodOptions);
+    await assert.rejects(submit(options), /Verify your delivery email/);
+    await db.checkoutDeliveryVerification.create({ data: { userId: users[0], email: deliveryEmail, codeHash: "fixture",
+      expiresAt: new Date(Date.now() + 60_000), verifiedAt: new Date() } });
+    const order = await submit(options);
+    assert.equal(order.deliveryEmail, deliveryEmail);
+    assert.equal(order.paymentMethod, "GCASH");
+    assert.equal(order.checkoutParameters.data.attributes.line_items[0].amount, 30_500);
+    await assert.rejects(submit({ ...options, method: "STRIPE" }), /Close your pending checkout/);
+    const items = await db.orderItem.findMany({ where: { orderId: order.id } });
+    const basic = items.find(item => item.designId === designId);
+    const hosted = items.find(item => item.designId === hostingDesignId);
+    assert.equal(basic.deploymentRequired, false);
+    assert.equal(hosted.deploymentRequired, true);
+
+    await fulfillOrder(order.id, null, db);
+    const emails = [];
+    const send = async (payload, key) => { emails.push({ payload, key }); };
+    assert.deepEqual(await deliverProjectEmails(db, send), { sent: 0, failed: 0 });
+    assert.equal((await deliverConfirmations(db, send, 1)).sent, 1);
+    assert.equal(emails[0].payload.to, deliveryEmail);
+    const failed = await deliverProjectEmails(db, async (...args) => { await send(...args); throw new Error("provider unavailable"); });
+    assert.equal(failed.failed, 1);
+    await db.orderDelivery.update({ where: { orderItemId: basic.id }, data: { emailNextAt: new Date(0) } });
+    const retry = await Promise.all([deliverProjectEmails(db, send), deliverProjectEmails(db, send)]);
+    assert.equal(retry.reduce((sum, result) => sum + result.sent, 0), 1);
+    assert.deepEqual(emails[1], emails[2]);
+    assert.doesNotMatch(emails[2].payload.text, /Open your live website/);
+    const token = emails[2].payload.text.match(/\/api\/project-delivery\/(\S+)/)[1];
+    assert.equal((await findProjectDelivery(token, db)).key, `${prefix}/base-source.zip`);
+    assert.equal((await db.orderDelivery.findUniqueOrThrow({ where: { orderItemId: hosted.id } })).emailSentAt, null);
+    await db.orderDelivery.update({ where: { orderItemId: hosted.id }, data: { deploymentUrl: "https://published.example.com" } });
+    assert.deepEqual(await deliverProjectEmails(db, send), { sent: 1, failed: 0 });
+    assert.equal(emails[3].payload.to, deliveryEmail);
+    assert.match(emails[3].payload.text, /Open your live website: https:\/\/published\.example\.com/);
+    await markOrderRefunded(order.id, db);
+    assert.equal(await findProjectDelivery(token, db), null);
   });
 
   await t.test("existing password account is not adopted by Google", async () => {

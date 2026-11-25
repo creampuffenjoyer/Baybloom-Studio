@@ -6,6 +6,7 @@ import { PencilIcon } from "lucide-react";
 import { getAccount } from "@/lib/account";
 import { requireUser } from "@/lib/session";
 import { stripeConfigured } from "@/lib/stripe";
+import { gcashConfigured } from "@/lib/paymongo";
 import { VerifyBanner } from "@/app/(store)/(client)/account/verify-banner";
 import { CheckoutPanel } from "@/app/(store)/(client)/checkout/checkout-panel";
 import { db } from "@/lib/db";
@@ -19,7 +20,7 @@ export default function CheckoutPage(props: PageProps<"/checkout">) {
     <div className="container-page py-12 sm:py-16">
       <BloomGuide page="checkout" />
       <PageHeading eyebrow="Your order" title="Checkout">
-        <p>Check your billing details, choose your website content and review your order.</p>
+        <p>Confirm your delivery email, choose your website content and review your order.</p>
       </PageHeading>
       <div className="mt-10">
         <Suspense fallback={<div className="shimmer h-96 rounded-3xl" />}>
@@ -36,9 +37,11 @@ async function Checkout({ searchParams }: Pick<PageProps<"/checkout">, "searchPa
   const user = await requireUser("/checkout");
   const [account, { canceled }] = await Promise.all([getAccount(user.id), searchParams]);
   if (!account) return null;
-  const [drafts, releases] = await Promise.all([
+  const [drafts, releases, pendingOrder] = await Promise.all([
     db.personalizationDraft.findMany({ where: { userId: user.id, template: { in: purchaseTemplates } }, select: { template: true, updatedAt: true } }),
     db.activeTemplateRelease.findMany({ where: { template: { in: purchaseTemplates } }, select: { template: true } }),
+    db.order.findFirst({ where: { userId: user.id, status: "PENDING" }, orderBy: { createdAt: "desc" },
+      select: { id: true, paymentMethod: true, deliveryEmail: true } }),
   ]);
 
   const address = [
@@ -52,7 +55,7 @@ async function Checkout({ searchParams }: Pick<PageProps<"/checkout">, "searchPa
     <div className="space-y-6">
       {canceled && (
         <p role="status" className="rounded-2xl bg-white px-5 py-4 text-sm ring-1 ring-border/70">
-          Payment was canceled, so you haven&apos;t been charged. Your cart is saved below.
+          You returned from payment. Resume or close the pending checkout below before starting a new one.
         </p>
       )}
       {!account.emailVerified && <VerifyBanner email={account.email} />}
@@ -60,6 +63,9 @@ async function Checkout({ searchParams }: Pick<PageProps<"/checkout">, "searchPa
       <CheckoutPanel
         emailVerified={Boolean(account.emailVerified)}
         stripeReady={stripeConfigured()}
+        gcashReady={gcashConfigured()}
+        accountEmail={account.email}
+        pendingOrder={pendingOrder}
         purchaseOptions={purchaseTemplates.map(template => ({ template,
           savedAt: drafts.find(draft => draft.template === template)?.updatedAt.toISOString() ?? null,
           releaseReady: releases.some(release => release.template === template),

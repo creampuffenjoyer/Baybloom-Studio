@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import Link from "next/link";
 import { getAccount } from "@/lib/account";
 import { requireUser } from "@/lib/session";
 import { ProfileForm } from "@/app/(store)/(client)/account/profile-form";
@@ -23,6 +24,7 @@ async function Profile() {
 
   return (
     <div className="space-y-8">
+      {user.role === "ADMIN" && <Link href="/admin/deliveries" className="font-medium text-bay underline">Admin deliveries</Link>}
       {!account.emailVerified && <VerifyBanner email={account.email} />}
       <ProfileForm account={account} />
       <p className="text-xs text-muted-foreground">

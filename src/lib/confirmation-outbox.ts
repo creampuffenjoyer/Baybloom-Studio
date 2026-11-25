@@ -26,10 +26,17 @@ export async function deliverConfirmations(client: PrismaClient = db, send = sen
       const order = await tx.order.findUniqueOrThrow({ where: { id: candidate.id },
         include: { user: { select: { email: true, name: true } }, items: true } });
       const ref = orderRef(order.id);
+      const items = order.items.map((item) => `${item.designTitle} (${item.tierName})`).join(", ");
+      const confirmation = order.totalCents === 0
+        ? `Your order for ${items} is confirmed.`
+        : `Your payment of ${formatPrice(order.totalCents, order.currency)} for ${items} was received.`;
+      const delivery = order.deliveryEmail
+        ? "We’ll email each project when it’s ready. If you purchased Hosting setup, the project email will include its live website link."
+        : "Open your order to download your files or check package preparation.";
       const payload = order.confirmationPayload ?? {
-        to: order.user.email, subject: `Your Baybloom Studio order ${ref}`,
+        to: order.deliveryEmail ?? order.user.email, subject: `Your Baybloom Studio order ${ref}`,
         ...actionEmail({ heading: `Thank you${order.user.name ? `, ${order.user.name.split(" ")[0]}` : ""}!`,
-          body: `Your payment of ${formatPrice(order.totalCents, order.currency)} for ${order.items.map((i) => `${i.designTitle} (${i.tierName})`).join(", ")} was received. Open your order to download your files or check package preparation. Your purchased content is saved independently of later draft edits.`,
+          body: `${confirmation} ${delivery}`,
           cta: "View receipt & downloads", url: siteUrl(`/account/orders/${order.id}`),
           footer: `Order ${ref}. Download links in your account are refreshed each time you open them.` }),
       };

@@ -19,6 +19,7 @@ import {
   type DesignDetail,
 } from "@/lib/catalog";
 import { TIER_LABEL } from "@/lib/format";
+import { StudioOrderContact } from "@/components/studio-order-contact";
 import { DesignGallery } from "@/components/design/design-gallery";
 import { DeviceShowcase } from "@/components/design/device-showcase";
 import { LockedPrice, PricePicker } from "@/components/design/price-panel";
@@ -139,12 +140,12 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
           {(design.demoUrl || personalizableTemplates.has(design.slug)) && (
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
               {personalizableTemplates.has(design.slug) && <Button asChild size="lg" className="h-12 rounded-lg px-6 text-base">
-                <Link href={`/personalize/${design.slug}`}>
+                <Link href={`/personalize/${design.slug}`} data-bloom-target="personalize">
                   <PencilIcon /> Personalize this template
                 </Link>
               </Button>}
               {design.demoUrl && <Button asChild size="lg" variant={personalizableTemplates.has(design.slug) ? "outline" : "default"} className="h-12 rounded-lg px-6 text-base">
-                <Link href={previewUrl!}>
+                <Link href={previewUrl!} data-bloom-target="demo">
                   <MonitorSmartphoneIcon /> Try the live demo
                 </Link>
               </Button>}
@@ -180,6 +181,7 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
                 compareItem={{ slug: design.slug, title: design.title, heroImage: design.heroImage }}
               />
             </Suspense>
+            <StudioOrderContact />
             {design.demoUrl && (
               <Link
                 href={previewUrl!}
@@ -302,14 +304,16 @@ function PriceSkeleton() {
 
 function TierComparison({ tiers }: { tiers: DesignDetail["tiers"] }) {
   return (
-    <section aria-labelledby="tiers">
-      <Reveal>
-        <h2 id="tiers" className="text-3xl font-medium">
-          Compare tiers
-        </h2>
-        <p className="mt-2 text-muted-foreground">What each level includes.</p>
-      </Reveal>
-      <RevealGroup className={cn("mt-6 grid gap-4", tiers.length > 1 && "md:grid-cols-3")}>
+    <section aria-labelledby="tiers" data-bloom-target="tiers">
+      <header data-bloom-target="tiers-intro">
+        <Reveal y={0}>
+          <h2 id="tiers" className="text-3xl font-medium">
+            Compare tiers
+          </h2>
+          <p className="mt-2 text-muted-foreground">What each level includes.</p>
+        </Reveal>
+      </header>
+      <RevealGroup className={cn("mt-6 grid gap-4", tiers.length === 2 && "md:grid-cols-2", tiers.length > 2 && "md:grid-cols-3")}>
         {tiers.map((t) => (
           <RevealItem
             key={t.id}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { ResendProjectEmail } from "./resend-project-email";
 import { ArrowLeftIcon, DownloadIcon, ExternalLinkIcon, FileIcon } from "lucide-react";
 import { db } from "@/lib/db";
 import { getDownloadsForOrder } from "@/lib/deliverables";
@@ -58,8 +59,10 @@ async function Order({ params }: Pick<PageProps<"/account/orders/[id]">, "params
       paidAt: true,
       receiptUrl: true,
       billing: true,
+      deliveryEmail: true,
       items: {
-        select: { id: true, designTitle: true, tierName: true, priceCents: true, addons: true, design: { select: { slug: true } } },
+        select: { id: true, designTitle: true, tierName: true, priceCents: true, addons: true, deploymentRequired: true,
+          design: { select: { slug: true } }, delivery: { select: { deploymentUrl: true, emailSentAt: true, emailError: true } } },
       },
     },
   });
@@ -128,6 +131,7 @@ async function Order({ params }: Pick<PageProps<"/account/orders/[id]">, "params
             <h2 className="font-sans text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">Contact</h2>
             <p className="mt-2">{billing.email}</p>
             {billing.phone && <p>{billing.phone}</p>}
+            {order.deliveryEmail && <p className="mt-2 break-all">Project delivery to {order.deliveryEmail}</p>}
           </div>
         </section>
 
@@ -151,6 +155,15 @@ async function Order({ params }: Pick<PageProps<"/account/orders/[id]">, "params
                   </div>
                   <p className="font-medium">{formatPrice(item.priceCents, order.currency)}</p>
                 </div>
+                {order.status === "PAID" && item.deploymentRequired && (
+                  item.delivery?.deploymentUrl
+                    ? <a className="mt-2 inline-block text-sm text-bay underline" href={item.delivery.deploymentUrl} target="_blank" rel="noopener noreferrer">Open your live website</a>
+                    : <p className="mt-2 text-sm text-muted-foreground">Hosting setup is in progress. Your project email will include your live link and ZIP.</p>
+                )}
+                {order.status === "PAID" && order.deliveryEmail && item.delivery?.emailSentAt &&
+                  <ResendProjectEmail orderItemId={item.id} />}
+                {order.status === "PAID" && item.delivery?.emailError &&
+                  <p className="mt-2 text-sm text-muted-foreground">Delivery email is pending. Contact the studio if you need help.</p>}
                 {files.length > 0 && (
                   <ul className="mt-4 grid gap-2 sm:grid-cols-2 print:hidden">
                     {files.map((f) => (

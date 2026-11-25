@@ -3,7 +3,8 @@ import { createHash } from "node:crypto";
 import type { Order, Prisma, PrismaClient } from "@prisma/client";
 import type Stripe from "stripe";
 import { db } from "@/lib/db";
-import { evaluateCoupon, getCart } from "@/lib/cart";
+import { gcashEligible } from "@/lib/checkout-methods";
+import { evaluateCoupon, getCart, tierRank } from "@/lib/cart";
 import { siteUrl } from "@/lib/email";
 import { capturePurchase, isPurchaseTemplate } from "@/lib/personalization/purchases";
 
@@ -19,6 +20,7 @@ export async function prepareCheckout(
   client: PrismaClient = db,
   savedDraftTemplates: readonly string[] = [],
   imageRightsConfirmed = false,
+  options?: { method: "STRIPE" | "GCASH"; gcashReady: boolean; deliveryEmail?: string },
 ) {
   // Serializable isolation captures content/images consistently and detects stale
   // coupon-capacity reads after waiting for a competing transaction's locks.
@@ -39,6 +41,14 @@ export async function prepareCheckout(
       where: { userId_key: { userId, key: requestKey } }, include: { order: true },
     });
     if (previous) return previous.order;
+    const method = options?.method ?? "STRIPE";
+    const deliveryEmail = options?.deliveryEmail ?? account.email.toLowerCase();
+    if (deliveryEmail !== account.email.toLowerCase()) {
+      const verified = await tx.checkoutDeliveryVerification.findUnique({ where: { userId } });
+      if (verified?.email !== deliveryEmail || !verified.verifiedAt || verified.expiresAt <= new Date()) {
+        throw new CheckoutError("Verify your delivery email before checking out.", 400);
+      }
+    }
     if (savedDraftTemplates.length && !imageRightsConfirmed) throw new CheckoutError("Confirm you have permission to use the uploaded photos before checkout.", 400);
 
     // Key includes cart item ids, so a later intentional repurchase gets a new order.
@@ -77,8 +87,15 @@ export async function prepareCheckout(
       })).digest("hex");
     const existing = await tx.order.findUnique({ where: { checkoutKey } });
     if (existing) {
+      if (options && existing.status === "PENDING" && (existing.paymentMethod !== method && existing.totalCents > 0
+        || (existing.deliveryEmail ?? account.email.toLowerCase()) !== deliveryEmail)) {
+        throw new CheckoutError("Close your pending checkout before changing payment method or delivery email.");
+      }
       await tx.checkoutRequest.create({ data: { userId, key: requestKey, orderId: existing.id } });
       return existing;
+    }
+    if (options && await tx.order.findFirst({ where: { userId, status: "PENDING" }, select: { id: true } })) {
+      throw new CheckoutError("Close your pending checkout before starting a new one.");
     }
 
     if (code) {
@@ -98,22 +115,42 @@ export async function prepareCheckout(
         throw new CheckoutError("That code is currently fully used or reserved by another checkout.");
       }
     }
-    if (cart.totalCents > 0 && !stripeReady) throw new CheckoutError("Online payments aren't set up yet.", 503);
-    if (cart.totalCents > 0 && cart.totalCents < 2000) {
+    if (cart.totalCents > 0 && !(method === "GCASH" ? options?.gcashReady : stripeReady)) {
+      throw new CheckoutError("That payment method is unavailable.", 503);
+    }
+    if (cart.totalCents > 0 && method === "GCASH" && !gcashEligible(cart.totalCents, cart.currency)) {
+      throw new CheckoutError("This order total is outside the GCash payment limits.", 400);
+    }
+    if (cart.totalCents > 0 && method === "STRIPE" && cart.totalCents < 2000) {
       throw new CheckoutError("Order totals under ₱20 can't be paid online.", 400);
     }
     const expiresAt = new Date(Math.floor(Date.now() / 1000) * 1000 + 60 * 60_000);
+    const legacySources = new Map<string, string>();
+    if (options) {
+      for (const line of cart.lines) {
+        if (purchases.has(line.design.slug)) continue;
+        const files = await tx.deliverableFile.findMany({ where: { designId: line.design.id },
+          select: { storageKey: true, minTier: { select: { level: true } } }, orderBy: { id: "asc" } });
+        const source = files.find(file => /-source\.zip$/i.test(file.storageKey)
+          && (!file.minTier || tierRank(file.minTier.level) <= tierRank(line.tier.level)));
+        if (!source) throw new CheckoutError(`The ${line.design.title} project ZIP is unavailable. Please contact the studio before paying.`);
+        legacySources.set(line.design.id, source.storageKey);
+      }
+    }
     const order = await tx.order.create({
       data: {
-        userId, checkoutKey, checkoutExpiresAt: expiresAt,
+        userId, checkoutKey, checkoutExpiresAt: expiresAt, deliveryEmail,
+        paymentMethod: cart.totalCents === 0 ? "FREE" : method,
         couponReserved: Boolean(cart.coupon), couponCode: cart.coupon?.code,
         subtotalCents: cart.subtotalCents, discountCents: cart.discountCents,
         totalCents: cart.totalCents, currency: cart.currency, billing,
         items: { create: cart.lines.map((line) => {
           const purchase = purchases.get(line.design.slug);
+          const legacySource = legacySources.get(line.design.id);
           return {
             designId: line.design.id, tierId: line.tier.id, designTitle: line.design.title,
             tierName: line.tier.label, priceCents: line.lineCents, addons: line.addons,
+            deploymentRequired: line.addons.some(addon => addon.name === "Hosting setup" && addon.priceCents > 0),
             ...(purchase ? { personalization: { create: {
               template: purchase.snapshot.template, content: purchase.snapshot.content,
               heroImage: purchase.snapshot.heroImage ? Uint8Array.from(purchase.snapshot.heroImage) : null,
@@ -121,13 +158,15 @@ export async function prepareCheckout(
               snapshotSha256: purchase.digest, mode: purchase.mode,
               imageRightsConfirmedAt: purchase.mode === "SAVED_DRAFT" ? new Date() : null,
               images: { create: purchase.snapshot.images.map(({ slot, image }) => ({ slot, image: Uint8Array.from(image) })) },
-            } }, delivery: { create: {} } } : {}),
+            } }, delivery: { create: {} } } : legacySource ? {
+              delivery: { create: { legacyStorageKey: legacySource, nextAt: null } },
+            } : {}),
           };
         }) },
       },
     });
     const parameters: Stripe.Checkout.SessionCreateParams = {
-      mode: "payment", client_reference_id: order.id, customer_email: account.email,
+      mode: "payment", allowed_payment_method_types: ["card"], client_reference_id: order.id, customer_email: account.email,
       metadata: { orderId: order.id, userId },
       payment_intent_data: { metadata: { orderId: order.id } },
       expires_at: Math.floor(expiresAt.getTime() / 1000),
@@ -145,8 +184,18 @@ export async function prepareCheckout(
       success_url: siteUrl("/checkout/success?session_id={CHECKOUT_SESSION_ID}"),
       cancel_url: siteUrl("/checkout?canceled=1"),
     };
+    const payMongoParameters = {
+      data: { attributes: {
+        reference_number: order.id, metadata: { orderId: order.id, userId },
+        line_items: [{ name: `Baybloom Studio order #${order.id.slice(-8).toUpperCase()}`, quantity: 1,
+          amount: cart.totalCents, currency: cart.currency.toUpperCase() }],
+        payment_method_types: ["gcash"], send_email_receipt: false, pass_on_fees: false,
+        success_url: siteUrl(`/checkout/success?order=${order.id}`), cancel_url: siteUrl("/checkout?canceled=1"),
+      } },
+    };
     const saved = await tx.order.update({
-      where: { id: order.id }, data: { checkoutParameters: parameters as Prisma.InputJsonValue },
+      where: { id: order.id },
+      data: { checkoutParameters: (method === "GCASH" && cart.totalCents > 0 ? payMongoParameters : parameters) as Prisma.InputJsonValue },
     });
     await tx.checkoutRequest.create({ data: { userId, key: requestKey, orderId: order.id } });
     return saved;
