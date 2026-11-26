@@ -6,6 +6,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
+import studioCollection from "../src/lib/studio-collection.json" with { type: "json" };
 
 /** Backdrop per template, picked from its palette so neighbouring cards differ. */
 const BACKDROP = {
@@ -17,6 +18,11 @@ const BACKDROP = {
   "harbor-house": "#f5d56e",
   "pine-ridge-lodge": "#c7802f",
   "lumen-lake-villas": "#dfe8ee",
+  "roast-row": "#183c9b",
+  "sunday-table": "#982e28",
+  barkadas: "#294f3e",
+  "the-atrium": "#594237",
+  ...Object.fromEntries(studioCollection.map(({ slug, color }) => [slug, color])),
 };
 
 const W = 1600;

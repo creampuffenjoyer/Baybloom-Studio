@@ -6,8 +6,10 @@ import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "playwright-core";
 import sharp from "sharp";
+import studioCollection from "../src/lib/studio-collection.json" with { type: "json" };
 
 const BASE = process.env.CAPTURE_BASE ?? "http://localhost:3000";
+const atriumWedding = "?event=wedding&guests=115&backup=1&stages=ceremony%3Aglasshouse%2Creception%3Acourt%2Cdinner%3Aglasshouse";
 
 /** Pages to capture per template; the first is the hero image. */
 const PAGES = {
@@ -19,6 +21,11 @@ const PAGES = {
   "harbor-house": [["", "Home page"], ["/rooms", "Rooms as postcards"], ["/guide", "Local guide"], ["/book", "Booking flow"]],
   "pine-ridge-lodge": [["", "Home page"], ["/rooms/ridge-chalet", "Room page"], ["/activities", "Seasonal activities"], ["/book", "Booking flow"]],
   "lumen-lake-villas": [["", "Home page"], ["/villas", "Villa comparison"], ["/tour", "Virtual tour"], ["/experiences", "Experiences page"]],
+  "roast-row": [["", "Home page"], ["/menu?branch=cubao", "Branch menu"], ["/pickup?branch=cubao&order=flat-white%3A2%2Ccroissant%3A1", "Pickup bag"], ["/visit", "Locations"], ["/coffee", "Coffee finder"], ["/workshops", "Workshops"]],
+  "sunday-table": [["", "Home page"], ["/menu", "Family menu"], ["/catering?guests=24", "Catering planner"], ["/visit", "Visit and table request"], ["/gatherings", "Gatherings"], ["/kitchen", "Our kitchen"]],
+  barkadas: [["", "Home page"], ["/stays", "Stay options"], ["/plan?stay=whole-house&guests=6&cars=2&beds=individual", "Stay planner"], ["/guide", "Guest guide"], ["/gallery", "Photo gallery"], ["/weekend", "Weekend planner"]],
+  "the-atrium": [["", "Home page"], ["/tour", "Daylight tour"], ["/spaces", "Venue spaces"], ["/events", "Event styles"], [`/plan${atriumWedding}`, "Layout planner", null, 1200], ["/gallery", "Photo gallery"], [`/inquire${atriumWedding}`, "Venue inquiry"], ["/tour", "After-dark tour", "night"], ["/tour?view=compare", "Compare venue lighting", "day", 1040]],
+  ...Object.fromEntries(studioCollection.map(({ slug, captures }) => [slug, [["", "Home page"], ...captures]])),
 };
 
 const only = process.argv.slice(2);
@@ -26,6 +33,9 @@ const titles = {
   "coral-cove": "Coral Cove", "ember-and-salt": "Ember & Salt", "still-water-spa": "Still Water",
   "bloomfield-gardens": "Bloomfield Gardens", "isla-verde-boutique": "Isla Verde", "harbor-house": "Harbor House",
   "pine-ridge-lodge": "Pine Ridge Lodge", "lumen-lake-villas": "Lumen Lake Villas",
+  "roast-row": "Roast Row", "sunday-table": "Sunday Table", barkadas: "Barkadas",
+  "the-atrium": "The Atrium",
+  ...Object.fromEntries(studioCollection.map(({ slug, title }) => [slug, title])),
 };
 
 const hideChrome = () => {
@@ -55,7 +65,9 @@ const mPage = await mobile.newPage();
 
 for (const [slug, pages] of Object.entries(PAGES)) {
   if (only.length && !only.includes(slug)) continue;
-  const dir = path.join("public", "images", "designs", slug);
+  const catalogDir = path.resolve("public", "images", "designs");
+  const dir = path.resolve(catalogDir, slug);
+  if (path.dirname(dir) !== catalogDir) throw new Error(`Invalid catalog screenshot directory for ${slug}`);
   await rm(dir, { recursive: true, force: true });
   await mkdir(path.join(dir, "thumbs"), { recursive: true });
   const credits = [];
@@ -78,9 +90,18 @@ for (const [slug, pages] of Object.entries(PAGES)) {
     });
   };
 
-  for (const [i, [p, label]] of pages.entries()) {
-    await dPage.goto(`${BASE}/demo/${slug}${p}`, { waitUntil: "networkidle" });
+  for (const [i, [p, label, lighting, height = 900]] of pages.entries()) {
+    await dPage.setViewportSize({ width: 1440, height });
+    if (lighting === "day") await dPage.evaluate(() => sessionStorage.setItem("atrium-mode", "day"));
+    const url = new URL(`/demo/${slug}${p}`, BASE);
+    const fragment = url.hash;
+    url.hash = "";
+    const response = await dPage.goto(url.href, { waitUntil: "networkidle" });
+    if (!response?.ok()) throw new Error(`Could not capture ${url.pathname}${fragment}: ${response?.status()}`);
+    if (lighting === "night") await dPage.getByRole("group", { name: "Tour lighting" }).getByRole("button", { name: "After dark" }).click();
+    if (p === "/social") await dPage.getByRole("button", { name: /^Download/ }).first().click({ trial: true });
     await settle(dPage);
+    if (fragment) await dPage.locator(fragment).evaluate((element) => element.scrollIntoView({ behavior: "instant" }));
     const png = await dPage.screenshot();
     await save(png, `${String(i).padStart(2, "0")}-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, `${titles[slug]} template: ${label.toLowerCase()} on desktop`, "SCREENSHOT", p);
   }

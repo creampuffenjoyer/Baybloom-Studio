@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "node --conditions=react-server --import tsx --test tests/commerce.test.mjs tests/security.test.mjs tests/reliability.test.mjs tests/harbor-translations.test.mjs tests/coral-cove.test.mjs tests/pine-ridge.test.mjs tests/isla-translations.test.mjs tests/harbor-personalization.test.mjs tests/personalization-image.test.mjs tests/personalization-origin.test.mjs tests/personalization-test-runner.test.mjs tests/personalization-package.test.mjs tests/coral-photo-placements.test.mjs tests/harbor-photo-placements.test.mjs tests/purchase-delivery.test.mjs tests/photo-rollout.test.mjs tests/web-security.test.mjs tests/breached-passwords.test.mjs tests/mfa.test.mjs tests/workspace-run.test.mjs",
+    "test": "node --conditions=react-server --import tsx --test tests/membership.test.mjs tests/commerce.test.mjs tests/security.test.mjs tests/reliability.test.mjs tests/harbor-translations.test.mjs tests/coral-cove.test.mjs tests/pine-ridge.test.mjs tests/isla-translations.test.mjs tests/harbor-personalization.test.mjs tests/personalization-image.test.mjs tests/personalization-origin.test.mjs tests/personalization-test-runner.test.mjs tests/personalization-package.test.mjs tests/coral-photo-placements.test.mjs tests/harbor-photo-placements.test.mjs tests/purchase-delivery.test.mjs tests/photo-rollout.test.mjs tests/web-security.test.mjs tests/breached-passwords.test.mjs tests/mfa.test.mjs tests/workspace-run.test.mjs",
     "test:security:e2e": "node --test tests/web-security.browser.mjs",
     "test:storage": "node scripts/test-photo-quota.mjs",
     "test:purchase:e2e": "node --conditions=react-server --import tsx --test tests/purchase-delivery.browser.mjs",

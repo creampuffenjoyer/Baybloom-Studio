@@ -19,7 +19,7 @@ export function MobileNav({ items }: { items: readonly { href: string; label: st
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="size-11 xl:hidden" aria-label="Open menu">
+        <Button variant="ghost" size="icon" className="size-11 min-[1440px]:hidden" aria-label="Open menu">
           <MenuIcon aria-hidden className="size-5" />
         </Button>
       </SheetTrigger>
@@ -28,7 +28,7 @@ export function MobileNav({ items }: { items: readonly { href: string; label: st
           <SheetTitle>
             <Logo className="text-sm" />
           </SheetTitle>
-          <SheetDescription className="mt-2 text-left">Find a website for your kind of hospitality.</SheetDescription>
+          <SheetDescription className="mt-2 text-left">Browse website templates by industry.</SheetDescription>
         </SheetHeader>
         <nav aria-label="Mobile" className="flex flex-col gap-1 px-4 py-2">
           {items.map((i) => (

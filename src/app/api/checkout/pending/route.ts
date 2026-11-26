@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { rateLimit } from "@/lib/rate-limit";
 import { guardBrowserWrite, privateResponseHeaders, readJsonBody } from "@/lib/request-security";
 import { getCurrentUser } from "@/lib/session";
+import { onlineCheckoutEnabled } from "@/lib/online-checkout";
+import { STUDIO_EMAIL } from "@/lib/checkout-methods";
 
 const input = z.strictObject({ orderId: z.string().min(1).max(128), action: z.enum(["resume", "close"]) });
 
@@ -18,6 +20,9 @@ export async function POST(request: Request) {
   if (!body.ok) return body.response;
   const parsed = input.safeParse(body.value);
   if (!parsed.success) return respond({ error: "Choose a pending checkout." }, 400);
+  if (parsed.data.action === "resume" && !onlineCheckoutEnabled()) {
+    return respond({ error: `Stripe and GCash payments are still in development. Email ${STUDIO_EMAIL} to proceed.` }, 503);
+  }
   try {
     if (!(await rateLimit(`checkout-pending:${user.id}`, 10, 10 * 60_000)).ok) return respond({ error: "Please wait before retrying." }, 429);
     const order = await db.order.findFirst({ where: { id: parsed.data.orderId, userId: user.id } });

@@ -96,15 +96,16 @@ const GUIDES: Record<TierLevel, (title: string) => { name: string; lines: string
  * Every tier gets the template's source code (built by `npm run templates:pack`)
  * plus the guide for its level.
  */
-async function seedDeliverables(designId: string, slug: string, title: string) {
+async function seedDeliverables(designId: string, slug: string, title: string, sourceOnly = false) {
   const tiers = await db.tier.findMany({ where: { designId }, select: { id: true, level: true } });
-  await db.deliverableFile.deleteMany({ where: { designId } });
   const dir = path.join(process.cwd(), "storage", "deliverables", slug);
   await mkdir(dir, { recursive: true });
 
   const lowest = tiers.sort((a, b) => TIER_ORDER.indexOf(a.level) - TIER_ORDER.indexOf(b.level))[0];
   const zipName = `${slug}-source.zip`;
   const zip = await stat(path.join(dir, zipName)).catch(() => null);
+  if (sourceOnly && !zip?.isFile()) throw new Error(`Missing source archive for ${slug}`);
+  await db.deliverableFile.deleteMany({ where: { designId } });
   if (lowest && zip) {
     await db.deliverableFile.create({
       data: {
@@ -118,6 +119,8 @@ async function seedDeliverables(designId: string, slug: string, title: string) {
   } else if (!zip) {
     console.warn(`  ! No ${zipName} yet; run npm run templates:pack before seeding`);
   }
+
+  if (sourceOnly) return;
 
   for (const tier of tiers) {
     const { name, lines } = GUIDES[tier.level](title);
@@ -184,6 +187,10 @@ async function main() {
     const credits = await readCredits(d.slug);
     if (!credits?.length) {
       console.warn(`! Skipped ${d.title}: no catalog images in public/images/designs/${d.slug}`);
+      continue;
+    }
+    if (d.sourceOnly && !(await stat(path.join(process.cwd(), "storage", "deliverables", d.slug, `${d.slug}-source.zip`)).catch(() => null))?.isFile()) {
+      console.warn(`! Skipped ${d.title}: pack its source archive before seeding`);
       continue;
     }
     const hero = credits.find((c) => c.role === "cover") ?? credits[0];
@@ -264,7 +271,7 @@ async function main() {
         })),
       }),
     ]);
-    await seedDeliverables(design.id, d.slug, d.title);
+    await seedDeliverables(design.id, d.slug, d.title, d.sourceOnly);
     console.log(`✓ ${d.title} (${gallery.length} images, ${d.tiers.length} tiers)`);
   }
 

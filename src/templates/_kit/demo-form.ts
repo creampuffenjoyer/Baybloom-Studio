@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 
+export function todayInManila() {
+  return new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Manila" });
+}
+
 /**
  * Form state for the demo. Submissions wait briefly and succeed without
  * sending anything. In a real deployment, replace `send` with a call to your

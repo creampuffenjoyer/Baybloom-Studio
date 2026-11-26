@@ -1,0 +1,95 @@
+{
+  "look": {
+    "src": "/templates/quiet-form/look.webp",
+    "alt": "Oat linen shirt and olive trousers worn against a raw plaster wall",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null,
+    "position": "50% 42%"
+  },
+  "shirt": {
+    "src": "/templates/quiet-form/shirt.webp",
+    "alt": "Oat linen button-front shirt against a warm gray backdrop",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null,
+    "position": "50% 47%"
+  },
+  "tote": {
+    "src": "/templates/quiet-form/tote.webp",
+    "alt": "Bone cotton canvas tote on a pale stone backdrop",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "knit": {
+    "src": "/templates/quiet-form/knit.webp",
+    "alt": "Folded slate-blue cotton knit showing the rib texture",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "campaign": {
+    "src": "/templates/quiet-form/campaign.webp",
+    "alt": "Model in oatmeal linen and olive trousers leaning beside a pale stone table with folded slate knitwear.",
+    "width": 1827,
+    "height": 861,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null,
+    "position": "70% 48%"
+  },
+  "trouser": {
+    "src": "/templates/quiet-form/trouser.webp",
+    "alt": "Folded deep olive linen trousers on pale limestone.",
+    "width": 627,
+    "height": 627,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "scarf": {
+    "src": "/templates/quiet-form/scarf.webp",
+    "alt": "Undyed linen scarf hanging from a wooden peg.",
+    "width": 627,
+    "height": 627,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "belt": {
+    "src": "/templates/quiet-form/belt.webp",
+    "alt": "Coiled walnut leather belt with a brass buckle on limestone.",
+    "width": 627,
+    "height": 627,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "jacket": {
+    "src": "/templates/quiet-form/jacket.webp",
+    "alt": "Oatmeal linen jacket with a rolled cuff and patch pockets.",
+    "width": 627,
+    "height": 627,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  }
+}

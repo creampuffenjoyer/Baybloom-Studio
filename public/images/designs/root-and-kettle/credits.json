@@ -1,0 +1,87 @@
+[
+  {
+    "role": "cover",
+    "file": "/images/designs/root-and-kettle/cover.webp",
+    "thumb": "/images/designs/root-and-kettle/thumbs/cover.webp",
+    "alt": "Root & Kettle template shown on a laptop and a phone",
+    "kind": "MOCKUP",
+    "width": 1600,
+    "height": 1200,
+    "author": "",
+    "source": "/demo/root-and-kettle",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/root-and-kettle/00-home-page.webp",
+    "thumb": "/images/designs/root-and-kettle/thumbs/00-home-page.webp",
+    "alt": "Root & Kettle template: home page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/root-and-kettle",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/root-and-kettle/01-kitchen-and-brew-menus.webp",
+    "thumb": "/images/designs/root-and-kettle/thumbs/01-kitchen-and-brew-menus.webp",
+    "alt": "Root & Kettle template: kitchen and brew menus on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/root-and-kettle#menu",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/root-and-kettle/02-social-kit.webp",
+    "thumb": "/images/designs/root-and-kettle/thumbs/02-social-kit.webp",
+    "alt": "Root & Kettle template: social kit on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/root-and-kettle/social",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/root-and-kettle/03-table-request.webp",
+    "thumb": "/images/designs/root-and-kettle/thumbs/03-table-request.webp",
+    "alt": "Root & Kettle template: table request on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/root-and-kettle#request",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/root-and-kettle/04-counter-pairings.webp",
+    "thumb": "/images/designs/root-and-kettle/thumbs/04-counter-pairings.webp",
+    "alt": "Root & Kettle template: counter pairings on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/root-and-kettle/pairings",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/root-and-kettle/90-mobile-home.webp",
+    "thumb": "/images/designs/root-and-kettle/thumbs/90-mobile-home.webp",
+    "alt": "Root & Kettle template: home page on a phone",
+    "kind": "MOCKUP",
+    "width": 780,
+    "height": 1688,
+    "author": "",
+    "source": "/demo/root-and-kettle",
+    "license": "",
+    "licenseUrl": null
+  }
+]

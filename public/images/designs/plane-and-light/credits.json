@@ -1,0 +1,87 @@
+[
+  {
+    "role": "cover",
+    "file": "/images/designs/plane-and-light/cover.webp",
+    "thumb": "/images/designs/plane-and-light/thumbs/cover.webp",
+    "alt": "Plane & Light template shown on a laptop and a phone",
+    "kind": "MOCKUP",
+    "width": 1600,
+    "height": 1200,
+    "author": "",
+    "source": "/demo/plane-and-light",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/plane-and-light/00-home-page.webp",
+    "thumb": "/images/designs/plane-and-light/thumbs/00-home-page.webp",
+    "alt": "Plane & Light template: home page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/plane-and-light",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/plane-and-light/01-photography-portfolio.webp",
+    "thumb": "/images/designs/plane-and-light/thumbs/01-photography-portfolio.webp",
+    "alt": "Plane & Light template: photography portfolio on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/plane-and-light#work",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/plane-and-light/02-studio-profile.webp",
+    "thumb": "/images/designs/plane-and-light/thumbs/02-studio-profile.webp",
+    "alt": "Plane & Light template: studio profile on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/plane-and-light#studio",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/plane-and-light/03-commission-inquiry.webp",
+    "thumb": "/images/designs/plane-and-light/thumbs/03-commission-inquiry.webp",
+    "alt": "Plane & Light template: commission inquiry on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/plane-and-light#request",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/plane-and-light/04-contact-sheet.webp",
+    "thumb": "/images/designs/plane-and-light/thumbs/04-contact-sheet.webp",
+    "alt": "Plane & Light template: contact sheet on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/plane-and-light/contact-sheet",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/plane-and-light/90-mobile-home.webp",
+    "thumb": "/images/designs/plane-and-light/thumbs/90-mobile-home.webp",
+    "alt": "Plane & Light template: home page on a phone",
+    "kind": "MOCKUP",
+    "width": 780,
+    "height": 1688,
+    "author": "",
+    "source": "/demo/plane-and-light",
+    "license": "",
+    "licenseUrl": null
+  }
+]

@@ -1,0 +1,44 @@
+{
+  "spread": {
+    "src": "/templates/root-and-kettle/spread.webp",
+    "alt": "Plant-based lunch spread with seasonal vegetables and herbs",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null,
+    "position": "50% 57%"
+  },
+  "squash": {
+    "src": "/templates/root-and-kettle/squash.webp",
+    "alt": "Charred squash and green lentils on a shallow ceramic plate",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "coffee": {
+    "src": "/templates/root-and-kettle/coffee.webp",
+    "alt": "Fluted glass of iced coffee next to a pour-over carafe",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null,
+    "position": "50% 55%"
+  },
+  "matcha": {
+    "src": "/templates/root-and-kettle/matcha.webp",
+    "alt": "Iced matcha, fresh mint and a ceramic whisking bowl",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  }
+}

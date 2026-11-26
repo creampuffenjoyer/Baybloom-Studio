@@ -61,4 +61,4 @@ async function putPhoto(request: Request) {
   return Response.json({ updatedAt: saved.updatedAt }, { headers });
 }
 
-export const PUT = withVerifiedStorageWrite(putPhoto);
+export const PUT = withVerifiedStorageWrite("harbor-house", putPhoto);

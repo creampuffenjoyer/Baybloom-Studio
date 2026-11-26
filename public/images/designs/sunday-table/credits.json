@@ -1,0 +1,99 @@
+[
+  {
+    "role": "cover",
+    "file": "/images/designs/sunday-table/cover.webp",
+    "thumb": "/images/designs/sunday-table/thumbs/cover.webp",
+    "alt": "Sunday Table template shown on a laptop and a phone",
+    "kind": "MOCKUP",
+    "width": 1600,
+    "height": 1200,
+    "author": "",
+    "source": "/demo/sunday-table",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/sunday-table/00-home-page.webp",
+    "thumb": "/images/designs/sunday-table/thumbs/00-home-page.webp",
+    "alt": "Sunday Table template: home page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/sunday-table",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/sunday-table/01-family-menu.webp",
+    "thumb": "/images/designs/sunday-table/thumbs/01-family-menu.webp",
+    "alt": "Sunday Table template: family menu on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/sunday-table/menu",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/sunday-table/02-catering-planner.webp",
+    "thumb": "/images/designs/sunday-table/thumbs/02-catering-planner.webp",
+    "alt": "Sunday Table template: catering planner on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/sunday-table/catering?guests=24",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/sunday-table/03-visit-and-table-request.webp",
+    "thumb": "/images/designs/sunday-table/thumbs/03-visit-and-table-request.webp",
+    "alt": "Sunday Table template: visit and table request on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/sunday-table/visit",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/sunday-table/04-gatherings.webp",
+    "thumb": "/images/designs/sunday-table/thumbs/04-gatherings.webp",
+    "alt": "Sunday Table template: gatherings on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/sunday-table/gatherings",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/sunday-table/05-our-kitchen.webp",
+    "thumb": "/images/designs/sunday-table/thumbs/05-our-kitchen.webp",
+    "alt": "Sunday Table template: our kitchen on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/sunday-table/kitchen",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/sunday-table/90-mobile-home.webp",
+    "thumb": "/images/designs/sunday-table/thumbs/90-mobile-home.webp",
+    "alt": "Sunday Table template: home page on a phone",
+    "kind": "MOCKUP",
+    "width": 780,
+    "height": 1688,
+    "author": "",
+    "source": "/demo/sunday-table",
+    "license": "",
+    "licenseUrl": null
+  }
+]

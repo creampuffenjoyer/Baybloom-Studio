@@ -19,11 +19,11 @@ const body = Manrope({
 export const metadata: Metadata = {
   metadataBase: new URL(publicSiteOrigin()),
   title: {
-    default: "Baybloom Studio · Websites for hospitality brands that bloom",
+    default: "Baybloom Studio · Website templates for independent businesses",
     template: "%s · Baybloom Studio",
   },
   description:
-    "Ready-made website templates for resorts, hotels, restaurants, spas and event venues. Try every live demo, sign in to see pricing, and buy online.",
+    "Browse responsive templates for resorts, hotels and rentals, restaurants and cafés, wellness, events, creative studios and fashion. Explore live desktop and mobile demos.",
   openGraph: {
     type: "website",
     siteName: "Baybloom Studio",

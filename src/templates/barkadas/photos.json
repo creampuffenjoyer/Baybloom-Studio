@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "src": "/templates/barkadas/hero.webp",
+    "alt": "A timber-trimmed guesthouse and shaded veranda around a tropical courtyard",
+    "width": 1500,
+    "height": 1000,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "detail": {
+    "src": "/templates/barkadas/detail.webp",
+    "alt": "Two beds with rattan headboards beside a leafy window",
+    "width": 1440,
+    "height": 960,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "evening": {
+    "src": "/templates/barkadas/evening.webp",
+    "alt": "A long table under the veranda of a tropical guesthouse at dusk",
+    "width": 1400,
+    "height": 933,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "upstairs": {
+    "src": "/templates/barkadas/upstairs.webp",
+    "alt": "Queen and single beds in an upstairs room with a tropical view",
+    "width": 1450,
+    "height": 967,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "ridge": {
+    "src": "/templates/barkadas/ridge.webp",
+    "alt": "A leafy path overlooking a misty ridge in the Tagaytay highlands",
+    "width": 1450,
+    "height": 967,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  }
+}

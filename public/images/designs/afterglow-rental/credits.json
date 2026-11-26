@@ -1,0 +1,87 @@
+[
+  {
+    "role": "cover",
+    "file": "/images/designs/afterglow-rental/cover.webp",
+    "thumb": "/images/designs/afterglow-rental/thumbs/cover.webp",
+    "alt": "Afterglow Rental template shown on a laptop and a phone",
+    "kind": "MOCKUP",
+    "width": 1600,
+    "height": 1200,
+    "author": "",
+    "source": "/demo/afterglow-rental",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/afterglow-rental/00-home-page.webp",
+    "thumb": "/images/designs/afterglow-rental/thumbs/00-home-page.webp",
+    "alt": "Afterglow Rental template: home page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/afterglow-rental",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/afterglow-rental/01-service-grid.webp",
+    "thumb": "/images/designs/afterglow-rental/thumbs/01-service-grid.webp",
+    "alt": "Afterglow Rental template: service grid on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/afterglow-rental#services",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/afterglow-rental/02-pricing-packages.webp",
+    "thumb": "/images/designs/afterglow-rental/thumbs/02-pricing-packages.webp",
+    "alt": "Afterglow Rental template: pricing packages on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/afterglow-rental#packages",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/afterglow-rental/03-quote-request.webp",
+    "thumb": "/images/designs/afterglow-rental/thumbs/03-quote-request.webp",
+    "alt": "Afterglow Rental template: quote request on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/afterglow-rental#request",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/afterglow-rental/04-evening-cue-sheet.webp",
+    "thumb": "/images/designs/afterglow-rental/thumbs/04-evening-cue-sheet.webp",
+    "alt": "Afterglow Rental template: evening cue sheet on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/afterglow-rental/cue-sheet",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/afterglow-rental/90-mobile-home.webp",
+    "thumb": "/images/designs/afterglow-rental/thumbs/90-mobile-home.webp",
+    "alt": "Afterglow Rental template: home page on a phone",
+    "kind": "MOCKUP",
+    "width": 780,
+    "height": 1688,
+    "author": "",
+    "source": "/demo/afterglow-rental",
+    "license": "",
+    "licenseUrl": null
+  }
+]

@@ -55,5 +55,5 @@ async function write(request: Request, { params }: Context, remove: boolean) {
   if (result.status === "full") return Response.json({ error: "Your saved photos exceed the 100 MB limit. Restore an unused photo and try again." }, { status: 413, headers });
   return Response.json(result.status === "saved" ? { updatedAt: result.updatedAt } : { removed: true }, { headers });
 }
-export const PUT = withVerifiedStorageWrite((request: Request, context: Context) => write(request, context, false));
+export const PUT = withVerifiedStorageWrite("harbor-house", (request: Request, context: Context) => write(request, context, false));
 export const DELETE = (request: Request, context: Context) => write(request, context, true);

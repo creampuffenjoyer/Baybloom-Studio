@@ -1,0 +1,87 @@
+[
+  {
+    "role": "cover",
+    "file": "/images/designs/quiet-form/cover.webp",
+    "thumb": "/images/designs/quiet-form/thumbs/cover.webp",
+    "alt": "Quiet Form template shown on a laptop and a phone",
+    "kind": "MOCKUP",
+    "width": 1600,
+    "height": 1200,
+    "author": "",
+    "source": "/demo/quiet-form",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/quiet-form/00-home-page.webp",
+    "thumb": "/images/designs/quiet-form/thumbs/00-home-page.webp",
+    "alt": "Quiet Form template: home page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/quiet-form",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/quiet-form/01-product-collection.webp",
+    "thumb": "/images/designs/quiet-form/thumbs/01-product-collection.webp",
+    "alt": "Quiet Form template: product collection on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/quiet-form#collection",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/quiet-form/02-lookbook.webp",
+    "thumb": "/images/designs/quiet-form/thumbs/02-lookbook.webp",
+    "alt": "Quiet Form template: lookbook on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/quiet-form#lookbook",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/quiet-form/03-affiliate-disclosure.webp",
+    "thumb": "/images/designs/quiet-form/thumbs/03-affiliate-disclosure.webp",
+    "alt": "Quiet Form template: affiliate disclosure on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/quiet-form#disclosure",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/quiet-form/04-fabric-library.webp",
+    "thumb": "/images/designs/quiet-form/thumbs/04-fabric-library.webp",
+    "alt": "Quiet Form template: fabric library on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/quiet-form/fabric-library",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/quiet-form/90-mobile-home.webp",
+    "thumb": "/images/designs/quiet-form/thumbs/90-mobile-home.webp",
+    "alt": "Quiet Form template: home page on a phone",
+    "kind": "MOCKUP",
+    "width": 780,
+    "height": 1688,
+    "author": "",
+    "source": "/demo/quiet-form",
+    "license": "",
+    "licenseUrl": null
+  }
+]

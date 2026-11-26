@@ -10,6 +10,8 @@ import { stripeConfigured } from "@/lib/stripe";
 import { checkoutChoiceSchema } from "@/lib/personalization/checkout-choice";
 import { guardBrowserWrite, readJsonBody, privateResponseHeaders } from "@/lib/request-security";
 import { gcashConfigured } from "@/lib/paymongo";
+import { onlineCheckoutEnabled } from "@/lib/online-checkout";
+import { STUDIO_EMAIL } from "@/lib/checkout-methods";
 import { deliveryEmailSchema } from "@/lib/delivery-credentials";
 
 const input = checkoutChoiceSchema.safeExtend({
@@ -22,6 +24,10 @@ export async function POST(request: Request) {
   if (rejected) return rejected;
   const user = await getCurrentUser();
   if (!user?.email) return Response.json({ error: "Please log in." }, { status: 401 });
+  if (!onlineCheckoutEnabled()) {
+    return Response.json({ error: `Stripe and GCash payments are still in development. Email ${STUDIO_EMAIL} to proceed.` },
+      { status: 503, headers: privateResponseHeaders });
+  }
   if (!(await rateLimit(`checkout:${user.id}`, 10, 10 * 60_000)).ok) {
     return Response.json({ error: "Too many checkout attempts. Please wait a few minutes." }, { status: 429 });
   }

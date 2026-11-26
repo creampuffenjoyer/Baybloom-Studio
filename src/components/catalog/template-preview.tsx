@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { BloomGuide } from "@/components/bloom-guide";
+import { BackToBaybloom } from "@/components/layout/back-to-baybloom";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -10,7 +11,7 @@ import { languageOf, localizedHref, type Language } from "@/templates/_kit/langu
 const DEFAULT_LANGUAGES: readonly [Language, ...Language[]] = ["en", "tl", "taglish"];
 const LANGUAGE_LABELS: Record<Language, string> = { en: "English", tl: "Tagalog", taglish: "Taglish" };
 
-export function TemplatePreview({ slug, title, base, pages, eventPrefix, seasonal = false, languages = DEFAULT_LANGUAGES, personalizeHref }: { slug: string; title: string; base: string; pages: readonly (readonly [string, string])[]; eventPrefix: string; seasonal?: boolean; languages?: readonly [Language, ...Language[]]; personalizeHref?: string }) {
+export function TemplatePreview({ slug, title, base, pages, eventPrefix, seasonal = false, languages = DEFAULT_LANGUAGES, personalizeHref, catalogPreview = false }: { slug: string; title: string; base: string; pages: readonly (readonly [string, string])[]; eventPrefix: string; seasonal?: boolean; languages?: readonly [Language, ...Language[]]; personalizeHref?: string; catalogPreview?: boolean }) {
   const allowedPage = (value: string | null) => pages.some(([p]) => p === value) ? value! : "";
   const params = useSearchParams();
   const [page, setPage] = useState(() => allowedPage(params.get("page")));
@@ -57,11 +58,16 @@ export function TemplatePreview({ slug, title, base, pages, eventPrefix, seasona
   return <main className="flex h-dvh flex-col overflow-hidden bg-[#e8e4dc] text-ink">
     <BloomGuide page="preview" slug={slug} canEdit={!!personalizeHref} suggestedPage={pages.find(([path]) => path)?.[1]} />
     <header className="shrink-0 border-b border-border bg-sand px-4 py-3 sm:px-6">
-      <div className="flex items-center justify-between gap-3">
-        <div><Link href={`/designs/${slug}`} className="text-xs underline underline-offset-4">Back to details</Link>
-          <h1 className="mt-1 font-serif text-xl text-bay">{title}</h1></div>
-        <div className="flex flex-wrap justify-end gap-2">{personalizeHref && <Link href={`${personalizeHref}#business-name`} data-bloom-target="preview-edit" className="rounded-full border border-bay px-4 py-3 text-sm font-semibold text-bay">Try my business name</Link>}
-        <Link href={`/designs/${slug}#tiers`} className="rounded-full bg-bay px-4 py-3 text-sm font-semibold text-white">View packages</Link></div>
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <BackToBaybloom />
+          <h1 className="font-serif text-xl text-bay">{title}</h1>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <Link href={catalogPreview ? "/designs" : `/designs/${slug}`} className="inline-flex min-h-11 items-center text-xs underline underline-offset-4">{catalogPreview ? "All templates" : "Back to details"}</Link>
+          {personalizeHref && <Link href={`${personalizeHref}#business-name`} data-bloom-target="preview-edit" className="rounded-full border border-bay px-4 py-3 text-sm font-semibold text-bay">Try my business name</Link>}
+          <Link href={`/membership#${slug}`} className="rounded-full bg-bay px-4 py-3 text-sm font-semibold text-white">Access template</Link>
+        </div>
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
         <label className="flex items-center gap-2">Explore

@@ -1,0 +1,99 @@
+[
+  {
+    "role": "cover",
+    "file": "/images/designs/common-room/cover.webp",
+    "thumb": "/images/designs/common-room/thumbs/cover.webp",
+    "alt": "Common Room template shown on a laptop and a phone",
+    "kind": "MOCKUP",
+    "width": 1600,
+    "height": 1200,
+    "author": "",
+    "source": "/demo/common-room",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/common-room/00-home-page.webp",
+    "thumb": "/images/designs/common-room/thumbs/00-home-page.webp",
+    "alt": "Common Room template: home page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/common-room",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/common-room/01-studio-options.webp",
+    "thumb": "/images/designs/common-room/thumbs/01-studio-options.webp",
+    "alt": "Common Room template: studio options on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/common-room#stays",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/common-room/02-shared-amenities.webp",
+    "thumb": "/images/designs/common-room/thumbs/02-shared-amenities.webp",
+    "alt": "Common Room template: shared amenities on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/common-room#amenities",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/common-room/03-property-gallery.webp",
+    "thumb": "/images/designs/common-room/thumbs/03-property-gallery.webp",
+    "alt": "Common Room template: property gallery on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/common-room#gallery",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/common-room/04-booking-request.webp",
+    "thumb": "/images/designs/common-room/thumbs/04-booking-request.webp",
+    "alt": "Common Room template: booking request on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/common-room#request",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/common-room/05-compare-studios.webp",
+    "thumb": "/images/designs/common-room/thumbs/05-compare-studios.webp",
+    "alt": "Common Room template: compare studios on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/common-room/room-finder",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/common-room/90-mobile-home.webp",
+    "thumb": "/images/designs/common-room/thumbs/90-mobile-home.webp",
+    "alt": "Common Room template: home page on a phone",
+    "kind": "MOCKUP",
+    "width": 780,
+    "height": 1688,
+    "author": "",
+    "source": "/demo/common-room",
+    "license": "",
+    "licenseUrl": null
+  }
+]

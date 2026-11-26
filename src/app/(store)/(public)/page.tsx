@@ -2,24 +2,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ArrowRightIcon, CalendarCheckIcon, CodeIcon, LayoutTemplateIcon, SmartphoneIcon } from "lucide-react";
-import { getCategoriesWithCovers, getFeaturedDesigns, getHomeStats, getPublishedSlugs } from "@/lib/catalog";
+import { getCatalogDirectory, getFeaturedDesigns } from "@/lib/catalog";
 import { Hero } from "@/components/home/hero";
 import { CardGridSkeleton, SessionCardGrid } from "@/components/catalog/card-grid";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/session";
-import { INDUSTRY_COVERS, SHOWCASE } from "@/lib/templates";
+import { INDUSTRY_COVERS, listedShowcase } from "@/lib/templates";
 import { cn } from "@/lib/utils";
 
 const INCLUDED = [
-  { icon: LayoutTemplateIcon, title: "Every page in the demo", text: "Home, rooms or menus, detail pages, gallery, story and contact." },
-  { icon: CalendarCheckIcon, title: "Booking layouts included", text: "Explore sample bookings, then connect your own reservation system." },
-  { icon: SmartphoneIcon, title: "Made for every screen", text: "Thoughtful layouts for guests browsing on phones, tablets and desktops." },
+  { icon: LayoutTemplateIcon, title: "Every page in the demo", text: "Your download includes the pages you see in the live preview." },
+  { icon: CalendarCheckIcon, title: "Built for your industry", text: "Try a stay planner, browse a lookbook or explore a photography portfolio." },
+  { icon: SmartphoneIcon, title: "Made for every screen", text: "Preview each design on phones, tablets and desktops." },
   { icon: CodeIcon, title: "The full source code", text: "Next.js and Tailwind CSS, with a setup guide and style guide." },
 ];
 
 const STEPS = [
-  { title: "Try the live demos", text: "Click through every page and run the booking flow, exactly as your guests will." },
+  { title: "Try the live demos", text: "Explore the menus, galleries, booking flows or product pages your visitors will use." },
   { title: "Log in for pricing", text: "A free account shows prices for each tier, plus favourites and side-by-side compare." },
   { title: "Make it your own", text: "Choose a tier and download your source. Add your content, connect your services and prepare to launch." },
 ];
@@ -27,7 +27,7 @@ const STEPS = [
 const FAQ = [
   {
     q: "Do I need a developer?",
-    a: "To change words, photos, prices and colours, no: they live in two plain files, and the setup guide walks you through them. To connect a booking engine or payment gateway, a developer will help, or choose the Premium tier and we set it up with you.",
+    a: "The setup guide shows where to edit text, colours and photos in your template. A developer can help if you want to change a workflow or connect a booking, payment or email service.",
   },
   {
     q: "Can I use my own booking engine?",
@@ -39,25 +39,30 @@ const FAQ = [
   },
   {
     q: "Can you customise it for me?",
-    a: "Yes. Every tier includes revision rounds, and add-ons cover custom branding, extra languages and hosting setup. Tell us what you need after checkout.",
+    a: "Open a template’s package details to see its included files, revision allowance and available add-ons. Customisation options vary by design and tier.",
   },
   {
     q: "Are the photos mine to use?",
-    a: "The demo photos are freely licensed samples with credits included. Most businesses replace them with their own photography before launch, which we recommend.",
+    a: "Each template includes image credits. Open its credits page to check the source and licence for each photograph or generated image.",
   },
 ];
 
 export default async function HomePage() {
-  const [featured, categories, stats, published] = await Promise.all([
+  const [featured, directory] = await Promise.all([
     getFeaturedDesigns(6),
-    getCategoriesWithCovers(),
-    getHomeStats(),
-    getPublishedSlugs(),
+    getCatalogDirectory(),
   ]);
+  const industries = new Map<string, (typeof directory)[number]["category"] & { count: number }>();
+  for (const { category } of directory) {
+    const group = industries.get(category.slug);
+    if (group) group.count += 1;
+    else industries.set(category.slug, { ...category, count: 1 });
+  }
+  const categories = [...industries.values()].sort((a, b) => a.position - b.position);
 
   return (
     <>
-      <Hero matches={SHOWCASE.filter(item => published.includes(item.slug))} templates={SHOWCASE} count={stats.designs} />
+      <Hero templates={listedShowcase(directory)} />
 
       {/* What's included */}
       <section aria-labelledby="included" className="bg-white/70">
@@ -93,7 +98,7 @@ export default async function HomePage() {
           </div>
           <Button asChild variant="ghost" className="h-11 rounded-lg text-bay">
             <Link href="/designs">
-              All {stats.designs} templates <ArrowRightIcon />
+              All {directory.length} templates <ArrowRightIcon />
             </Link>
           </Button>
         </Reveal>
@@ -108,9 +113,9 @@ export default async function HomePage() {
       <section className="container-page mt-16 sm:mt-24" aria-labelledby="industries">
         <Reveal className="max-w-2xl">
           <h2 id="industries" className="text-4xl font-medium sm:text-5xl">
-            From beach bar to ballroom
+            Browse by industry
           </h2>
-          <p className="mt-3 text-muted-foreground">Templates written for the way each kind of place takes bookings.</p>
+          <p className="mt-3 text-muted-foreground">Explore {categories.length} industries, from resorts and restaurants to creative studios and fashion labels.</p>
         </Reveal>
         <RevealGroup className="mt-8 grid auto-rows-[220px] gap-4 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4">
           {categories.map((c, i) => (
@@ -191,7 +196,7 @@ export default async function HomePage() {
       <section aria-labelledby="find-your-website" className="container-page mt-16 sm:mt-24">
         <div className="grid gap-8 border-t border-bay/20 py-12 sm:py-16 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-16">
           <h2 id="find-your-website" className="max-w-xl text-4xl leading-[1.1] font-medium text-balance sm:text-5xl">
-            A website for your kind of hospitality
+            Find a template for your business
           </h2>
           <Suspense fallback={<CtaActions signedIn={false} />}>
             <SessionCta />

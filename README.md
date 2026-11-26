@@ -19,7 +19,7 @@ cp .env.example .env        # fill in DATABASE_URL, DIRECT_URL, AUTH_SECRET
 npm install
 npm run db:deploy           # apply migrations (use db:migrate while changing the schema)
 npm run templates:pack      # build the source zips buyers download (storage/deliverables)
-npm run db:seed             # industries, features, add-ons, 8 templates with screenshots and files
+npm run db:seed             # industries, features, add-ons and 12 templates with screenshots and files
 npm run dev
 ```
 
@@ -64,7 +64,15 @@ on E:. The wrapper removes its own temporary folder after each run. See
 
 ## Payments and project delivery
 
+Orders use email while online payments are in development. When the payment providers are ready, set `ONLINE_CHECKOUT_ENABLED=true` in the app environment to restore self-service checkout.
+
 Customers can pay by card through Stripe or pay with GCash through PayMongo when enabled. To discuss a custom order, they can call +63 966 922 1451 or email baybloom.studios@gmail.com.
+
+### Account membership
+
+Customers can open `/membership` to browse their digital library. Regular accounts can use the curated free templates. Premium unlocks every template, supported editor and digital download for a single $10 USD card payment. Studio services are purchased separately.
+
+Configure `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and the public origin for the environment. Register `/api/webhooks/stripe` for `checkout.session.completed`, `checkout.session.expired` and `charge.refunded` to activate lifetime access and process full refunds. Use the test checkout below before enabling live keys. Production file storage must contain the template archives and guides under their catalog storage keys.
 
 ### Stripe test checkout
 
@@ -156,7 +164,9 @@ Audit Phase 2 adds a durable email worker, shared rate limits, cart recovery, st
 - Production: set `S3_ENDPOINT`, `S3_BUCKET`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` (and `S3_REGION`, `auto` for R2) to serve presigned URLs from a **private** bucket.
 - Development without S3: files live in `./storage` (git-ignored, written by the seed) and are served by `/api/files` only with a valid HMAC signature.
 
-All eight templates now have explicit original/saved-content purchase choices, retained source releases, immutable purchase snapshots and a leased package-delivery queue. Generated packages use private storage with purchaser-authorized links. Follow [template export Phase 2](docs/template-export-phase2.md) for migrations, reviewed release activation, S3 write access and maintenance, and [template export Phase 3](docs/template-export-phase3.md) for the six additional standalone exports and verification commands. Existing private deliverables are preserved.
+The original eight templates have explicit original/saved-content purchase choices, retained source releases, immutable purchase snapshots and a leased package-delivery queue. Generated packages use private storage with purchaser-authorized links. Follow [template export Phase 2](docs/template-export-phase2.md) for migrations, reviewed release activation, S3 write access and maintenance, and [template export Phase 3](docs/template-export-phase3.md) for the six additional standalone exports and verification commands.
+
+Roast Row, Sunday Table, Barkadas and The Atrium use the standalone Starter source download. Their setup and style guides are in the ZIP. For hosted releases, upload each packed ZIP to the private bucket at `deliverables/<slug>/<slug>-source.zip` before publishing the catalog entry. The seed requires a local ZIP and catalog images for each of these templates.
 
 ## Templates
 
@@ -170,18 +180,22 @@ All eight templates now have explicit original/saved-content purchase choices, r
 | Ember & Salt | Restaurant & bar | `/demo/ember-and-salt` |
 | Still Water | Day spa | `/demo/still-water-spa` |
 | Bloomfield Gardens | Wedding venue | `/demo/bloomfield-gardens` |
+| Roast Row | Coffee shop | `/demo/roast-row` |
+| Sunday Table | Family restaurant | `/demo/sunday-table` |
+| Barkadas | Private rooms and whole-home rentals | `/demo/barkadas` |
+| The Atrium | Weddings and event venues | `/demo/the-atrium` |
 
 How they're built:
 
 - `src/templates/<slug>/` holds each template: `site.ts` (business details, nav, theme colours, base path), `content.ts` (rooms, menus, prices, copy), `fonts.ts`, `shell.tsx`, `pages/` and `components/`. Each has its own look; nothing is shared visually.
 - `src/templates/_kit/` holds unstyled building blocks: a range/single calendar, deterministic demo availability, a headless room-booking hook, a lightbox, demo form submission and the credits list.
 - Theme colours are CSS variables set by each template and exposed to Tailwind as `bg-tpl-*`, `text-tpl-*`, `font-tpl-*` (see `src/app/globals.css`).
-- `src/app/demo/<slug>/` are thin route files. Demos render without the store chrome (store routes live under `src/app/(store)`), are `noindex`, and show a dismissible Baybloom bar.
-- `npm run templates:pack` turns a template into a standalone project (routes moved to `/`, base path cleared, the demo bar dropped, README, style guide and photo credits added) and zips it. The seed attaches the zip to every tier, plus a guide per tier.
+- `src/app/demo/<slug>/` are thin route files. Demos are `noindex` and link back to Baybloom.
+- `npm run templates:pack` turns a template into a standalone project with its pages mounted at `/`, then adds a README, style guide and photo credits to the ZIP. The seed attaches the ZIP at the lowest tier.
 
 ## Images
 
-- Demo photography: freely licensed Wikimedia Commons photos in `public/templates/<slug>/`, with author, source and licence in `src/templates/<slug>/photos.json`. Each demo has a `/credits` page and `/credits` in the store lists them all.
+- Demo photography lives in `public/templates/<slug>/`, with attribution in `src/templates/<slug>/photos.json` and each demo's `/credits` page. The original eight use Wikimedia Commons photos. Roast Row, Sunday Table, Barkadas and The Atrium use generated photography.
 - Catalog images are screenshots of the demos (`npm run templates:capture`), desktop pages plus one mobile home, stored with a `credits.json` the seed reads.
 
 ## Status

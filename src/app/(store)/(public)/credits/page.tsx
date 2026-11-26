@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { getImageCredits } from "@/lib/catalog";
+import { getCatalogDirectory } from "@/lib/catalog";
 import { TEMPLATE_PHOTOS } from "@/lib/templates";
 import { PageHeading } from "@/components/layout/page-heading";
 
@@ -11,8 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CreditsPage() {
-  // Only templates that are published in the catalog.
-  const designs = (await getImageCredits()).filter((d) => TEMPLATE_PHOTOS[d.slug]);
+  const designs = (await getCatalogDirectory()).filter((d) => Object.hasOwn(TEMPLATE_PHOTOS, d.slug));
 
   return (
     <div className="container-page max-w-5xl py-16">
@@ -27,9 +26,8 @@ export default async function CreditsPage() {
         >
           Wikimedia Commons
         </a>{" "}
-        under free licences (CC0, CC BY and CC BY-SA), resized and converted to WebP. Catalog images are
-        screenshots of those demos. Each template ships with its own credits page; replace the sample
-        photos with your own before launch.
+        under free licences, alongside images generated for Baybloom Studio. Each entry lists its source
+        and licence. The catalog covers are screenshots of the demos.
       </p>
       </PageHeading>
 
@@ -38,7 +36,7 @@ export default async function CreditsPage() {
           <section key={d.slug} aria-labelledby={`credits-${d.slug}`}>
             <div className="flex flex-wrap items-baseline justify-between gap-3">
               <h2 id={`credits-${d.slug}`} className="text-2xl font-medium">
-                <Link href={`/designs/${d.slug}`} className="hover:underline">
+                <Link href={d.status === "DRAFT" ? `/preview/${d.slug}` : `/designs/${d.slug}`} className="hover:underline">
                   {d.title}
                 </Link>
               </h2>
@@ -56,9 +54,9 @@ export default async function CreditsPage() {
                     <p className="line-clamp-2 text-ink">{img.alt}</p>
                     <p className="mt-1 text-muted-foreground">
                       Photo:{" "}
-                      <a href={img.source} className="underline underline-offset-2 hover:text-bay" target="_blank" rel="noopener noreferrer">
+                      {img.source ? <a href={img.source} className="underline underline-offset-2 hover:text-bay" target="_blank" rel="noopener noreferrer">
                         {img.author}
-                      </a>
+                      </a> : img.author}
                       {" · "}
                       {img.licenseUrl ? (
                         <a

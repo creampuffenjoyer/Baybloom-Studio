@@ -3,6 +3,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import type { Prisma, TierLevel } from "@prisma/client";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
+import { templatePreviews } from "@/lib/hospitality-previews";
 import { PAGE_SIZE, type CatalogQuery } from "@/lib/validators";
 
 /*
@@ -12,10 +13,17 @@ import { PAGE_SIZE, type CatalogQuery } from "@/lib/validators";
  */
 
 const TIER_ORDER: TierLevel[] = ["STARTER", "STANDARD", "PREMIUM"];
+const studioPreviewSlugs = Object.keys(templatePreviews);
+const publishedDesigns: Prisma.DesignWhereInput = { status: "PUBLISHED" };
+export const studioDesigns: Prisma.DesignWhereInput = {
+  OR: [publishedDesigns, { status: "DRAFT", slug: { in: studioPreviewSlugs } }],
+};
+
 
 const cardSelect = {
   id: true,
   slug: true,
+  status: true,
   title: true,
   summary: true,
   featured: true,
@@ -28,15 +36,21 @@ const cardSelect = {
 
 type CardRow = Prisma.DesignGetPayload<{ select: typeof cardSelect }>;
 
-export type DesignCard = Omit<CardRow, "tiers"> & {
+export type DesignCard = Omit<CardRow, "tiers" | "status"> & {
   tierLevels: TierLevel[];
   /** Highest tier offered, shown as the card badge. */
   topTier: TierLevel | null;
+  previewOnly?: true;
 };
 
-function toCard({ tiers, ...rest }: CardRow): DesignCard {
+function toCard({ tiers, status, ...rest }: CardRow): DesignCard {
   const tierLevels = TIER_ORDER.filter((l) => tiers.some((t) => t.level === l));
-  return { ...rest, tierLevels, topTier: tierLevels.at(-1) ?? null };
+  return {
+    ...rest,
+    tierLevels,
+    topTier: tierLevels.at(-1) ?? null,
+    ...(status === "DRAFT" ? { previewOnly: true } : {}),
+  };
 }
 
 // ─── Filters ─────────────────────────────────────────────────────────────────
@@ -67,8 +81,8 @@ export type FilterOptions = Awaited<ReturnType<typeof getFilterOptions>>;
 
 // ─── Catalog search ──────────────────────────────────────────────────────────
 
-function buildWhere(q: CatalogQuery): Prisma.DesignWhereInput {
-  const and: Prisma.DesignWhereInput[] = [{ status: "PUBLISHED" }];
+function buildWhere(q: CatalogQuery, includeStudioPreviews: boolean): Prisma.DesignWhereInput {
+  const and: Prisma.DesignWhereInput[] = [includeStudioPreviews ? studioDesigns : publishedDesigns];
   if (q.category.length) and.push({ category: { slug: { in: q.category } } });
   if (q.style.length) and.push({ style: { slug: { in: q.style } } });
   if (q.tier.length) and.push({ tiers: { some: { level: { in: q.tier } } } });
@@ -100,33 +114,39 @@ const ORDER_BY: Record<
   name: [{ title: "asc" }],
 };
 
-async function searchDesignsCached(q: CatalogQuery) {
+async function searchDesignsCached(q: CatalogQuery, includeStudioPreviews: boolean, pageSize: number) {
   "use cache";
   cacheLife("minutes");
   cacheTag("catalog");
 
-  const where = buildWhere(q);
-  const skip = (q.page - 1) * PAGE_SIZE;
+  const where = buildWhere(q, includeStudioPreviews);
+  const skip = (q.page - 1) * pageSize;
 
   if (q.sort === "price-asc" || q.sort === "price-desc") {
     // Sort by each design's lowest tier price. Only the order leaves this
     // function; the prices themselves are dropped here.
     const rows = await db.design.findMany({
       where,
-      select: { id: true, title: true, tiers: { select: { priceCents: true } } },
+      select: {
+        id: true,
+        title: true,
+        status: true,
+        tiers: { where: { design: { status: "PUBLISHED" } }, select: { priceCents: true } },
+      },
     });
     const dir = q.sort === "price-asc" ? 1 : -1;
     const ids = rows
       .map((r) => ({
         id: r.id,
         title: r.title,
+        previewOnly: r.status === "DRAFT",
         min: Math.min(...r.tiers.map((t) => t.priceCents), Number.MAX_SAFE_INTEGER),
       }))
-      .sort((a, b) => (a.min - b.min) * dir || a.title.localeCompare(b.title))
+      .sort((a, b) => Number(a.previewOnly) - Number(b.previewOnly) || (a.min - b.min) * dir || a.title.localeCompare(b.title))
       .map((r) => r.id);
-    const pageIds = ids.slice(skip, skip + PAGE_SIZE);
+    const pageIds = ids.slice(skip, skip + pageSize);
     const items = await db.design.findMany({
-      where: { id: { in: pageIds } },
+      where: { ...where, id: { in: pageIds } },
       select: cardSelect,
     });
     items.sort((a, b) => pageIds.indexOf(a.id) - pageIds.indexOf(b.id));
@@ -138,7 +158,7 @@ async function searchDesignsCached(q: CatalogQuery) {
       where,
       orderBy: ORDER_BY[q.sort],
       skip,
-      take: PAGE_SIZE,
+      take: pageSize,
       select: cardSelect,
     }),
     db.design.count({ where }),
@@ -150,15 +170,20 @@ async function searchDesignsCached(q: CatalogQuery) {
  * Catalog search. Price sorting is only honoured for signed-in clients
  * (spec §3.1); for visitors it falls back to "newest".
  */
-export async function searchDesigns(q: CatalogQuery, canSeePrices: boolean) {
+export async function searchDesigns(
+  q: CatalogQuery,
+  canSeePrices: boolean,
+  { includeStudioPreviews = false }: { includeStudioPreviews?: boolean } = {},
+) {
   const query: CatalogQuery =
     !canSeePrices && q.sort.startsWith("price") ? { ...q, sort: "newest" } : q;
-  const { items, total } = await searchDesignsCached(query);
+  const pageSize = includeStudioPreviews ? PAGE_SIZE + studioPreviewSlugs.length : PAGE_SIZE;
+  const { items, total } = await searchDesignsCached(query, includeStudioPreviews, pageSize);
   return {
     items,
     total,
     page: query.page,
-    pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)),
+    pageCount: Math.max(1, Math.ceil(total / pageSize)),
     sort: query.sort,
   };
 }
@@ -179,45 +204,19 @@ export async function getFeaturedDesigns(limit = 6) {
   return rows.map(toCard);
 }
 
-export async function getCategoriesWithCovers() {
+export async function getCatalogDirectory() {
   "use cache";
   cacheLife("hours");
   cacheTag("catalog");
 
-  const categories = await db.category.findMany({
-    orderBy: { position: "asc" },
+  return db.design.findMany({
+    where: studioDesigns,
+    orderBy: { title: "asc" },
     select: {
-      name: true,
-      slug: true,
-      description: true,
-      designs: {
-        where: { status: "PUBLISHED" },
-        orderBy: [{ featured: "desc" }, { publishedAt: "desc" }],
-        select: { heroImage: true, heroAlt: true },
-      },
+      slug: true, title: true, summary: true, status: true, heroImage: true,
+      category: { select: { name: true, slug: true, position: true, description: true } },
     },
   });
-  return categories.map(({ designs, ...c }) => ({
-    ...c,
-    count: designs.length,
-    cover: designs[0] ?? null,
-  }));
-}
-
-export async function getHomeStats() {
-  "use cache";
-  cacheLife("hours");
-  cacheTag("catalog");
-
-  const [designs, categories, features, clients] = await Promise.all([
-    db.design.count({ where: { status: "PUBLISHED" } }),
-    db.category.count(),
-    db.feature.count(),
-    db.order
-      .findMany({ where: { status: "PAID" }, distinct: ["userId"], select: { userId: true } })
-      .then((r) => r.length),
-  ]);
-  return { designs, categories, features, clients };
 }
 
 // ─── Design detail ───────────────────────────────────────────────────────────
@@ -311,36 +310,6 @@ export async function getRelatedDesigns(designId: string, categoryId: string) {
     .sort((a, b) => same(b) - same(a))
     .slice(0, 3)
     .map(toCard);
-}
-
-/** All image credits, for the public credits page. */
-export async function getImageCredits() {
-  "use cache";
-  cacheLife("hours");
-  cacheTag("catalog");
-
-  return db.design.findMany({
-    where: { status: "PUBLISHED" },
-    orderBy: { title: "asc" },
-    select: {
-      slug: true,
-      title: true,
-      images: {
-        orderBy: { position: "asc" },
-        where: { creditName: { not: null } },
-        select: {
-          id: true,
-          thumbUrl: true,
-          url: true,
-          alt: true,
-          creditName: true,
-          creditUrl: true,
-          license: true,
-          licenseUrl: true,
-        },
-      },
-    },
-  });
 }
 
 // ─── Gated pricing ───────────────────────────────────────────────────────────

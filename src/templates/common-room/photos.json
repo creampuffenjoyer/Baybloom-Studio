@@ -1,0 +1,43 @@
+{
+  "lounge": {
+    "src": "/templates/common-room/lounge.webp",
+    "alt": "Shared apartment lounge with timber furniture and tall industrial windows",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null,
+    "position": "50% 55%"
+  },
+  "studio": {
+    "src": "/templates/common-room/studio.webp",
+    "alt": "Furnished studio with a bed and desk beside city windows",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "suite": {
+    "src": "/templates/common-room/suite.webp",
+    "alt": "Private suite with a deep blue headboard and oatmeal linen",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "workspace": {
+    "src": "/templates/common-room/workspace.webp",
+    "alt": "Shared workroom with a walnut table, slim lamps and plants",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  }
+}

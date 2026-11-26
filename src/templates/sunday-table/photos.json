@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "src": "/templates/sunday-table/hero.webp",
+    "alt": "Filipino sharing dishes and rice spread across a family lunch table",
+    "width": 1500,
+    "height": 1000,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "detail": {
+    "src": "/templates/sunday-table/detail.webp",
+    "alt": "Guests sharing plates over lunch in a warm dining room",
+    "width": 1440,
+    "height": 960,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "feast": {
+    "src": "/templates/sunday-table/feast.webp",
+    "alt": "Family members reaching across a long table to share Filipino dishes",
+    "width": 1672,
+    "height": 941,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "kitchen": {
+    "src": "/templates/sunday-table/kitchen.webp",
+    "alt": "Hands finishing Filipino dishes on a restaurant kitchen counter",
+    "width": 1450,
+    "height": 967,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "gathering": {
+    "src": "/templates/sunday-table/gathering.webp",
+    "alt": "A long table set with ceramic plates and checked napkins for a family gathering",
+    "width": 1450,
+    "height": 967,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  }
+}

@@ -15,9 +15,9 @@ export function CreditsList({ photos, className, labels = { by: "Photo by", edit
           <p className="text-sm leading-relaxed">
             <span className="block font-semibold">{p.alt}</span>
             {labels.by}{" "}
-            <a href={p.source} className="underline underline-offset-2" rel="noopener noreferrer" target="_blank">
-              {p.author}
-            </a>
+            {p.source ? (
+              <a href={p.source} className="underline underline-offset-2" rel="noopener noreferrer" target="_blank">{p.author}</a>
+            ) : p.author}
             ,{" "}
             {p.licenseUrl ? (
               <a href={p.licenseUrl} className="underline underline-offset-2" rel="license noopener noreferrer" target="_blank">

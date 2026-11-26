@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
 import { getAccount } from "@/lib/account";
+import { hasPremium } from "@/lib/membership";
 import { requireUser } from "@/lib/session";
 import { ProfileForm } from "@/app/(store)/(client)/account/profile-form";
 import { VerifyBanner } from "@/app/(store)/(client)/account/verify-banner";
@@ -19,13 +20,16 @@ export default function AccountPage() {
 
 async function Profile() {
   const user = await requireUser("/account");
-  const account = await getAccount(user.id);
+  const [account, premium] = await Promise.all([getAccount(user.id), hasPremium(user.id)]);
   if (!account) return null;
 
   return (
     <div className="space-y-8">
       {user.role === "ADMIN" && <Link href="/admin/deliveries" className="font-medium text-bay underline">Admin deliveries</Link>}
       {!account.emailVerified && <VerifyBanner email={account.email} />}
+      <section className="rounded-xl border border-border bg-white p-5"><h2 className="text-2xl">{premium ? "Premium lifetime account" : "Regular account"}</h2>
+        <Link className="mt-2 inline-block text-sm font-medium underline" href="/membership">{premium ? "Open your template library" : "View your library and Premium upgrade"}</Link>
+      </section>
       <ProfileForm account={account} />
       <p className="text-xs text-muted-foreground">
         Member since{" "}

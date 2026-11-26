@@ -1,0 +1,54 @@
+{
+  "facade": {
+    "src": "/templates/plane-and-light/facade.webp",
+    "alt": "Modernist concrete facade and columns in oblique light",
+    "width": 1536,
+    "height": 1024,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null,
+    "position": "50% 51%"
+  },
+  "interior": {
+    "src": "/templates/plane-and-light/interior.webp",
+    "alt": "Gallery interior with a sheer curtain, white oak bench and clean vertical planes",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "exterior": {
+    "src": "/templates/plane-and-light/exterior.webp",
+    "alt": "Geometric concrete exterior with a silver olive tree",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "stair": {
+    "src": "/templates/plane-and-light/stair.webp",
+    "alt": "Blackened steel handrail following a curved plaster stair",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "courtyard": {
+    "src": "/templates/plane-and-light/courtyard.webp",
+    "alt": "A shallow reflecting pool beside a two-storey limestone colonnade.",
+    "width": 1024,
+    "height": 1536,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null,
+    "position": "50% 58%"
+  }
+}

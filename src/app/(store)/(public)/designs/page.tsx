@@ -1,35 +1,37 @@
+import Link from "next/link";
 import { BloomGuide } from "@/components/bloom-guide";
-import { SHOWCASE } from "@/lib/templates";
+import { listedShowcase } from "@/lib/templates";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { getFilterOptions, getPublishedSlugs } from "@/lib/catalog";
+import { getCatalogDirectory, getFilterOptions } from "@/lib/catalog";
 import { CatalogNavProvider } from "@/components/catalog/catalog-nav";
 import { FilterControls, SearchBox } from "@/components/catalog/catalog-filters";
 import { CatalogResults, ResultsSkeleton } from "@/app/(store)/(public)/designs/results";
 import { PageHeading } from "@/components/layout/page-heading";
 
 export const metadata: Metadata = {
-  title: "Website templates for hospitality",
+  title: "Website templates for hospitality, creative studios and shops",
   description:
-    "Browse website templates for resorts, hotels, restaurants, spas and event venues. Filter by industry, style, tier and features.",
+    "Browse website templates for hospitality, creative studios and fashion labels. Filter by industry, style, tier and features.",
   alternates: { canonical: "/designs" },
 };
 
 export default async function DesignsPage(props: PageProps<"/designs">) {
-  const [options, published] = await Promise.all([getFilterOptions(), getPublishedSlugs()]);
+  const [options, directory] = await Promise.all([getFilterOptions(), getCatalogDirectory()]);
 
   return (
     <CatalogNavProvider>
-      <div className="container-page pt-12 pb-8 sm:pt-16">
+      <div className="container-page pt-7 pb-8 sm:pt-10">
         <div data-bloom-target="catalog">
-          <PageHeading eyebrow="The collection" title="A website that feels like your place">
+          <PageHeading eyebrow="The collection" title="All website templates">
             <p>
-              Complete, multi-page website templates for resorts, hotels, restaurants, spas and
-              venues. Try every live demo, then log in to see pricing for each tier.
+              Explore {directory.length} designs for resorts, hotels and rentals, restaurants and cafés,
+              spas, events, creative studios and fashion labels. Choose an industry or open a live demo.
             </p>
           </PageHeading>
+          <Link href="/membership" className="inline-flex min-h-11 items-center font-medium text-bay underline underline-offset-4">Compare Regular and lifetime Premium access</Link>
         </div>
-        <BloomGuide page="catalog" matches={SHOWCASE.filter(item => published.includes(item.slug))} />
+        <BloomGuide page="catalog" matches={listedShowcase(directory)} />
       </div>
 
       <div className="container-page grid gap-10 pb-8 lg:grid-cols-[260px_minmax(0,1fr)]">

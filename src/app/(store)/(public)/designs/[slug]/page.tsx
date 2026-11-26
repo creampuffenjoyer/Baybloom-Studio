@@ -20,15 +20,22 @@ import {
 } from "@/lib/catalog";
 import { TIER_LABEL } from "@/lib/format";
 import { StudioOrderContact } from "@/components/studio-order-contact";
+import { onlineCheckoutEnabled } from "@/lib/online-checkout";
 import { DesignGallery } from "@/components/design/design-gallery";
 import { DeviceShowcase } from "@/components/design/device-showcase";
 import { LockedPrice, PricePicker } from "@/components/design/price-panel";
 import { ViewTracker } from "@/components/design/view-tracker";
 import { SessionCardGrid } from "@/components/catalog/card-grid";
 import { Reveal, RevealGroup, RevealItem, RevealListItem } from "@/components/motion/reveal";
+import studioCollection from "@/lib/studio-collection.json";
 import { cn } from "@/lib/utils";
 
-const previewFacts: Record<string, { fit: string; explore: string; languages?: string }> = {
+const previewFacts: Record<string, { fit: string; explore: string; languages?: string; source?: string }> = {
+  ...Object.fromEntries(studioCollection.map(({ slug, fit, explore }) => [slug, { fit, explore, languages: "English.", source: "Downloadable website source, image assets and a setup guide." }])),
+  "the-atrium": { fit: "wedding venues, private event spaces, and venues hosting work gatherings.", explore: "a draggable lighting comparison, a shareable event timeline with capacities and rain backups, and a sample inquiry.", languages: "English." },
+  "roast-row": { fit: "coffee shops and bakeries with one or more branches.", explore: "a coffee finder and brew guide, workshops, branch-specific menus, and a multi-item pickup bag.", languages: "English." },
+  "sunday-table": { fit: "family restaurants offering shared plates, takeout, and catering trays.", explore: "kitchen stories, gathering menus and group estimates, a tray builder, and sample table requests.", languages: "English." },
+  barkadas: { fit: "whole-home rentals, Airbnb hosts, and small inns or motels.", explore: "a filterable photo album, a weekend planner, a group finder for beds and parking, and a per-person stay estimate.", languages: "English." },
   "still-water-spa": { fit: "day spas with treatments of different types and durations.", explore: "treatment matching, duration choices, packages and sample appointment requests.", languages: "English in the preview. Partial Tagalog and Taglish drafts are included in the source." },
   "ember-and-salt": { fit: "restaurants and bars with changing menus and private dining.", explore: "searchable menus with dietary labels, sample table requests, private dining, and gift cards.", languages: "English. Tagalog and Taglish versions are not yet available." },
   "bloomfield-gardens": { fit: "garden wedding and event venues with several celebration spaces.", explore: "space matching by guest count and arrangement, package details, and a sample inquiry.", languages: "English, with partial draft Tagalog and Taglish translations. Some text remains in English." },
@@ -149,7 +156,7 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
                   <MonitorSmartphoneIcon /> Try the live demo
                 </Link>
               </Button>}
-              <p className="basis-full text-sm text-muted-foreground">{personalizableTemplates.has(design.slug) ? "Try your text, colors and photos in a preview. Sign in to save your draft." : "Explore the pages and sample interactions. No reservations are made."}</p>
+              <p className="basis-full text-sm text-muted-foreground">{personalizableTemplates.has(design.slug) ? "Open the member editor to customize text, colors and photos." : "Explore the pages and try the sample interactions."}</p>
             </div>
           )}
 
@@ -157,7 +164,7 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
             <section aria-label="About this template" className="mt-6 space-y-3 border-y border-border py-5 text-sm leading-relaxed">
               <p><strong>Best for:</strong> {facts.fit}</p>
               <p><strong>Explore:</strong> {facts.explore}</p>
-              <p><strong>What you receive:</strong> downloadable website source. This is not a hosted booking service. Live availability, form delivery, hosting, and payments need configuration or integration.</p>
+              <p><strong>What you receive:</strong> {facts.source ?? "Downloadable website source. Live availability, form delivery, hosting, and payments need configuration or integration."}</p>
               <p><strong>Languages:</strong> {facts.languages ?? "Explore this template in English, Tagalog, or Taglish."}</p>
             </section>
           )}
@@ -170,7 +177,8 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
         {/* Price panel: static shell shows a skeleton; the gated part streams in. */}
         <aside className="lg:pt-20" aria-label="Pricing">
           <div className="rounded-2xl border border-border bg-white p-6 lg:sticky lg:top-24">
-            <h2 className="font-serif text-2xl font-medium">Pricing</h2>
+            <Link href={`/membership#${design.slug}`} className="mb-6 inline-block font-medium text-bay underline">Access this template in the member library</Link>
+            <h2 className="font-serif text-2xl font-medium">Studio service packages</h2>
             <p className="mt-1 mb-5 text-sm text-muted-foreground">
               {design.tiers.length} {design.tiers.length === 1 ? "tier" : "tiers"} ·{" "}
               {design.tiers.map((t) => TIER_LABEL[t.level]).join(", ")}
@@ -287,7 +295,7 @@ async function PricePanel({
 }) {
   const pricing = await getDesignPricing(designId);
   if (!pricing) return <LockedPrice callbackUrl={`/designs/${compareItem.slug}`} />;
-  return <PricePicker designId={designId} pricing={pricing} compareItem={compareItem} />;
+  return <PricePicker designId={designId} pricing={pricing} compareItem={compareItem} onlineCheckout={onlineCheckoutEnabled()} />;
 }
 
 function PriceSkeleton() {
@@ -308,7 +316,7 @@ function TierComparison({ tiers }: { tiers: DesignDetail["tiers"] }) {
       <header data-bloom-target="tiers-intro">
         <Reveal y={0}>
           <h2 id="tiers" className="text-3xl font-medium">
-            Compare tiers
+            Compare studio services
           </h2>
           <p className="mt-2 text-muted-foreground">What each level includes.</p>
         </Reveal>

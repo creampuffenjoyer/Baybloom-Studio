@@ -4,13 +4,16 @@
  * src/templates/<slug>, and its source is packed by `npm run templates:pack`.
  */
 import type { TierLevel } from "@prisma/client";
+import studioCollection from "../src/lib/studio-collection.json";
 
 export const CATEGORIES = [
   { slug: "resort", name: "Resorts", description: "Beach, mountain and lakeside stays." },
-  { slug: "hotel", name: "Hotels & B&Bs", description: "Boutique hotels, inns and guesthouses." },
+  { slug: "hotel", name: "Hotels, B&Bs & rentals", description: "Boutique hotels, guesthouses, vacation rentals and co-living studios." },
   { slug: "restaurant", name: "Restaurants & cafés", description: "Menus, reservations and private dining." },
   { slug: "spa", name: "Spas & wellness", description: "Treatments, memberships and online booking." },
-  { slug: "venue", name: "Wedding & event venues", description: "Spaces, packages and event inquiries." },
+  { slug: "venue", name: "Events & venues", description: "Wedding venues, event spaces, furniture rentals and lighting design." },
+  { slug: "creative", name: "Creative studios", description: "Agency portfolios, professional services and architectural photography." },
+  { slug: "fashion", name: "Fashion & retail", description: "Product collections, lookbooks and curated storefronts." },
 ];
 
 /** Visual styles (the look of the template, independent of industry). */
@@ -23,6 +26,9 @@ export const STYLES = [
   { slug: "moody-editorial", name: "Moody Editorial" },
   { slug: "organic-calm", name: "Organic Calm" },
   { slug: "romantic-garden", name: "Romantic Garden" },
+  { slug: "bold-graphic", name: "Bold Graphic" },
+  { slug: "warm-editorial", name: "Warm Editorial" },
+  { slug: "architectural-editorial", name: "Architectural Editorial" },
 ];
 
 export const FEATURES: { slug: string; name: string; group: string }[] = [
@@ -34,6 +40,23 @@ export const FEATURES: { slug: string; name: string; group: string }[] = [
   { slug: "payment-gateway", name: "Payment gateway ready", group: "Booking" },
   { slug: "gift-cards", name: "Gift cards", group: "Booking" },
   { slug: "menu-pages", name: "Menu pages", group: "Content" },
+  { slug: "branch-menus", name: "Branch-specific menus", group: "Content" },
+  { slug: "pickup-request", name: "Pickup request", group: "Booking" },
+  { slug: "catering-planner", name: "Catering tray planner", group: "Booking" },
+  { slug: "stay-estimate", name: "Group stay estimator", group: "Booking" },
+  { slug: "coffee-workshops", name: "Coffee workshop inquiries", group: "Booking" },
+  { slug: "gathering-planner", name: "Group dining planner", group: "Booking" },
+  { slug: "itinerary-planner", name: "Weekend itinerary planner", group: "Content" },
+  { slug: "event-layout-planner", name: "Event layout planner", group: "Booking" },
+  { slug: "venue-lighting-tour", name: "Day-to-night venue tour", group: "Content" },
+  { slug: "venue-guide", name: "Interactive venue guide", group: "Content" },
+  { slug: "service-pricing", name: "Service and pricing packages", group: "Content" },
+  { slug: "portfolio-grid", name: "Project portfolio", group: "Content" },
+  { slug: "product-lookbook", name: "Product grid and lookbook", group: "Content" },
+  { slug: "amenities", name: "Amenities and room options", group: "Content" },
+  { slug: "social-kit", name: "Downloadable Instagram posts and stories", group: "Marketing" },
+  { slug: "project-inquiry", name: "Sample project inquiry", group: "Booking" },
+  { slug: "stay-inquiry", name: "Sample stay inquiry", group: "Booking" },
   { slug: "gallery", name: "Photo gallery", group: "Content" },
   { slug: "virtual-tour", name: "Virtual tour", group: "Content" },
   { slug: "blog", name: "Blog / journal", group: "Content" },
@@ -113,6 +136,13 @@ const SOURCE = "Next.js + Tailwind CSS source code for every demo page";
 const GUIDE = "Setup guide and content checklist";
 const TOKENS = "Style guide: colour, type and spacing tokens";
 
+const sourceTier = (price: number, feature: string): TierSeed[] => [{
+  level: "STARTER",
+  price,
+  revisions: 1,
+  inclusions: ["Source code for every demo page", "Mobile-responsive layout", feature, "Setup and style guides in the source ZIP"],
+}];
+
 export type DesignSeed = {
   slug: string;
   title: string;
@@ -121,6 +151,7 @@ export type DesignSeed = {
   category: string;
   style: string;
   featured?: boolean;
+  sourceOnly?: boolean;
   publishedDaysAgo: number;
   features: string[];
   deliverables: string[];
@@ -201,7 +232,50 @@ export const DESIGNS: DesignSeed[] = [
     tiers: tiers(12000, "stay"),
   },
 
+  {
+    slug: "barkadas",
+    title: "Barkadas",
+    summary: "A group-friendly website for Airbnb hosts, small motels and vacation rentals.",
+    description: "Browse Barkadas’ bedrooms, courtyard and veranda in a filterable photo gallery. Build a Tagaytay weekend plan to share with the group, then check which stay fits your guest count, beds and cars and estimate the per-person split.",
+    category: "hotel",
+    style: "tropical-modern",
+    featured: true,
+    sourceOnly: true,
+    publishedDaysAgo: 0,
+    features: ["stay-estimate", "gallery", "itinerary-planner", "seo-setup"],
+    deliverables: [SOURCE, "Filterable property gallery and weekend planner", "Group finder, bedroom layouts and simulated stay inquiry", TOKENS, GUIDE],
+    tiers: sourceTier(12000, "Group finder, stay estimate and sample inquiry"),
+  },
+
   // ─── Restaurants & cafés ────────────────────────────────────────────────────
+  {
+    slug: "roast-row",
+    title: "Roast Row",
+    summary: "A cobalt-and-cream café website with branch-specific menus, hours and pickup.",
+    description: "Roast Row pairs cobalt and yellow counter graphics with branch-specific menus, a multi-item pickup bag and a coffee finder. A brew guide and workshop page give guests another reason to drop by.",
+    category: "restaurant",
+    style: "bold-graphic",
+    featured: true,
+    sourceOnly: true,
+    publishedDaysAgo: 0,
+    features: ["menu-pages", "branch-menus", "pickup-request", "coffee-workshops", "seo-setup"],
+    deliverables: [SOURCE, "Coffee finder, brew guide and sample workshop requests", "Branch menus and multi-item pickup bag", TOKENS, GUIDE],
+    tiers: sourceTier(12000, "Branch menus, multi-item bag and sample pickup request"),
+  },
+  {
+    slug: "sunday-table",
+    title: "Sunday Table",
+    summary: "A warm Filipino family restaurant website for shared plates and party trays.",
+    description: "Sunday Table takes its cues from a Filipino family cookbook. Guests can look inside the kitchen, choose a gathering menu for their group or build a tray order with serving estimates for a party elsewhere.",
+    category: "restaurant",
+    style: "warm-editorial",
+    featured: true,
+    sourceOnly: true,
+    publishedDaysAgo: 0,
+    features: ["menu-pages", "catering-planner", "gathering-planner", "table-reservations", "seo-setup"],
+    deliverables: [SOURCE, "Kitchen story, family-style menu and takeout", "Gatherings planner, catering tray builder and sample requests", TOKENS, GUIDE],
+    tiers: sourceTier(14000, "Catering planner and sample table request"),
+  },
   {
     slug: "ember-and-salt",
     title: "Ember & Salt",
@@ -235,6 +309,20 @@ export const DESIGNS: DesignSeed[] = [
 
   // ─── Wedding & event venues ─────────────────────────────────────────────────
   {
+    slug: "the-atrium",
+    title: "The Atrium",
+    summary: "A glasshouse venue website with a draggable lighting comparison and a shareable event planner.",
+    description: "Warm neutrals, serif typography, and styled wedding photography introduce three spaces for weddings, private dinners, and work events. Compare daylight and evening lighting in the Glasshouse, then build a shareable event timeline with room capacities and covered rain backups. Mara, the venue guide, can open the tour and wedding preset.",
+    category: "venue",
+    style: "architectural-editorial",
+    featured: true,
+    sourceOnly: true,
+    publishedDaysAgo: 0,
+    features: ["event-inquiry", "event-layout-planner", "venue-lighting-tour", "venue-guide", "gallery", "seo-setup"],
+    deliverables: [SOURCE, "Daylight and After Dark themes with a draggable photo comparison", "Shareable three-stage planner with floor plans, capacity matching, and rain backups", "Venue guide avatar and sample inquiries", TOKENS, GUIDE],
+    tiers: sourceTier(18000, "Interactive lighting tour, shareable event planner and sample inquiry"),
+  },
+  {
     slug: "bloomfield-gardens",
     title: "Bloomfield Gardens",
     summary: "A romantic, garden-fresh website for wedding and event venues.",
@@ -248,4 +336,17 @@ export const DESIGNS: DesignSeed[] = [
     deliverables: [SOURCE, "Spaces, packages and planning templates", "Event inquiry flow with date availability", TOKENS, GUIDE],
     tiers: tiers(18000, "venue"),
   },
+  ...studioCollection.map((entry) => ({
+    slug: entry.slug,
+    title: entry.title,
+    summary: entry.summary,
+    description: `${entry.summary}\n\nUse the live preview to explore ${entry.explore}`,
+    category: entry.category,
+    style: entry.style,
+    sourceOnly: true,
+    publishedDaysAgo: 0,
+    features: [...entry.features, "seo-setup"],
+    deliverables: [SOURCE, entry.deliverable, TOKENS, GUIDE],
+    tiers: sourceTier(entry.price, entry.deliverable),
+  })),
 ];

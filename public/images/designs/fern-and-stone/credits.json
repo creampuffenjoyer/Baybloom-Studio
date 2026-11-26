@@ -1,0 +1,87 @@
+[
+  {
+    "role": "cover",
+    "file": "/images/designs/fern-and-stone/cover.webp",
+    "thumb": "/images/designs/fern-and-stone/thumbs/cover.webp",
+    "alt": "Fern & Stone template shown on a laptop and a phone",
+    "kind": "MOCKUP",
+    "width": 1600,
+    "height": 1200,
+    "author": "",
+    "source": "/demo/fern-and-stone",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/fern-and-stone/00-home-page.webp",
+    "thumb": "/images/designs/fern-and-stone/thumbs/00-home-page.webp",
+    "alt": "Fern & Stone template: home page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/fern-and-stone",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/fern-and-stone/01-spa-rituals.webp",
+    "thumb": "/images/designs/fern-and-stone/thumbs/01-spa-rituals.webp",
+    "alt": "Fern & Stone template: spa rituals on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/fern-and-stone#rituals",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/fern-and-stone/02-social-kit.webp",
+    "thumb": "/images/designs/fern-and-stone/thumbs/02-social-kit.webp",
+    "alt": "Fern & Stone template: social kit on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/fern-and-stone/social",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/fern-and-stone/03-retreat-request.webp",
+    "thumb": "/images/designs/fern-and-stone/thumbs/03-retreat-request.webp",
+    "alt": "Fern & Stone template: retreat request on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/fern-and-stone#request",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/fern-and-stone/04-retreat-daybook.webp",
+    "thumb": "/images/designs/fern-and-stone/thumbs/04-retreat-daybook.webp",
+    "alt": "Fern & Stone template: retreat daybook on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/fern-and-stone/daybook",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/fern-and-stone/90-mobile-home.webp",
+    "thumb": "/images/designs/fern-and-stone/thumbs/90-mobile-home.webp",
+    "alt": "Fern & Stone template: home page on a phone",
+    "kind": "MOCKUP",
+    "width": 780,
+    "height": 1688,
+    "author": "",
+    "source": "/demo/fern-and-stone",
+    "license": "",
+    "licenseUrl": null
+  }
+]

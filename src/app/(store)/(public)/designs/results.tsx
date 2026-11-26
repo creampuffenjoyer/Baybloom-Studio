@@ -24,8 +24,8 @@ export async function CatalogResults({
   const raw = await searchParams;
   const query = parseCatalogQuery(raw);
   const user = await getCurrentUser();
-  const result = await searchDesigns(query, Boolean(user));
-  const ids = result.items.map((d) => d.id);
+  const result = await searchDesigns(query, Boolean(user), { includeStudioPreviews: true });
+  const ids = result.items.filter((design) => !design.previewOnly).map((design) => design.id);
   const [prices, favoriteIds] = user
     ? await Promise.all([getFromPrices(ids), getFavoriteIds(user.id, ids)])
     : [null, []];

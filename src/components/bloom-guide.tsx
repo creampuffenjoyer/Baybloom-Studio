@@ -12,7 +12,7 @@ import { BloomSpotlight, findPreviewName, normalizePreviewName } from "./bloom-s
 import { BloomTutorial, type TutorialPage } from "./bloom-tutorial";
 import { readTutorial, writeTutorial, type TutorialProgress } from "./bloom-tutorial-progress";
 
-type Match = { slug: string; title: string; kind: string; line: string };
+type Match = { slug: string; title: string; kind: string; line: string; previewOnly?: boolean };
 type Stage = "welcome" | "business" | "lodging" | "match" | "edit" | "done" | "packages" | "contact";
 type Progress = { stage: Stage; slug?: string; open: boolean };
 gsap.registerPlugin(useGSAP);
@@ -23,8 +23,14 @@ const categories = [
   ["Restaurant or bar", "Restaurant & bar"],
   ["Spa", "Day spa"],
   ["Event venue", "Wedding venue"],
+  ["Café", "Specialty café"],
+  ["Catering & family dining", "Family restaurant"],
+  ["Event styling & rentals", "Event design & rentals"],
+  ["Creative agency", "Creative agency"],
+  ["Photography studio", "Photography studio"],
+  ["Fashion label", "Fashion label"],
 ];
-const lodging = ["Beach resort", "Heritage hotel", "Bed & breakfast", "Mountain lodge", "Lakeside villas"];
+const lodging = ["Beach resort", "Heritage hotel", "Bed & breakfast", "Mountain lodge", "Lakeside villas", "Vacation rental", "Co-living studios", "Wellness retreat"];
 
 function GuideAction({ children, onClick, disabled, kind = "primary" }: {
   children: ReactNode;
@@ -244,7 +250,8 @@ export function BloomGuide({ page, matches = [], slug, ready, previewUrl, canEdi
 
   if (!loaded) return null;
   const { stage, open } = progress;
-  const match = matches.find(item => item.slug === progress.slug);
+  const choices = tutorial ? matches.filter(item => !item.previewOnly) : matches;
+  const match = choices.find(item => item.slug === progress.slug);
   const commerce = page === "cart" || page === "checkout";
   const showTutorialHint = tutorial && page !== "home" && !commerce;
   const stepNumber = commerce || stage === "packages" || stage === "contact" ? 3 : page === "editor" ? 2 : 1;
@@ -328,13 +335,13 @@ export function BloomGuide({ page, matches = [], slug, ready, previewUrl, canEdi
     title = match.title;
     description = <><p className="bloom-kind">{match.kind}</p><p>{match.line}</p></>;
     actions = <>
-      <Link className="bloom-action bloom-primary" href={`/designs/${match.slug}`}>Open this design <ArrowRightIcon aria-hidden="true" /></Link>
+      <Link className="bloom-action bloom-primary" href={match.previewOnly ? `/preview/${match.slug}` : `/designs/${match.slug}`}>Open this design <ArrowRightIcon aria-hidden="true" /></Link>
       {allDesigns}
     </>;
   } else if (stage === "lodging") {
     title = "What kind of place do guests stay in?";
     if (tutorial) description = <p>Choose the closest fit and I’ll show you a design to try.</p>;
-    actions = matches.filter(item => lodging.includes(item.kind)).map(item =>
+    actions = choices.filter(item => lodging.includes(item.kind)).map(item =>
       <GuideAction key={item.slug} kind="option" onClick={() => step("match", item.slug)}>{item.kind}</GuideAction>);
   } else if (stage === "welcome" && page === "home") {
     title = "Let’s find your website";
@@ -346,11 +353,11 @@ export function BloomGuide({ page, matches = [], slug, ready, previewUrl, canEdi
     </>;
   } else {
     title = "What kind of business do you run?";
-    if (tutorial) description = <p>Pick a business type so I can suggest a design that fits what your guests need.</p>;
+    if (tutorial) description = <p>Pick a business type to find a design for your visitors.</p>;
     actions = <>
-      {matches.some(item => lodging.includes(item.kind)) && <GuideAction kind="option" onClick={() => step("lodging")}>A place to stay</GuideAction>}
+      {choices.some(item => lodging.includes(item.kind)) && <GuideAction kind="option" onClick={() => step("lodging")}>A place to stay</GuideAction>}
       {categories.map(([label, kind]) => {
-        const item = matches.find(entry => entry.kind === kind);
+        const item = choices.find(entry => entry.kind === kind);
         return item && <GuideAction key={kind} kind="option" onClick={() => step("match", item.slug)}>{label}</GuideAction>;
       })}
     </>;

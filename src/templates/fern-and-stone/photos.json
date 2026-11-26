@@ -1,0 +1,44 @@
+{
+  "pool": {
+    "src": "/templates/fern-and-stone/pool.webp",
+    "alt": "Outdoor limestone soaking pool flanked by ferns and cedar buildings",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null,
+    "position": "50% 58%"
+  },
+  "treatment": {
+    "src": "/templates/fern-and-stone/treatment.webp",
+    "alt": "Treatment table with folded towels in a woven and timber spa room",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null,
+    "position": "50% 54%"
+  },
+  "basin": {
+    "src": "/templates/fern-and-stone/basin.webp",
+    "alt": "Weathered stone basin reflecting leaves and daylight",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "room": {
+    "src": "/templates/fern-and-stone/room.webp",
+    "alt": "Private retreat room with linen, timber and gauze curtains",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  }
+}

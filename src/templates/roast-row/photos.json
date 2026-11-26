@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "src": "/templates/roast-row/hero.webp",
+    "alt": "A barista behind a timber coffee counter in morning light",
+    "width": 1500,
+    "height": 1000,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "detail": {
+    "src": "/templates/roast-row/detail.webp",
+    "alt": "Coffee and a croissant on a cobalt saucer",
+    "width": 1440,
+    "height": 960,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "product": {
+    "src": "/templates/roast-row/product.webp",
+    "alt": "Iced espresso swirling into oat milk in a clear takeaway cup",
+    "width": 850,
+    "height": 1275,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "beans": {
+    "src": "/templates/roast-row/beans.webp",
+    "alt": "Roasted beans, espresso and a kraft bag on the caf? counter",
+    "width": 1450,
+    "height": 967,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "workshop": {
+    "src": "/templates/roast-row/workshop.webp",
+    "alt": "A barista showing guests how to pour coffee by hand",
+    "width": 1450,
+    "height": 967,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  }
+}

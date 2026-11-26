@@ -68,7 +68,7 @@ test("web security: browser CSRF, XSS, injection, authentication and object auth
     const isolatedEnv = {
       ...process.env, NODE_OPTIONS: `--import=${pathToFileURL(resolve("tests/helpers/pwned-passwords-fixture.mjs")).href}`, RAYON_NUM_THREADS: "2", UV_THREADPOOL_SIZE: "2", BAYBLOOM_PERSONALIZATION_TEST: "1", DATABASE_URL: target, DIRECT_URL: direct,
       AUTH_SECRET: secret, MFA_ENCRYPTION_KEY: randomBytes(32).toString("base64"), AUTH_URL: "", NEXTAUTH_URL: "", AUTH_TRUST_HOST: "", RAILWAY_PUBLIC_DOMAIN: new URL(base).host, NEXT_PUBLIC_SITE_URL: "", AUTH_GOOGLE_ID: "", AUTH_GOOGLE_SECRET: "", RESEND_API_KEY: "", EMAIL_FROM: "",
-      STRIPE_SECRET_KEY: "", STRIPE_WEBHOOK_SECRET: "", NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "", S3_ENDPOINT: "", S3_BUCKET: "", S3_ACCESS_KEY: "", S3_SECRET_KEY: "", MAINTENANCE_SECRET: secret,
+      ONLINE_CHECKOUT_ENABLED: "true", STRIPE_SECRET_KEY: "", STRIPE_WEBHOOK_SECRET: "", NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "", S3_ENDPOINT: "", S3_BUCKET: "", S3_ACCESS_KEY: "", S3_SECRET_KEY: "", MAINTENANCE_SECRET: secret,
     };
     serverLog = createWriteStream("storage/security/browser-server.log");
     const build = spawn(process.execPath, ["node_modules/next/dist/bin/next", "build"], { windowsHide: true, stdio: ["ignore", "pipe", "pipe"], env: isolatedEnv });

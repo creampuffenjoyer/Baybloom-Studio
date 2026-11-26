@@ -3,6 +3,7 @@ import type Stripe from "stripe";
 import type { PrismaClient } from "@prisma/client";
 import { db } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
+import { syncMembership, refundMembership } from "@/lib/membership-payment";
 import { fulfillOrder, markOrderFailed, markOrderRefunded } from "@/lib/orders";
 
 async function paymentFor(paymentIntent: string | Stripe.PaymentIntent | null, gateway: Stripe) {
@@ -43,7 +44,8 @@ export async function handleStripeEvent(event: Stripe.Event) {
     case "checkout.session.completed":
     case "checkout.session.async_payment_succeeded":
     case "checkout.session.expired":
-      await syncCheckoutSession(event.data.object);
+      if (event.data.object.metadata?.membershipId) await syncMembership(event.data.object);
+      else await syncCheckoutSession(event.data.object);
       break;
     case "checkout.session.async_payment_failed": {
       const orderId = event.data.object.metadata?.orderId;
@@ -57,7 +59,8 @@ export async function handleStripeEvent(event: Stripe.Event) {
         typeof charge.payment_intent === "string"
           ? await stripe().paymentIntents.retrieve(charge.payment_intent)
           : charge.payment_intent;
-      if (pi.metadata?.orderId) await markOrderRefunded(pi.metadata.orderId);
+      if (pi.metadata?.membershipId) await refundMembership(pi.metadata);
+      else if (pi.metadata?.orderId) await markOrderRefunded(pi.metadata.orderId);
       break;
     }
     default:

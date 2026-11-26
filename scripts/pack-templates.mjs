@@ -5,6 +5,7 @@ import { cp, mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promi
 import path from "node:path";
 import { zipSync } from "fflate";
 import { createHash } from "node:crypto";
+import studioCollection from "../src/lib/studio-collection.json" with { type: "json" };
 
 const ROOT = process.cwd();
 const args = process.argv.slice(2);
@@ -17,6 +18,7 @@ const outputArg = args.find((a) => a.startsWith("--output-root="));
 const outputRoot = outputArg ? path.resolve(outputArg.slice("--output-root=".length)) : path.join(ROOT, "storage");
 if (path.relative(ROOT, outputRoot).startsWith("..") || path.isAbsolute(path.relative(ROOT, outputRoot)) || outputRoot === ROOT) throw new Error("Output must be a child directory of the workspace");
 const exportTemplates = JSON.parse(await readFile(path.join(ROOT, "src/lib/personalization/export-templates.json"), "utf8"));
+const studioSlugs = new Set(studioCollection.map(({ slug }) => slug));
 const versions = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
 const dep = (name) => versions.dependencies[name] ?? versions.devDependencies[name];
 const installed = async (name) => JSON.parse(await readFile(path.join(ROOT, "node_modules", name, "package.json"), "utf8")).version;
@@ -44,6 +46,7 @@ const write = async (file, text) => {
 
 for (const slug of slugs) {
   const contract = exportTemplates[slug];
+  const studio = studioSlugs.has(slug);
   const out = path.join(outputRoot, "build", slug);
   if (path.relative(outputRoot, out).startsWith("..") || !path.relative(outputRoot, out)) throw new Error("Invalid build directory");
   await rm(out, { recursive: true, force: true });
@@ -74,6 +77,7 @@ for (const slug of slugs) {
     `import type { Metadata } from "next";
 import { Suspense } from "react";
 ${shellImport}
+${studio ? `import { site } from "@/templates/${slug}/site";` : ""}
 ${contract ? 'import { PersonalizedProvider } from "./personalized-provider";' : ""}
 import "./globals.css";
 
@@ -210,15 +214,27 @@ export default defineConfig([...nextVitals, ...nextTs, globalIgnores([".next/**"
 
   // 6. Docs: README, style guide and photo credits.
   const title = siteSrc.match(/name: "([^"]+)"/)[1];
-  const theme = [...siteSrc.matchAll(/^\s+(\w+): "(#[0-9a-f]{6})",?(?:\s*\/\/\s*(.*))?$/gim)];
-  const fontsSrc = await readFile(path.join(ROOT, "src", "templates", slug, "fonts.ts"), "utf8");
-  const fonts = [...fontsSrc.matchAll(/export const (\w+) = (\w+)\(/g)].map(([, role, family]) => [role, family.replace(/_/g, " ")]);
+  const theme = studio
+    ? [...siteSrc.match(/theme: \{([^}]+)\}/)[1].matchAll(/(\w+): "(#[0-9a-f]{6})"/gi)]
+    : [...siteSrc.split("export const afterDarkTheme")[0].matchAll(/^\s+(\w+): "(#[0-9a-f]{6})",?(?:\s*\/\/\s*(.*))?$/gim)];
+  const fontsSrc = studio ? "" : await readFile(path.join(ROOT, "src", "templates", slug, "fonts.ts"), "utf8");
+  const fonts = [
+    ...[...fontsSrc.matchAll(/export const (\w+) = (\w+)\(/g)].map(([, role, family]) => [role, family.replace(/_/g, " ")]),
+    ...[...fontsSrc.matchAll(/export const (\w+) = "([^"]+)"/g)].map(([, role, families]) => [role, families]),
+  ];
   const pages = (await walk(path.join(out, "src", "app")))
     .filter((f) => f.endsWith("page.tsx"))
     .map((f) => "/" + path.relative(path.join(out, "src", "app"), path.dirname(f)).split(path.sep).join("/"))
     .map((r) => (r === "/." || r === "/" ? "/" : r))
     .sort();
   const photos = Object.values(JSON.parse(await readFile(path.join(ROOT, "src", "templates", slug, "photos.json"), "utf8")));
+  const generatedPhotos = photos.every((photo) => !photo.source);
+  const setupNotes = {
+    "roast-row": "Edit branch menus and item availability in `content.ts`. Edit coffee matches, brew recipes, and workshop schedules in `experiences.ts`. Connect the pickup and workshop forms to your ordering or booking provider to receive requests.",
+    "sunday-table": "Edit tray portions in `content.ts`, gathering menus and kitchen notes in `gatherings.ts`, and hours in `site.ts`. Connect the takeout, catering, gathering and table forms to your inbox or reservation system.",
+    barkadas: "Edit room capacities, parking and rates in `content.ts`, and itinerary suggestions in `weekend.ts`. The gallery uses photos from `photos.json`. Add a booking URL to `site.listingUrl` in `site.ts` and connect the request form to your booking provider or inbox.",
+    "the-atrium": "Update room capacities and layouts in `content.ts` and the three-stage wedding preset in `plan.ts`. Edit both lighting palettes in `site.ts` and the venue guide’s answers in `components/host.tsx`. Connect the venue inquiry to your inbox or booking service.",
+  }[slug];
 
   await write(
     path.join(out, "README.md"),
@@ -243,10 +259,11 @@ ${pages.map((p) => `- \`${p}\``).join("\n")}
 ## Make it yours
 
 - **Business details, navigation and colours:** \`src/templates/${slug}/site.ts\`. The \`theme\` object sets every colour; Tailwind exposes them as \`bg-tpl-*\`, \`text-tpl-*\` and so on.
-- **Rooms, menus, treatments, prices and copy:** \`src/templates/${slug}/content.ts\`.
-- **Fonts:** \`src/templates/${slug}/fonts.ts\` (Google Fonts via \`next/font\`).
-- **Photos:** replace the files in \`public/templates/${slug}/\` and update \`src/templates/${slug}/photos.json\` (alt text and credits). The sample photos are freely licensed; keep the credits page or use your own photography.
-- **Page layouts:** \`src/templates/${slug}/pages/\` and \`components/\`. Shared building blocks (calendar, availability, lightbox, booking state) live in \`src/templates/_kit/\`.
+${studio ? `- **Sections and copy:** edit the homepage opening and inner page in \`src/templates/${slug}/edition.tsx\`. Edit the remaining sections, footer details and navigation in \`src/templates/${slug}/site.ts\`.${pages.includes("/social") ? " Edit `social` in the same file to change copy, photo selections and artwork layouts. The Social kit page exports 1080 × 1350 feed posts and 1080 × 1920 stories." : ""}
+- **Fonts and layouts:** edit base styles in \`src/templates/_kit/studio/design.css\` and section layouts in \`src/templates/_kit/studio/reference-layouts.css\` and homepage and inner-page styles in \`src/templates/_kit/studio/editions.css\`.` : `- **Rooms, menus, treatments, prices and copy:** \`src/templates/${slug}/content.ts\`.
+- **Fonts:** \`src/templates/${slug}/fonts.ts\`.`}
+- **Photos:** replace the files in \`public/templates/${slug}/\` and update \`src/templates/${slug}/photos.json\` (alt text and credits). Keep the photo credits current when replacing images.
+${studio ? "- **Section components:** `src/templates/_kit/studio/site.tsx`." : `- **Page layouts:** \`src/templates/${slug}/pages/\`. Shared building blocks live in \`src/templates/_kit/\`.`}
 ${["harbor-house", "coral-cove", "pine-ridge-lodge", "isla-verde-boutique"].includes(slug) ? `
 ## Languages
 
@@ -301,12 +318,12 @@ The treatment finder matches type and duration using \`src/templates/still-water
 
 ## Forms, bookings and payments
 
-Every form and booking flow is fully interactive but **sends nothing yet**. Submissions go through
+${studio ? (slug === "quiet-form" ? "Product prices are sample content. Add verified partner destinations and update the disclosure before enabling affiliate links." : "The sample request uses `SampleRequest` in `src/templates/_kit/sample-request.tsx`. Connect it to an inbox, CRM or booking system to accept live requests.") : setupNotes ? `${setupNotes} Forms are simulated and do not send messages, reserve dates, or take payments.` : `Every form and booking flow is fully interactive but **sends nothing yet**. Submissions go through
 \`useDemoSubmit()\` in \`src/templates/_kit/demo-form.ts\`; pass it a \`send\` function to post to
 your email service, CRM or booking engine. Availability comes from \`src/templates/_kit/availability.ts\`,
 which returns deterministic sample data: replace \`isAvailable\` / \`freeSlots\` with calls to your
 booking engine, reservation system or channel manager. Payment steps are marked in the code where
-a gateway (Stripe, PayMongo, Xendit…) plugs in.
+a gateway (Stripe, PayMongo, Xendit…) plugs in.`}
 
 ## Licence and support
 
@@ -319,7 +336,7 @@ your downloads for deployment help. Photo licences are listed in \`CREDITS.md\`.
     `# ${title} style guide
 
 ## Colour
-
+${slug === "the-atrium" ? "\nThe table lists the Daylight palette. Edit the After Dark palette alongside it in `site.ts`.\n" : ""}
 | Token | Value | Notes |
 | --- | --- | --- |
 ${theme.map(([, k, v, note]) => `| \`${k}\` | \`${v}\` | ${note ?? ""} |`).join("\n")}
@@ -328,31 +345,37 @@ Use them as Tailwind utilities: \`bg-tpl-${"accent"}\`, \`text-tpl-ink\`, \`bord
 
 ## Type
 
-${fonts.map(([role, family]) => `- **${role}:** ${family}`).join("\n")}
+${studio ? "Display and body stacks are set by `--st-display` and `--st-body` in `src/templates/_kit/studio/design.css`." : `${fonts.map(([role, family]) => `- **${role}:** ${family}`).join("\n")}
 
-Display type uses \`font-tpl-display\`; body copy uses \`font-tpl-body\`.
+Display type uses \`font-tpl-display\`; body copy uses \`font-tpl-body\`.`}
 
 ## Layout
 
-- Content width: \`max-w-7xl\` (80rem) with \`px-5 sm:px-8\` gutters, unless the page sets its own.
+${studio ? "The shared `.st-wrap` sets a responsive gutter and a maximum content width of 100rem. Section styles are scoped to `.st-site`." : `- Content width: \`max-w-7xl\` (80rem) with \`px-5 sm:px-8\` gutters, unless the page sets its own.
 - Section rhythm: \`py-20\`–\`py-24\` between major sections.
-- Motion: one entrance sequence on the home page; everything else animates only in response to the
-  visitor. All motion is disabled under \`prefers-reduced-motion\`.
+${slug === "roast-row" ? "- Motion: the homepage cup sways on a 12-second loop. Click or tap the cup to play or pause. Drag the cup or use the arrow keys to tilt it. Playback starts paused when reduced motion is requested." : slug === "the-atrium" ? "- Motion: the homepage and scroll reveals use opacity and translation. Lighting changes crossfade the paired photos. The theme and planner work with reduced motion." : `- Motion: one entrance sequence on the home page; everything else animates only in response to the
+  visitor. All motion is disabled under \`prefers-reduced-motion\`.`}`}
 `,
   );
   await write(
     path.join(out, "CREDITS.md"),
     `# Photo credits
 
-Sample photography from Wikimedia Commons, resized and converted to WebP.
+${generatedPhotos ? "Photography generated with OpenAI ImageGen for Baybloom Studio." : "Sample photography from Wikimedia Commons, resized and converted to WebP."}
 
-${photos.map((p) => `- ${p.alt}. Photo by [${p.author}](${p.source}), ${p.licenseUrl ? `[${p.license}](${p.licenseUrl})` : p.license}.`).join("\n")}
+${photos.map((p) => `- ${p.alt}. Photo by ${p.source ? `[${p.author}](${p.source})` : p.author}, ${p.licenseUrl ? `[${p.license}](${p.licenseUrl})` : p.license}.`).join("\n")}
 `,
   );
 
   // 7. Zip it.
-  if (locksRoot) {
-    const lock = JSON.parse(await readFile(path.join(locksRoot, slug, "package-lock.json"), "utf8"));
+  if (locksRoot || contract) {
+    const lockPath = locksRoot ? path.join(locksRoot, slug, "package-lock.json") : path.join(ROOT, "scripts/standalone/package-lock.json");
+    const lock = JSON.parse(await readFile(lockPath, "utf8"));
+    if (!locksRoot) {
+      // All standalone editors share the same package manifest apart from their name.
+      lock.name = slug;
+      lock.packages[""].name = slug;
+    }
     const pkg = JSON.parse(await readFile(path.join(out, "package.json"), "utf8"));
     if (lock.name !== slug || JSON.stringify(lock.packages?.[""]?.dependencies) !== JSON.stringify(pkg.dependencies) || JSON.stringify(lock.packages?.[""]?.devDependencies) !== JSON.stringify(pkg.devDependencies)) {
       const sorted = value => JSON.stringify(Object.entries(value ?? {}).sort(([a], [b]) => a.localeCompare(b)));

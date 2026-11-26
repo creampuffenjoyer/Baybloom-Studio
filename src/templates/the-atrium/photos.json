@@ -1,0 +1,72 @@
+{
+  "glasshouseDay": {
+    "src": "/templates/the-atrium/glasshouse-day.webp",
+    "alt": "Sunlight crossing the stone aisle of a glass and steel conservatory",
+    "width": 1500,
+    "height": 1000,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "glasshouseNight": {
+    "src": "/templates/the-atrium/glasshouse-night.webp",
+    "alt": "Amber lights illuminating the same Glasshouse aisle after dark",
+    "width": 1500,
+    "height": 1000,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "galleryRoom": {
+    "src": "/templates/the-atrium/gallery-room.webp",
+    "alt": "A long gallery with steel-framed garden windows and a pale stone bar",
+    "width": 1500,
+    "height": 1000,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "court": {
+    "src": "/templates/the-atrium/garden-court.webp",
+    "alt": "A tropical courtyard with a limestone path and dense plants",
+    "width": 1500,
+    "height": 1000,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "reception": {
+    "src": "/templates/the-atrium/reception.webp",
+    "alt": "A candlelit linen table set for dinner beneath green steel arches",
+    "width": 1500,
+    "height": 1000,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "weddingTable": {
+    "src": "/templates/the-atrium/wedding-table.webp",
+    "alt": "A wedding table with ivory linen and white flowers under the Glasshouse arches",
+    "width": 1536,
+    "height": 1024,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  },
+  "host": {
+    "src": "/templates/the-atrium/mara.webp",
+    "alt": "Portrait of Mara, the fictional Atrium venue guide",
+    "width": 320,
+    "height": 320,
+    "author": "Baybloom Studio / OpenAI ImageGen",
+    "source": "",
+    "license": "Generated demo photography",
+    "licenseUrl": null
+  }
+}

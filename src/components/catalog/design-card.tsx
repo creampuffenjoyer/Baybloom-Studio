@@ -9,7 +9,7 @@ import { TIER_LABEL } from "@/lib/format";
 import { FavoriteButton } from "@/components/catalog/favorite-button";
 import { CompareToggle } from "@/components/compare/compare-toggle";
 import { PriceChip, type CardPrice } from "@/components/catalog/price-chip";
-import { TierBadge } from "@/components/catalog/tier-badge";
+import { regularTemplate } from "@/lib/membership-plans";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -34,7 +34,7 @@ export function DesignCard({
   onFavoriteChange?: (favorite: boolean) => void;
 }) {
   const [quickView, setQuickView] = useState(false);
-  const href = `/designs/${design.slug}`;
+  const href = design.previewOnly ? `/preview/${design.slug}` : `/designs/${design.slug}`;
 
   return (
     <article
@@ -51,21 +51,23 @@ export function DesignCard({
         />
 
         <div className="absolute top-3 left-3 flex gap-2">
-          {design.topTier && <TierBadge level={design.topTier} />}
+          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-bay">{regularTemplate(design.slug) ? "Regular" : "Premium"}</span>
         </div>
-        <div className="absolute top-3 right-3 z-10 flex flex-col gap-2">
-          <FavoriteButton
-            designId={design.id}
-            title={design.title}
-            initial={favorited}
-            signedIn={signedIn}
-            onChange={onFavoriteChange}
-          />
-          <CompareToggle
-            item={{ slug: design.slug, title: design.title, heroImage: design.heroImage }}
-            signedIn={signedIn}
-          />
-        </div>
+        {!design.previewOnly && (
+          <div className="absolute top-3 right-3 z-10 flex flex-col gap-2">
+            <FavoriteButton
+              designId={design.id}
+              title={design.title}
+              initial={favorited}
+              signedIn={signedIn}
+              onChange={onFavoriteChange}
+            />
+            <CompareToggle
+              item={{ slug: design.slug, title: design.title, heroImage: design.heroImage }}
+              signedIn={signedIn}
+            />
+          </div>
+        )}
 
         <div className="absolute bottom-3 left-3 z-10">
           <Button
@@ -96,7 +98,9 @@ export function DesignCard({
           {design.summary}
         </p>
         <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border/70 pt-4">
-          <PriceChip price={price} callbackUrl={href} />
+          {design.previewOnly
+            ? <span className="text-sm font-semibold text-bay">Open preview</span>
+            : <PriceChip price={price} callbackUrl={href} />}
           <ArrowRightIcon
             aria-hidden
             className="size-4 text-bay transition-transform duration-300 group-hover:translate-x-1"
@@ -124,14 +128,17 @@ export function DesignCard({
               {design.title}
             </DialogTitle>
             <DialogDescription className="leading-relaxed">{design.summary}</DialogDescription>
-            <p className="text-sm text-muted-foreground">
-              Tiers: {design.tierLevels.map((l) => TIER_LABEL[l]).join(" · ")}
-            </p>
+            <Link href={`/membership#${design.slug}`} className="inline-flex min-h-11 items-center text-sm font-medium underline">{regularTemplate(design.slug) ? "Open in the Regular library" : "View lifetime Premium access"}</Link>
+            {!design.previewOnly && (
+              <p className="text-sm text-muted-foreground">
+                Studio service tiers: {design.tierLevels.map((l) => TIER_LABEL[l]).join(" · ")}
+              </p>
+            )}
             <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-              <PriceChip price={price} callbackUrl={href} />
+              {!design.previewOnly && <PriceChip price={price} callbackUrl={href} />}
               <Button asChild className="h-11 rounded-lg">
                 <Link href={href}>
-                  View full design <ArrowRightIcon />
+                  {design.previewOnly ? "Open interactive preview" : "View full design"} <ArrowRightIcon />
                 </Link>
               </Button>
             </div>

@@ -1,0 +1,43 @@
+{
+  "hall": {
+    "src": "/templates/afterglow-rental/hall.webp",
+    "alt": "Lounge seating in a dark event hall with warm architectural uplighting",
+    "width": 1536,
+    "height": 1024,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null,
+    "position": "50% 53%"
+  },
+  "lighting": {
+    "src": "/templates/afterglow-rental/lighting.webp",
+    "alt": "Amber uplighting washing over masonry columns",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "lounge": {
+    "src": "/templates/afterglow-rental/lounge.webp",
+    "alt": "Velvet lounge chairs and low tables in a warmly lit room",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "table": {
+    "src": "/templates/afterglow-rental/table.webp",
+    "alt": "Long evening dining table with glowing candlesticks and delicate stems",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  }
+}

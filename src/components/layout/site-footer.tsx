@@ -13,16 +13,19 @@ const COLUMNS = [
     title: "Templates",
     links: [
       { href: "/designs?category=resort", label: "Resorts" },
-      { href: "/designs?category=hotel", label: "Hotels & B&Bs" },
+      { href: "/designs?category=hotel", label: "Hotels, B&Bs & rentals" },
       { href: "/designs?category=restaurant", label: "Restaurants & cafés" },
       { href: "/designs?category=spa", label: "Spas & wellness" },
-      { href: "/designs?category=venue", label: "Wedding & event venues" },
+      { href: "/designs?category=venue", label: "Events & venues" },
+      { href: "/designs?category=creative", label: "Creative studios" },
+      { href: "/designs?category=fashion", label: "Fashion & retail" },
     ],
   },
   {
     title: "Studio",
     links: [
       { href: "/#how-it-works", label: "How it works" },
+      { href: "/membership", label: "Membership & downloads" },
       { href: "/credits", label: "Image credits" },
       { href: "/register", label: "Create an account" },
     ],
@@ -36,11 +39,10 @@ export function SiteFooter() {
         <div className="col-span-2 max-w-sm md:col-span-1">
           <Logo tone="light" className="text-[15px]" />
           <p className="mt-5 font-serif text-2xl leading-snug text-white">
-            Websites for hospitality brands that bloom.
+            Website templates for independent businesses.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-white/70">
-            Ready-made, fully responsive website templates for resorts, hotels,
-            restaurants, spas and event venues.
+            Explore live demos for hospitality, dining, wellness, events, creative studios and fashion labels.
           </p>
         </div>
         {COLUMNS.map((col) => (
@@ -66,13 +68,13 @@ export function SiteFooter() {
       <div className="border-t border-white/10">
         <div className="container-page flex flex-col gap-2 py-6 text-xs text-white/60 sm:flex-row sm:justify-between">
           <p>
-            © <CopyrightYear /> Baybloom Studio. Sample imagery from Wikimedia Commons,{" "}
+            © <CopyrightYear /> Baybloom Studio. For image sources and licences,{" "}
             <Link href="/credits" className="underline underline-offset-2 hover:text-white">
               see credits
             </Link>
             .
           </p>
-          <p>Prices in Philippine pesos (PHP).</p>
+          <p>Lifetime membership in USD. Studio services in PHP.</p>
         </div>
       </div>
     </footer>

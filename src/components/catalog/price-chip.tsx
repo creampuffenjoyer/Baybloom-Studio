@@ -23,7 +23,7 @@ export function PriceChip({
   if (price) {
     return (
       <p className={cn("text-sm text-ink", className)}>
-        <span className="text-muted-foreground">From </span>
+        <span className="text-muted-foreground">Studio service from </span>
         <span className="font-semibold text-bay">
           {formatPrice(price.priceCents, price.currency)}
         </span>
@@ -39,7 +39,7 @@ export function PriceChip({
       )}
     >
       <LockIcon className="size-3" aria-hidden />
-      Log in to see pricing
+      Log in for service pricing
     </Link>
   );
 }

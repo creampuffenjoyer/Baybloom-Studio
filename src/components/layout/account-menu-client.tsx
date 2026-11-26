@@ -72,6 +72,7 @@ export function UserMenu({ name, email }: { name: string | null; email: string |
         <DropdownMenuSeparator />
         {[
           { href: "/account", label: "My account", icon: UserRoundIcon },
+          { href: "/membership", label: "Membership & library", icon: ReceiptTextIcon },
           { href: "/favorites", label: "Favorites", icon: HeartIcon },
           { href: "/compare", label: "Compare", icon: GitCompareArrowsIcon },
           { href: "/account/orders", label: "Orders & downloads", icon: ReceiptTextIcon },

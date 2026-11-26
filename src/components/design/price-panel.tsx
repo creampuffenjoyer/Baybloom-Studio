@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import { Loader2Icon, LockIcon, ShoppingBagIcon, ZapIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/cart/cart-provider";
+import { OrderContactDialog } from "@/components/order-contact-dialog";
 import type { DesignPricing } from "@/lib/catalog";
 import { formatPrice, TIER_LABEL } from "@/lib/format";
 import { loginHref } from "@/lib/urls";
@@ -20,10 +21,12 @@ export function PricePicker({
   designId,
   pricing,
   compareItem,
+  onlineCheckout,
 }: {
   designId: string;
   pricing: DesignPricing;
   compareItem: CompareItem;
+  onlineCheckout: boolean;
 }) {
   const router = useRouter();
   const { add, setOpen, busy } = useCart();
@@ -108,7 +111,17 @@ export function PricePicker({
       </div>
 
       <div className="grid gap-2">
-        <Button
+        {!onlineCheckout ? (
+          <OrderContactDialog subject={`Studio order for ${compareItem.title}`} details={[
+            `Template: ${compareItem.title}`,
+            tier ? `Package: ${TIER_LABEL[tier.level]}` : "",
+            ...pricing.addons.filter((addon) => addonIds.includes(addon.id)).map((addon) => `Add-on: ${addon.name}`),
+          ].filter(Boolean).join("\n")}>
+            <Button type="button" className="h-12 rounded-lg bg-hibiscus-strong text-base text-white hover:bg-hibiscus-strong/90">
+              <ZapIcon /> Buy now
+            </Button>
+          </OrderContactDialog>
+        ) : <Button
           disabled={busy || !tierId}
           onClick={async () => {
             if (tierId && (await add({ designId, tierId, addonIds }))) router.push("/checkout");
@@ -116,7 +129,7 @@ export function PricePicker({
           className="h-12 rounded-lg bg-hibiscus-strong text-base text-white hover:bg-hibiscus-strong/90"
         >
           <ZapIcon /> Buy now
-        </Button>
+        </Button>}
         <Button
           disabled={busy || !tierId}
           variant="outline"
@@ -129,7 +142,7 @@ export function PricePicker({
         </Button>
         <CompareToggle item={compareItem} signedIn variant="button" className="mt-1" />
         <p className="text-center text-xs text-muted-foreground">
-          Choose card or GCash where available. Project links arrive by email when ready.
+          {onlineCheckout ? "Choose card or GCash where available. Project links arrive by email when ready." : "Project links arrive by email when ready."}
         </p>
       </div>
     </motion.div>

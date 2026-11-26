@@ -77,7 +77,7 @@ test(`purchaser checkout, package preparation and authenticated downloads for ${
       env: { ...process.env, BAYBLOOM_PERSONALIZATION_TEST: "1", DATABASE_URL: target, DIRECT_URL: direct,
         AUTH_SECRET: randomBytes(32).toString("base64url"), AUTH_URL: base, NEXT_PUBLIC_SITE_URL: base,
         AUTH_GOOGLE_ID: "", AUTH_GOOGLE_SECRET: "", RESEND_API_KEY: "", EMAIL_FROM: "",
-        STRIPE_SECRET_KEY: "", STRIPE_WEBHOOK_SECRET: "", NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "", PAYMONGO_GCASH_ENABLED: "false",
+        ONLINE_CHECKOUT_ENABLED: "true", STRIPE_SECRET_KEY: "", STRIPE_WEBHOOK_SECRET: "", NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "", PAYMONGO_GCASH_ENABLED: "false",
         S3_ENDPOINT: "", S3_BUCKET: "", S3_ACCESS_KEY: "", S3_SECRET_KEY: "", MAINTENANCE_SECRET: maintenanceSecret,
       }, windowsHide: true, stdio: ["ignore", "pipe", "pipe"],
     });

@@ -1,0 +1,99 @@
+[
+  {
+    "role": "cover",
+    "file": "/images/designs/barkadas/cover.webp",
+    "thumb": "/images/designs/barkadas/thumbs/cover.webp",
+    "alt": "Barkadas template shown on a laptop and a phone",
+    "kind": "MOCKUP",
+    "width": 1600,
+    "height": 1200,
+    "author": "",
+    "source": "/demo/barkadas",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/barkadas/00-home-page.webp",
+    "thumb": "/images/designs/barkadas/thumbs/00-home-page.webp",
+    "alt": "Barkadas template: home page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/barkadas",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/barkadas/01-stay-options.webp",
+    "thumb": "/images/designs/barkadas/thumbs/01-stay-options.webp",
+    "alt": "Barkadas template: stay options on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/barkadas/stays",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/barkadas/02-stay-planner.webp",
+    "thumb": "/images/designs/barkadas/thumbs/02-stay-planner.webp",
+    "alt": "Barkadas template: stay planner on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/barkadas/plan?stay=whole-house&guests=6&cars=2&beds=individual",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/barkadas/03-guest-guide.webp",
+    "thumb": "/images/designs/barkadas/thumbs/03-guest-guide.webp",
+    "alt": "Barkadas template: guest guide on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/barkadas/guide",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/barkadas/04-photo-gallery.webp",
+    "thumb": "/images/designs/barkadas/thumbs/04-photo-gallery.webp",
+    "alt": "Barkadas template: photo gallery on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/barkadas/gallery",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/barkadas/05-weekend-planner.webp",
+    "thumb": "/images/designs/barkadas/thumbs/05-weekend-planner.webp",
+    "alt": "Barkadas template: weekend planner on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/barkadas/weekend",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/barkadas/90-mobile-home.webp",
+    "thumb": "/images/designs/barkadas/thumbs/90-mobile-home.webp",
+    "alt": "Barkadas template: home page on a phone",
+    "kind": "MOCKUP",
+    "width": 780,
+    "height": 1688,
+    "author": "",
+    "source": "/demo/barkadas",
+    "license": "",
+    "licenseUrl": null
+  }
+]

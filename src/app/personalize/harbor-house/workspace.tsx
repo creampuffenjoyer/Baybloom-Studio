@@ -1,6 +1,7 @@
 "use client";
 
 import { BloomGuide } from "@/components/bloom-guide";
+import { BackToBaybloom } from "@/components/layout/back-to-baybloom";
 import Link from "next/link";
 import { useLocationPhotoEditor } from "../photo-editor";
 import { PHOTO_TEMPLATES } from "../photo-templates";
@@ -328,6 +329,31 @@ export function HarborEditor({ template = "harbor-house" }: { template?: Persona
     });
   }
 
+  async function downloadSavedWebsite() {
+    setBusy(true);
+    setSaveStatus("Preparing your download…");
+    try {
+      const response = await fetch(`/api/membership/drafts/${template}`, { method: "POST" });
+      if (!response.ok) {
+        setSaveStatus(response.status === 409 ? "Save your draft before downloading it." :
+          response.status === 429 ? "Please wait a minute before downloading again." :
+          "Your download is unavailable. Check your account access and try again.");
+        return;
+      }
+      const url = URL.createObjectURL(await response.blob());
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${template}-personalized.zip`;
+      link.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      setSaveStatus("Your download has started.");
+    } catch {
+      setSaveStatus("The download was interrupted. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function draftRequest(action: "load" | "save") {
     if (action === "load" && locationEnabled && locationPhotos.pending && !window.confirm("Discard unsaved changes and load your saved draft?")) return;
     setBusy(true);
@@ -437,15 +463,26 @@ export function HarborEditor({ template = "harbor-house" }: { template?: Persona
   }
 
 
-  return <main className="min-h-dvh bg-[#eff2ed] text-[#203b3b]">
-    <header className="flex flex-wrap items-center justify-between gap-4 border-b border-[#d7dfd8] bg-white px-5 py-4 sm:px-8">
-      <div><Link href={`/preview/${template}`} className="text-sm underline underline-offset-4">Back to preview</Link><h1 className="mt-1 font-serif text-2xl">Make {title} yours</h1></div>
+  return <main className="flex min-h-dvh flex-col bg-[#eff2ed] text-[#203b3b] lg:h-dvh">
+    <header className="flex shrink-0 flex-wrap items-center justify-between gap-4 border-b border-[#d7dfd8] bg-white px-5 py-4 sm:px-8">
+      <div>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <BackToBaybloom />
+          <Link href={`/membership#${template}`} className="inline-flex min-h-11 items-center text-sm underline">Member library</Link>
+          <Link href={`/preview/${template}`} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">Back to preview</Link>
+        </div>
+        <h1 className="mt-1 font-serif text-2xl">Make {title} yours</h1>
+      </div>
       <Link href={`/designs/${template}#tiers`} onClick={event => { if (locationEnabled && locationPhotos.pending) { event.preventDefault(); setSaveStatus("Save changes before continuing to packages so your photos are included."); } }} className="rounded-full bg-[#0f4c5c] px-5 py-3 text-sm font-semibold text-white">View packages</Link>
     </header>
-    <div className="grid gap-0 lg:h-[calc(100dvh-90px)] lg:grid-cols-[340px_minmax(0,1fr)]">
+    <div className="grid gap-0 lg:min-h-0 lg:flex-1 lg:grid-cols-[340px_minmax(0,1fr)]">
       <aside aria-label="Personalization controls" className="overflow-y-auto border-b border-[#d7dfd8] bg-white p-5 lg:border-r lg:border-b-0">
-        <p className="text-sm leading-6">Try a few ideas on {template === "harbor-house" || coral || pine || lumen || isla || ember ? "the website" : "the home page"}. Sign in to save your text, color, and photo to your account.</p>
-        <p className="mt-2 text-sm leading-6">{coral ? "Choose your saved draft at checkout to include your saved changes." : "Saved changes can be selected at checkout."} {template === "harbor-house" || coral || pine || lumen || isla || ember ? "Only the fields shown are editable; other content and languages remain sample content." : "Other pages and languages are not editable here."}</p>
+        <p className="text-sm leading-6">Edit your text, colors and photos, then save a draft to your account.</p>
+        <p className="mt-2 text-sm leading-6">Download your saved website here, or select your draft when ordering a studio service.</p>
+        <div className="mt-4">
+          <button type="button" onClick={() => void downloadSavedWebsite()} disabled={busy} className="rounded-lg border border-[#0f4c5c] px-4 py-2 text-sm font-semibold">Download saved website</button>
+          <p className="mt-2 text-xs">The ZIP includes your last saved text and photos.</p>
+        </div>
         {pine && <p className="mt-2 text-sm leading-6">The headline, welcome message, and photo apply to both summer and winter. Switch seasons in the preview to see them.</p>}
         {bloomfield && <p className="mt-2 text-sm leading-6">The home page photo replaces the center image in the three-photo arrangement.</p>}
         <div className="mt-4 flex flex-wrap gap-2">

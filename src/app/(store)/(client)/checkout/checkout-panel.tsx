@@ -8,11 +8,13 @@ import { useCart } from "@/components/cart/cart-provider";
 import { CartLines, CartTotals, CouponField, EmptyCart } from "@/components/cart/cart-contents";
 import { Button } from "@/components/ui/button";
 import { StudioOrderContact } from "@/components/studio-order-contact";
+import { OrderContactDialog } from "@/components/order-contact-dialog";
 import { gcashEligible } from "@/lib/checkout-methods";
 import { DeliveryEmailField } from "./delivery-email-field";
 
 export function CheckoutPanel({
   billing,
+  onlineCheckout,
   emailVerified,
   stripeReady,
   gcashReady,
@@ -21,6 +23,7 @@ export function CheckoutPanel({
   purchaseOptions,
 }: {
   billing: React.ReactNode;
+  onlineCheckout: boolean;
   emailVerified: boolean;
   stripeReady: boolean;
   gcashReady: boolean;
@@ -80,14 +83,14 @@ export function CheckoutPanel({
     return <div className="space-y-4">{pendingPayment}{error && <p role="alert">{error}</p>}<EmptyCart /></div>;
   }
 
-  const offerGCash = gcashReady && gcashEligible(cart.totalCents, cart.currency);
-  const offerCard = stripeReady && cart.totalCents >= 2000;
+  const offerGCash = onlineCheckout && gcashReady && gcashEligible(cart.totalCents, cart.currency);
+  const offerCard = onlineCheckout && stripeReady && cart.totalCents >= 2000;
   const selectedMethod = method === "GCASH" && offerGCash || !offerCard && offerGCash ? "GCASH" : "STRIPE";
   const recipient = deliveryEmail.trim().toLowerCase();
   const pilotLines = cart.lines.filter(line => purchaseOptions.some(option => option.template === line.design.slug));
   const selectedDrafts = savedDraftTemplates.filter(template => pilotLines.some(line => line.design.slug === template));
   const missingRelease = pilotLines.some(line => !purchaseOptions.find(option => option.template === line.design.slug)?.releaseReady);
-  const blockedReason = !emailVerified
+  const blockedReason = !onlineCheckout ? null : !emailVerified
     ? "Verify your email to continue."
     : missingRelease ? "A source package is being prepared for a template in your cart. Please return later or contact support."
     : selectedDrafts.length > 0 && !imageRightsConfirmed ? "Confirm photo permissions to continue."
@@ -98,7 +101,7 @@ export function CheckoutPanel({
   const canPay = blockedReason === null && !busy && !pendingOrder;
 
   async function pay() {
-    if (submitting.current || !cart || !canPay || loadState !== "ready") return;
+    if (!onlineCheckout || submitting.current || !cart || !canPay || loadState !== "ready") return;
     submitting.current = true;
     setPending(true);
     setError(null);
@@ -196,7 +199,13 @@ export function CheckoutPanel({
             {error}
           </p>
         )}
-        {!pendingOrder && <Button
+        {!onlineCheckout ? <OrderContactDialog subject="Baybloom studio order" details={cart.lines.map(line =>
+          [`${line.design.title} (${line.tier.label})`, ...line.addons.map(addon => `Add-on: ${addon.name}`)].join("\n"),
+        ).join("\n\n")}>
+          <Button type="button" className="h-12 w-full rounded-full bg-hibiscus-strong text-base text-white hover:bg-hibiscus-strong/90">
+            <LockIcon /> {cart.totalCents === 0 ? "Complete order" : "Pay securely"}
+          </Button>
+        </OrderContactDialog> : !pendingOrder && <Button
           onClick={pay}
           disabled={!canPay || pending}
           className="h-12 w-full rounded-full bg-hibiscus-strong text-base text-white hover:bg-hibiscus-strong/90"

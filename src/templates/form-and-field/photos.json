@@ -1,0 +1,43 @@
+{
+  "sculpture": {
+    "src": "/templates/form-and-field/sculpture.webp",
+    "alt": "Off-white interlocking sculpture and cobalt geometric planes",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null,
+    "position": "50% 54%"
+  },
+  "circles": {
+    "src": "/templates/form-and-field/circles.webp",
+    "alt": "Cobalt and black circular forms on off-white paper",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "paper": {
+    "src": "/templates/form-and-field/paper.webp",
+    "alt": "Vermilion folded-paper rectangles layered at angles",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  },
+  "metal": {
+    "src": "/templates/form-and-field/metal.webp",
+    "alt": "Curving silver panels intersecting black and off-white planes",
+    "width": 756,
+    "height": 500,
+    "author": "Baybloom Studio via OpenAI ImageGen",
+    "source": "",
+    "license": "AI-generated demo image",
+    "licenseUrl": null
+  }
+}

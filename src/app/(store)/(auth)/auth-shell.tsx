@@ -34,7 +34,7 @@ export function AuthShell({
         <div className="absolute right-8 bottom-10 left-8 text-white xl:right-10 xl:left-10">
           <Bloom className="size-9 text-seaglass" />
           <p className="mt-5 max-w-[16ch] font-serif text-4xl leading-tight">Give your place a home online.</p>
-          <p className="mt-4 max-w-sm text-base leading-relaxed text-white/85">A collection of thoughtful websites, made for people who make others feel welcome.</p>
+          <p className="mt-4 max-w-sm text-base leading-relaxed text-white/85">Explore websites for places to stay and eat, events, wellness businesses, design studios and independent labels.</p>
           <ul className="mt-6 space-y-2 text-sm text-white/90">
             {["Save the designs you love", "Compare tiers and pricing", "Keep your downloads in one place"].map((label) => <li key={label} className="flex items-center gap-2"><CheckIcon aria-hidden className="size-4 text-seaglass" />{label}</li>)}
           </ul>

@@ -72,6 +72,17 @@ function s3Client() {
   return s3;
 }
 
+/** Only callers with a server-validated editor slug can request a template archive. */
+export async function readEditorSource(slug: keyof typeof import("./personalization/export-templates.json")) {
+  const key = `deliverables/${slug}/${slug}-source.zip`;
+  const client = s3Client();
+  if (!client) return readFile(path.join(LOCAL_ROOT, key));
+  const object = await client.send(new GetObjectCommand({Bucket: process.env.S3_BUCKET, Key: key}),
+    {abortSignal: AbortSignal.timeout(30_000)});
+  if (!object.Body) throw new Error("Template archive unavailable");
+  return object.Body.transformToByteArray();
+}
+
 function sign(key: string, exp: number) {
   const secret = process.env.AUTH_SECRET;
   if (!secret) throw new Error("AUTH_SECRET is not set");

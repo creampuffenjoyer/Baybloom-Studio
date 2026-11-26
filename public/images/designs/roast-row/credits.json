@@ -1,0 +1,99 @@
+[
+  {
+    "role": "cover",
+    "file": "/images/designs/roast-row/cover.webp",
+    "thumb": "/images/designs/roast-row/thumbs/cover.webp",
+    "alt": "Roast Row template shown on a laptop and a phone",
+    "kind": "MOCKUP",
+    "width": 1600,
+    "height": 1200,
+    "author": "",
+    "source": "/demo/roast-row",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/roast-row/00-home-page.webp",
+    "thumb": "/images/designs/roast-row/thumbs/00-home-page.webp",
+    "alt": "Roast Row template: home page on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/roast-row",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/roast-row/01-branch-menu.webp",
+    "thumb": "/images/designs/roast-row/thumbs/01-branch-menu.webp",
+    "alt": "Roast Row template: branch menu on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/roast-row/menu?branch=cubao",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/roast-row/02-pickup-bag.webp",
+    "thumb": "/images/designs/roast-row/thumbs/02-pickup-bag.webp",
+    "alt": "Roast Row template: pickup bag on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/roast-row/pickup?branch=cubao&order=flat-white%3A2%2Ccroissant%3A1",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/roast-row/03-locations.webp",
+    "thumb": "/images/designs/roast-row/thumbs/03-locations.webp",
+    "alt": "Roast Row template: locations on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/roast-row/visit",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/roast-row/04-coffee-finder.webp",
+    "thumb": "/images/designs/roast-row/thumbs/04-coffee-finder.webp",
+    "alt": "Roast Row template: coffee finder on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/roast-row/coffee",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/roast-row/05-workshops.webp",
+    "thumb": "/images/designs/roast-row/thumbs/05-workshops.webp",
+    "alt": "Roast Row template: workshops on desktop",
+    "kind": "SCREENSHOT",
+    "width": 1440,
+    "height": 900,
+    "author": "",
+    "source": "/demo/roast-row/workshops",
+    "license": "",
+    "licenseUrl": null
+  },
+  {
+    "file": "/images/designs/roast-row/90-mobile-home.webp",
+    "thumb": "/images/designs/roast-row/thumbs/90-mobile-home.webp",
+    "alt": "Roast Row template: home page on a phone",
+    "kind": "MOCKUP",
+    "width": 780,
+    "height": 1688,
+    "author": "",
+    "source": "/demo/roast-row",
+    "license": "",
+    "licenseUrl": null
+  }
+]

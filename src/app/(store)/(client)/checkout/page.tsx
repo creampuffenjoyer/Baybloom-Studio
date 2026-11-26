@@ -7,6 +7,7 @@ import { getAccount } from "@/lib/account";
 import { requireUser } from "@/lib/session";
 import { stripeConfigured } from "@/lib/stripe";
 import { gcashConfigured } from "@/lib/paymongo";
+import { onlineCheckoutEnabled } from "@/lib/online-checkout";
 import { VerifyBanner } from "@/app/(store)/(client)/account/verify-banner";
 import { CheckoutPanel } from "@/app/(store)/(client)/checkout/checkout-panel";
 import { db } from "@/lib/db";
@@ -37,12 +38,13 @@ async function Checkout({ searchParams }: Pick<PageProps<"/checkout">, "searchPa
   const user = await requireUser("/checkout");
   const [account, { canceled }] = await Promise.all([getAccount(user.id), searchParams]);
   if (!account) return null;
-  const [drafts, releases, pendingOrder] = await Promise.all([
+  const onlineCheckout = onlineCheckoutEnabled();
+  const [drafts, releases, pendingOrder] = onlineCheckout ? await Promise.all([
     db.personalizationDraft.findMany({ where: { userId: user.id, template: { in: purchaseTemplates } }, select: { template: true, updatedAt: true } }),
     db.activeTemplateRelease.findMany({ where: { template: { in: purchaseTemplates } }, select: { template: true } }),
     db.order.findFirst({ where: { userId: user.id, status: "PENDING" }, orderBy: { createdAt: "desc" },
       select: { id: true, paymentMethod: true, deliveryEmail: true } }),
-  ]);
+  ]) : [[], [], null] as const;
 
   const address = [
     account.addressLine1,
@@ -53,7 +55,7 @@ async function Checkout({ searchParams }: Pick<PageProps<"/checkout">, "searchPa
 
   return (
     <div className="space-y-6">
-      {canceled && (
+      {onlineCheckout && canceled && (
         <p role="status" className="rounded-2xl bg-white px-5 py-4 text-sm ring-1 ring-border/70">
           You returned from payment. Resume or close the pending checkout below before starting a new one.
         </p>
@@ -61,6 +63,7 @@ async function Checkout({ searchParams }: Pick<PageProps<"/checkout">, "searchPa
       {!account.emailVerified && <VerifyBanner email={account.email} />}
 
       <CheckoutPanel
+        onlineCheckout={onlineCheckout}
         emailVerified={Boolean(account.emailVerified)}
         stripeReady={stripeConfigured()}
         gcashReady={gcashConfigured()}

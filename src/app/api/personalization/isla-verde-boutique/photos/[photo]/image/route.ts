@@ -67,4 +67,4 @@ export async function DELETE(request: Request, context: Context) {
   return Response.json({ removed: true }, { headers });
 }
 
-export const PUT = withVerifiedStorageWrite(putPhoto);
+export const PUT = withVerifiedStorageWrite("isla-verde-boutique", putPhoto);
