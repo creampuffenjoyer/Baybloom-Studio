@@ -177,7 +177,6 @@ async function DesignContent({ params }: { params: PageProps<"/designs/[slug]">[
         {/* Price panel: static shell shows a skeleton; the gated part streams in. */}
         <aside className="lg:pt-20" aria-label="Pricing">
           <div className="rounded-2xl border border-border bg-white p-6 lg:sticky lg:top-24">
-            <Link href={`/membership#${design.slug}`} className="mb-6 inline-block font-medium text-bay underline">Access this template in the member library</Link>
             <h2 className="font-serif text-2xl font-medium">Studio service packages</h2>
             <p className="mt-1 mb-5 text-sm text-muted-foreground">
               {design.tiers.length} {design.tiers.length === 1 ? "tier" : "tiers"} ·{" "}

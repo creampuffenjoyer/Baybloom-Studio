@@ -3,32 +3,32 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { OrderContactDialog } from "@/components/order-contact-dialog";
+import { STUDIO_EMAIL_HREF } from "@/lib/checkout-methods";
 import { onlineCheckoutEnabled } from "@/lib/online-checkout";
 import { getCurrentUser } from "@/lib/session";
-import { hasPremium, membershipLibrary } from "@/lib/membership";
-import { includesFile, regularTemplate } from "@/lib/membership-plans";
+import { hasPremium } from "@/lib/membership";
 import { membershipCheckoutReady, syncMembership } from "@/lib/membership-payment";
 import { stripe } from "@/lib/stripe";
 import { db } from "@/lib/db";
-import editors from "@/lib/personalization/export-templates.json";
 import { startMembershipCheckout } from "./actions";
 
-export const metadata: Metadata = {title: "Membership & template library"};
+export const metadata: Metadata = {title: "Membership"};
 type Query = Promise<Record<string, string | string[] | undefined>>;
 const signIn = "/login?callbackUrl=%2Fmembership";
+const phpMembershipEmail = `${STUDIO_EMAIL_HREF}?subject=${encodeURIComponent("Baybloom lifetime Premium in PHP")}`;
 
 export default function MembershipPage({searchParams}: {searchParams: Query}) {
   return <div className="container-page py-10 sm:py-16">
-    <h1 className="font-serif text-4xl sm:text-5xl">Membership & template library</h1>
-    <p className="mt-4 max-w-2xl text-muted-foreground">Choose a template and make it your own. Start with the Regular collection or unlock the entire studio library for life.</p>
-    <Suspense fallback={<p role="status" className="py-8">Loading the library…</p>}>
-      <Library searchParams={searchParams} />
+    <h1 className="font-serif text-4xl sm:text-5xl">Membership</h1>
+    <p className="mt-4 max-w-2xl text-muted-foreground">Personalize a template and save a draft before you order your website.</p>
+    <Suspense fallback={<p role="status" className="py-8">Loading membership options…</p>}>
+      <MembershipOptions searchParams={searchParams} />
     </Suspense>
   </div>;
 }
 
-async function Library({searchParams}: {searchParams: Query}) {
-  const [user, query, designs] = await Promise.all([getCurrentUser(), searchParams, membershipLibrary()]);
+async function MembershipOptions({searchParams}: {searchParams: Query}) {
+  const [user, query] = await Promise.all([getCurrentUser(), searchParams]);
   let notice = "";
   if (query.canceled) notice = "Checkout canceled. You can resume whenever you’re ready.";
   if (query.retry) notice = query.retry === "later" ? "Your earlier payment is being checked. Please try again later." : "Your previous checkout expired. Start a new checkout below.";
@@ -47,48 +47,29 @@ async function Library({searchParams}: {searchParams: Query}) {
     }
   }
   const premium = user ? await hasPremium(user.id) : false;
-  const regularCount = designs.filter(design => regularTemplate(design.slug)).length;
   return <>
     {notice && <p role="status" className="mt-6 rounded-lg border border-border bg-white p-4">{notice}</p>}
-    <section aria-label="Account plans" className="my-8 grid gap-4 sm:grid-cols-2">
+    <section aria-label="Account plans" className="mt-8 grid gap-4 sm:grid-cols-2">
       <article className="flex flex-col items-start rounded-xl border border-border bg-white p-6">
         <h2 className="text-2xl">Regular</h2>
         <p className="mt-2 text-xl font-medium">Free</p>
-        <p className="my-4 grow text-sm leading-relaxed">{regularCount} templates across {new Set(designs.map(d => d.category.name)).size} industries. Includes their source files, available editors and starter downloads.</p>
-        {user ? <Link href="#library" className="font-medium underline">Browse your library</Link> : <Button asChild variant="outline"><Link href="/register?callbackUrl=%2Fmembership">Create a free account</Link></Button>}
+        <p className="my-4 grow text-sm leading-relaxed">Personalize and save drafts for Regular templates that have an editor.</p>
+        {user ? <Link href="/designs" className="inline-flex min-h-11 items-center font-medium underline">Browse templates</Link>
+          : <Button asChild variant="outline" className="min-h-11"><Link href="/register?callbackUrl=%2Fmembership">Create a free account</Link></Button>}
       </article>
       <article id="premium" className="scroll-mt-24 rounded-xl bg-bay p-6 text-white">
         <h2 className="text-2xl text-white">Premium</h2>
         <p className="mt-2 text-xl font-medium">$10 USD <span className="text-base font-normal">once, for lifetime access</span></p>
-        <p className="my-4 text-sm leading-relaxed">All {designs.length} digital templates, every available editor and all Premium downloads. Custom design, setup and revisions are priced separately.</p>
-        {premium ? <Link className="font-semibold underline" href="#library">Premium active · Open your library</Link>
+        <p className="my-4 text-sm leading-relaxed">Unlock every available template editor and save drafts for your website order.</p>
+        {premium ? <p className="font-semibold">Premium active</p>
           : !user ? <Button asChild variant="secondary"><Link href={signIn}>Sign in to upgrade</Link></Button>
           : onlineCheckoutEnabled() && membershipCheckoutReady() ? <form action={startMembershipCheckout}><Button type="submit" variant="secondary">Get lifetime access · $10 USD</Button></form>
           : <OrderContactDialog subject="Baybloom lifetime Premium">
               <Button type="button" variant="secondary">Get lifetime access · $10 USD</Button>
             </OrderContactDialog>}
+        {!premium && <a className="mt-2 flex min-h-11 w-fit items-center text-sm font-medium underline underline-offset-4" href={phpMembershipEmail}>Email us for PHP pricing</a>}
       </article>
     </section>
-    <section id="library" className="scroll-mt-24">
-      <h2 className="font-serif text-3xl">Template library</h2>
-      {Array.from(new Set(designs.map(d => d.category.name))).map(category => <section key={category} className="mt-7">
-        <h3 className="border-b border-border pb-2 text-lg font-semibold">{category}</h3>
-        <ul className="divide-y divide-border">{designs.filter(d => d.category.name === category).map(design => {
-          const regular = regularTemplate(design.slug);
-          const accessible = !!user && (premium || regular);
-          return <li key={design.slug} id={design.slug} className="grid scroll-mt-24 gap-3 py-4 sm:grid-cols-[1fr_1.5fr]">
-            <div><h4 className="text-xl">{design.title}</h4><p className="text-sm text-muted-foreground">{regular ? "Regular collection" : "Premium collection"}</p></div>
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
-              <Link href={`/demo/${design.slug}`} className="font-medium underline">Live demo</Link>
-              {accessible ? <>
-                {Object.hasOwn(editors, design.slug) && <Link href={`/personalize/${design.slug}`} className="font-medium underline">Open editor</Link>}
-                {design.files.filter(file => includesFile(premium, design.slug, file)).map(file =>
-                  <a key={file.id} href={`/api/membership/files/${file.id}`} className="underline underline-offset-2">{file.name}</a>)}
-              </> : <Link href={regular ? signIn : "#premium"} className="font-medium text-bay underline">{regular ? "Sign in to download" : "Unlock with Premium"}</Link>}
-            </div>
-          </li>;
-        })}</ul>
-      </section>)}
-    </section>
+    <p className="mt-6 text-sm text-muted-foreground">Website purchases are priced separately. Your source ZIP is delivered with your paid website order.</p>
   </>;
 }

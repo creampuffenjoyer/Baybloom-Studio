@@ -28,10 +28,12 @@ export function Bloom({ className, title }: { className?: string; title?: string
 export function Logo({
   className,
   tone = "dark",
+  compactOnNarrowScreens = false,
 }: {
   className?: string;
   /** "dark" for light backgrounds, "light" for dark/photo backgrounds. */
   tone?: "dark" | "light";
+  compactOnNarrowScreens?: boolean;
 }) {
   return (
     <span
@@ -56,6 +58,7 @@ export function Logo({
         className={cn(
           "font-sans text-[0.7em] font-medium uppercase tracking-[0.28em]",
           tone === "dark" ? "text-bay/70" : "text-white/80",
+          compactOnNarrowScreens && "max-[359px]:hidden",
         )}
       >
         Studio

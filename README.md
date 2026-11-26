@@ -70,9 +70,9 @@ Customers can pay by card through Stripe or pay with GCash through PayMongo when
 
 ### Account membership
 
-Customers can open `/membership` to browse their digital library. Regular accounts can use the curated free templates. Premium unlocks every template, supported editor and digital download for a single $10 USD card payment. Studio services are purchased separately.
+Customers can compare editor access at `/membership`. Regular accounts can personalize supported Regular templates and save drafts. Lifetime Premium unlocks every available editor and costs $10 USD by card when online checkout is enabled. Customers can email the studio for PHP pricing. Source ZIPs are delivered with paid website orders.
 
-Configure `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and the public origin for the environment. Register `/api/webhooks/stripe` for `checkout.session.completed`, `checkout.session.expired` and `charge.refunded` to activate lifetime access and process full refunds. Use the test checkout below before enabling live keys. Production file storage must contain the template archives and guides under their catalog storage keys.
+Configure `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and the public origin for the environment. Register `/api/webhooks/stripe` for `checkout.session.completed`, `checkout.session.expired` and `charge.refunded` to activate lifetime access and process full refunds. Use the test checkout below before enabling live keys.
 
 ### Stripe test checkout
 

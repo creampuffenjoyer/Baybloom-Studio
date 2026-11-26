@@ -329,31 +329,6 @@ export function HarborEditor({ template = "harbor-house" }: { template?: Persona
     });
   }
 
-  async function downloadSavedWebsite() {
-    setBusy(true);
-    setSaveStatus("Preparing your download…");
-    try {
-      const response = await fetch(`/api/membership/drafts/${template}`, { method: "POST" });
-      if (!response.ok) {
-        setSaveStatus(response.status === 409 ? "Save your draft before downloading it." :
-          response.status === 429 ? "Please wait a minute before downloading again." :
-          "Your download is unavailable. Check your account access and try again.");
-        return;
-      }
-      const url = URL.createObjectURL(await response.blob());
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${template}-personalized.zip`;
-      link.click();
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
-      setSaveStatus("Your download has started.");
-    } catch {
-      setSaveStatus("The download was interrupted. Please try again.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
   async function draftRequest(action: "load" | "save") {
     if (action === "load" && locationEnabled && locationPhotos.pending && !window.confirm("Discard unsaved changes and load your saved draft?")) return;
     setBusy(true);
@@ -468,7 +443,6 @@ export function HarborEditor({ template = "harbor-house" }: { template?: Persona
       <div>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <BackToBaybloom />
-          <Link href={`/membership#${template}`} className="inline-flex min-h-11 items-center text-sm underline">Member library</Link>
           <Link href={`/preview/${template}`} className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">Back to preview</Link>
         </div>
         <h1 className="mt-1 font-serif text-2xl">Make {title} yours</h1>
@@ -478,11 +452,7 @@ export function HarborEditor({ template = "harbor-house" }: { template?: Persona
     <div className="grid gap-0 lg:min-h-0 lg:flex-1 lg:grid-cols-[340px_minmax(0,1fr)]">
       <aside aria-label="Personalization controls" className="overflow-y-auto border-b border-[#d7dfd8] bg-white p-5 lg:border-r lg:border-b-0">
         <p className="text-sm leading-6">Edit your text, colors and photos, then save a draft to your account.</p>
-        <p className="mt-2 text-sm leading-6">Download your saved website here, or select your draft when ordering a studio service.</p>
-        <div className="mt-4">
-          <button type="button" onClick={() => void downloadSavedWebsite()} disabled={busy} className="rounded-lg border border-[#0f4c5c] px-4 py-2 text-sm font-semibold">Download saved website</button>
-          <p className="mt-2 text-xs">The ZIP includes your last saved text and photos.</p>
-        </div>
+        <p className="mt-2 text-sm leading-6">Select your saved draft when ordering your website.</p>
         {pine && <p className="mt-2 text-sm leading-6">The headline, welcome message, and photo apply to both summer and winter. Switch seasons in the preview to see them.</p>}
         {bloomfield && <p className="mt-2 text-sm leading-6">The home page photo replaces the center image in the three-photo arrangement.</p>}
         <div className="mt-4 flex flex-wrap gap-2">

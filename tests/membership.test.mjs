@@ -1,20 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {DESIGNS, CATEGORIES} from "../prisma/catalog.ts";
-import {regularTemplate, includesFile} from "../src/lib/membership-plans.ts";
+import {regularTemplate} from "../src/lib/membership-plans.ts";
 import {checkoutParameters, membershipCheckout, syncMembership, refundMembership} from "../src/lib/membership-payment.ts";
 
-test("every genre has one or two Regular templates and every template has Premium source access", () => {
+test("every genre has one or two Regular templates and new releases default to Premium", () => {
   for (const category of CATEGORIES) {
     const free = DESIGNS.filter(d => d.category === category.slug && regularTemplate(d.slug));
     assert.ok(free.length >= 1 && free.length <= 2, category.slug);
-  }
-  for (const {slug} of DESIGNS) {
-    const source = {storageKey: `deliverables/${slug}/${slug}-source.zip`, minTier: {level: "STANDARD"}};
-    assert.equal(includesFile(false, slug, source), regularTemplate(slug));
-    assert.equal(includesFile(true, slug, source), true);
-    assert.equal(includesFile(false, slug, {storageKey: "guide.pdf", minTier: {level: "PREMIUM"}}), false);
-    assert.equal(includesFile(true, slug, {storageKey: "guide.pdf", minTier: {level: "PREMIUM"}}), true);
   }
   assert.equal(regularTemplate("new-release"), false);
 });

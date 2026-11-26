@@ -20,13 +20,5 @@ export async function canEdit(userId: string, slug: string) {
 
 export async function requireEditor(slug: string) {
   const user = await requireUser(`/personalize/${slug}`);
-  if (!await canEdit(user.id, slug)) redirect(`/membership#${slug}`);
-}
-
-export function membershipLibrary() {
-  return db.design.findMany({
-    where: studioDesigns, orderBy: [{ category: {position: "asc"} }, { title: "asc" }],
-    select: { slug: true, title: true, category: {select: { name: true }},
-      files: {orderBy: {name: "asc"}, select: {id: true, name: true, storageKey: true, minTier: {select: {level: true}}}} },
-  });
+  if (!await canEdit(user.id, slug)) redirect("/membership#premium");
 }

@@ -25,6 +25,7 @@ export function TemplatePreview({ slug, title, base, pages, eventPrefix, seasona
   const [source, setSource] = useState(() => previewHref(page));
   const [navigation, setNavigation] = useState(0);
   const frame = useRef<HTMLIFrameElement>(null);
+  const pendingLanguage = useRef<Language | null>(null);
 
   function save(nextPage: string, nextDevice: string, nextLanguage = language) {
     const url = new URL(window.location.href);
@@ -40,6 +41,12 @@ export function TemplatePreview({ slug, title, base, pages, eventPrefix, seasona
       setPage(next);
       const requested = languageOf(event.data.language);
       const nextLanguage = languages.includes(requested) ? requested : languages[0];
+      if (pendingLanguage.current && nextLanguage !== pendingLanguage.current) {
+        // A newly loaded demo may have missed the first language message.
+        frame.current?.contentWindow?.postMessage({ type: `${eventPrefix}-language`, language: pendingLanguage.current }, location.origin);
+        return;
+      }
+      pendingLanguage.current = null;
       setLanguage(nextLanguage);
       const url = new URL(window.location.href);
       url.searchParams.set("page", next);
@@ -66,7 +73,6 @@ export function TemplatePreview({ slug, title, base, pages, eventPrefix, seasona
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <Link href={catalogPreview ? "/designs" : `/designs/${slug}`} className="inline-flex min-h-11 items-center text-xs underline underline-offset-4">{catalogPreview ? "All templates" : "Back to details"}</Link>
           {personalizeHref && <Link href={`${personalizeHref}#business-name`} data-bloom-target="preview-edit" className="rounded-full border border-bay px-4 py-3 text-sm font-semibold text-bay">Try my business name</Link>}
-          <Link href={`/membership#${slug}`} className="rounded-full bg-bay px-4 py-3 text-sm font-semibold text-white">Access template</Link>
         </div>
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
@@ -89,6 +95,7 @@ export function TemplatePreview({ slug, title, base, pages, eventPrefix, seasona
         {languages.length > 1 ? <label className="flex items-center gap-2">Language
           <select aria-label="Preview language" value={language} className="rounded-lg border border-border bg-white px-3 py-2" onChange={(e) => {
             const next = languageOf(e.target.value);
+            pendingLanguage.current = next;
             setLanguage(next);
             save(page, device, next);
             frame.current?.contentWindow?.postMessage({ type: `${eventPrefix}-language`, language: next }, location.origin);
@@ -101,7 +108,53 @@ export function TemplatePreview({ slug, title, base, pages, eventPrefix, seasona
       <p className="mt-2 text-xs leading-relaxed text-muted-foreground">Interactive sample. Bookings and messages are not sent. Use sample details when trying forms.</p>
     </header>
     <div className="flex min-h-0 flex-1 justify-center md:p-4">
-      <iframe key={navigation} data-bloom-sample-frame ref={frame} src={source} title={`${title} interactive website preview`} className={`h-full w-full border-0 bg-white md:rounded-lg ${device === "mobile" ? "md:max-w-[390px]" : ""}`} />
+      <PreviewFrame key={navigation} frame={frame} source={source} title={title} mobile={device === "mobile"} />
     </div>
   </main>;
+}
+
+function PreviewFrame({ frame, source, title, mobile }: {
+  frame: React.RefObject<HTMLIFrameElement | null>;
+  source: string;
+  title: string;
+  mobile: boolean;
+}) {
+  const [status, setStatus] = useState<"loading" | "slow" | "ready">("loading");
+
+  useEffect(() => {
+    // The iframe can finish loading before React attaches its event handler.
+    const document = frame.current?.contentDocument;
+    const recovered = document?.readyState === "complete" && document.URL !== "about:blank";
+    const timer = window.setTimeout(() => {
+      setStatus(current => recovered || current === "ready" ? "ready" : "slow");
+    }, recovered ? 0 : 8000);
+    return () => window.clearTimeout(timer);
+  }, [frame]);
+
+  return (
+    <div className={`relative h-full w-full overflow-hidden bg-white md:rounded-lg ${mobile ? "md:max-w-[390px]" : ""}`}>
+      <iframe
+        data-bloom-sample-frame
+        ref={frame}
+        src={source}
+        title={`${title} interactive website preview`}
+        className="h-full w-full border-0"
+        inert={status !== "ready"}
+        onLoad={() => {
+          const url = frame.current?.contentDocument?.URL;
+          if (url && url !== "about:blank") setStatus("ready");
+        }}
+      />
+      {status !== "ready" && (
+        <div className="absolute inset-0 grid content-center justify-items-center gap-2 overflow-auto bg-sand px-4 text-center text-sm">
+          <p role="status">{status === "slow" ? "The preview is taking longer than expected." : "Loading website preview…"}</p>
+          {status === "slow" && (
+            <a href={source} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-bay underline underline-offset-4">
+              Open demo in a new tab
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }

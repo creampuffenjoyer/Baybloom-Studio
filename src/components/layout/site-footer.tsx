@@ -24,8 +24,9 @@ const COLUMNS = [
   {
     title: "Studio",
     links: [
-      { href: "/#how-it-works", label: "How it works" },
-      { href: "/membership", label: "Membership & downloads" },
+      { href: "/how-it-works", label: "How it works" },
+      { href: "/custom-websites", label: "Custom websites" },
+      { href: "/membership", label: "Membership" },
       { href: "/credits", label: "Image credits" },
       { href: "/register", label: "Create an account" },
     ],
@@ -74,7 +75,7 @@ export function SiteFooter() {
             </Link>
             .
           </p>
-          <p>Lifetime membership in USD. Studio services in PHP.</p>
+          <p>Lifetime membership in USD or PHP. Studio services in PHP.</p>
         </div>
       </div>
     </footer>

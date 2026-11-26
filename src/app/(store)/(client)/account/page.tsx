@@ -28,7 +28,7 @@ async function Profile() {
       {user.role === "ADMIN" && <Link href="/admin/deliveries" className="font-medium text-bay underline">Admin deliveries</Link>}
       {!account.emailVerified && <VerifyBanner email={account.email} />}
       <section className="rounded-xl border border-border bg-white p-5"><h2 className="text-2xl">{premium ? "Premium lifetime account" : "Regular account"}</h2>
-        <Link className="mt-2 inline-block text-sm font-medium underline" href="/membership">{premium ? "Open your template library" : "View your library and Premium upgrade"}</Link>
+        <Link className="mt-2 inline-block text-sm font-medium underline" href="/membership">View membership</Link>
       </section>
       <ProfileForm account={account} />
       <p className="text-xs text-muted-foreground">

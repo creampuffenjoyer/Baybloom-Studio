@@ -128,7 +128,6 @@ export function DesignCard({
               {design.title}
             </DialogTitle>
             <DialogDescription className="leading-relaxed">{design.summary}</DialogDescription>
-            <Link href={`/membership#${design.slug}`} className="inline-flex min-h-11 items-center text-sm font-medium underline">{regularTemplate(design.slug) ? "Open in the Regular library" : "View lifetime Premium access"}</Link>
             {!design.previewOnly && (
               <p className="text-sm text-muted-foreground">
                 Studio service tiers: {design.tierLevels.map((l) => TIER_LABEL[l]).join(" · ")}

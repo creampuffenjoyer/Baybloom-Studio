@@ -9,10 +9,3 @@ const regular = new Set([
 export function regularTemplate(slug: string) {
   return regular.has(slug);
 }
-
-export function includesFile(premium: boolean, slug: string, file: { storageKey: string; minTier: {level: string} | null }) {
-  return premium || (regularTemplate(slug) && (
-    file.storageKey === `deliverables/${slug}/${slug}-source.zip` ||
-    !file.minTier || file.minTier.level === "STARTER"
-  ));
-}

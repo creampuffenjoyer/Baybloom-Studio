@@ -38,17 +38,17 @@ export function Hero({ templates }: { templates: ShowcaseTemplate[] }) {
           <p className="flex items-center gap-3 text-sm font-medium text-bay">
             <span aria-hidden className="h-px w-8 bg-hibiscus-strong" /> Baybloom website templates
           </p>
-          <h1 id="home-title" className="mt-4 max-w-[12ch] font-sans text-[clamp(2.75rem,4.8vw,4.5rem)] leading-[1.08] font-semibold tracking-tight">
-            A home for what you do.
+          <h1 id="home-title" className="mt-4 max-w-[16ch] font-sans text-[clamp(2.5rem,4.8vw,4.5rem)] leading-[1.08] font-semibold tracking-tight text-balance">
+            Your business deserves more than a theme.
           </h1>
           <p className="mt-5 max-w-[40ch] text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Give guests a room to book, diners a menu to browse, or clients a closer look at your work.
+            Choose a template built for you, then edit every page, photo, and word right inside the Studio. No developer needed.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
             <Button asChild size="lg" className="h-12 rounded-lg bg-hibiscus-strong px-6 text-base text-white hover:bg-hibiscus-strong/90">
               <Link href="/designs">Browse templates <ArrowRightIcon aria-hidden /></Link>
             </Button>
-            <Link href="#how-it-works" className="inline-flex min-h-12 items-center text-sm font-medium text-bay underline-offset-4 hover:underline">
+            <Link href="/how-it-works" className="inline-flex min-h-12 items-center text-sm font-medium text-bay underline-offset-4 hover:underline">
               How it works
             </Link>
           </div>
@@ -62,13 +62,15 @@ export function Hero({ templates }: { templates: ShowcaseTemplate[] }) {
 
         {t && <div className="min-w-0">
           <div id="template-preview" role="tabpanel" aria-labelledby={`tab-${t.slug}`} tabIndex={0} className="overflow-hidden rounded-xl border border-border bg-white shadow-[0_16px_48px_-24px_rgb(15_76_92/0.25)]">
-            <Link href={`/demo/${t.slug}`} aria-label={`Open the ${t.title} live demo`} className="block border-b border-border p-3 sm:p-4" style={{ backgroundColor: t.color }}>
-              <div aria-hidden className="flex items-center gap-1.5 rounded-t-md bg-sand px-3 py-2.5">
-                <span className="size-2 rounded-full bg-ink/25" /><span className="size-2 rounded-full bg-ink/25" /><span className="size-2 rounded-full bg-ink/25" />
-                <span className="ml-2 text-[11px] text-muted-foreground">{t.title} · Live website preview</span>
+            <Link href={`/demo/${t.slug}`} aria-label={`Open the ${t.title} live demo`} className="block border-b border-border bg-sand-deep/60 px-3 pt-5 pb-4 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring sm:px-5 sm:pt-7 sm:pb-6">
+              <div className="relative mx-auto w-[90%] rounded-t-[14px] rounded-b-[4px] border border-[#66696e] bg-[#191b1e] px-[2%] pt-[2.6%] pb-[2%] shadow-[inset_0_1px_0_#919497] sm:rounded-t-[19px]">
+                <span aria-hidden className="absolute top-[1.5%] left-1/2 size-1 -translate-x-1/2 rounded-full bg-[#505661] sm:size-1.5" />
+                <div className="relative aspect-[16/10] overflow-hidden rounded-[3px] bg-[#111315] sm:rounded-[5px]">
+                  <Image key={t.slug} src={`/images/designs/${t.slug}/00-home-page.webp`} alt={`${t.title} website home page`} fill priority={index === 0} sizes="(min-width: 1280px) 550px, (min-width: 1024px) 46vw, 82vw" className="object-cover object-top" />
+                </div>
               </div>
-              <div className="relative aspect-[16/10] overflow-hidden rounded-b-md bg-sand-deep">
-                <Image key={t.slug} src={`/images/designs/${t.slug}/00-home-page.webp`} alt={`${t.title} website home page`} fill priority={index === 0} sizes="(min-width: 1280px) 640px, (min-width: 1024px) 55vw, (min-width: 640px) 90vw, 100vw" className="object-cover object-top" />
+              <div aria-hidden className="relative mx-auto h-2.5 rounded-t-[2px] rounded-b-[50%] bg-linear-to-b from-[#e6e7ea] via-[#b7bbc1] to-[#737982] shadow-[0_8px_12px_-5px_#737982] sm:h-3.5">
+                <span className="absolute top-0 left-1/2 h-[45%] w-[18%] -translate-x-1/2 rounded-b-md bg-linear-to-b from-[#80858e] to-[#a9aeb6]" />
               </div>
             </Link>
             <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5">
